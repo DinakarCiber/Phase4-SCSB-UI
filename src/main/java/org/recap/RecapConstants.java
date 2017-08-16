@@ -360,6 +360,7 @@ public class RecapConstants {
 
     public static final String SCSB_SHIRO_AUTHENTICATE_URL="userAuth/authService";
     public static final String SCSB_SHIRO_SEARCH_URL="auth/search";
+    public static final String SCSB_SHIRO_TOUCH_EXISTIN_SESSION_URL="auth/touchExistingSession";
     public static final String SCSB_SHIRO_REQUEST_URL="auth/request";
     public static final String SCSB_SHIRO_COLLECTION_URL="auth/collection";
     public static final String SCSB_SHIRO_REPORT_URL="auth/reports";

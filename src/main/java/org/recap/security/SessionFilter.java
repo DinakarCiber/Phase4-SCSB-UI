@@ -1,7 +1,10 @@
 package org.recap.security;
 
+import org.apache.shiro.authc.UsernamePasswordToken;
 import org.recap.RecapConstants;
+import org.recap.spring.ApplicationContextProvider;
 import org.recap.util.HelperUtil;
+import org.recap.util.UserAuthUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.ComponentScan;
@@ -13,6 +16,7 @@ import javax.servlet.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
@@ -20,6 +24,9 @@ import java.io.IOException;
  */
 @ComponentScan
 public class SessionFilter implements Filter{
+
+
+    UserAuthUtil userAuthUtil;
 
     private static final Logger logger = LoggerFactory.getLogger(SessionFilter.class);
 
@@ -54,6 +61,13 @@ public class SessionFilter implements Filter{
                 institutionCodeCookies.setHttpOnly(false);
                 institutionCodeCookies.setPath("/");
                 response.addCookie(institutionCodeCookies);
+
+                HttpSession session=request.getSession(false);
+                UsernamePasswordToken usernamePasswordToken = (UsernamePasswordToken) session.getAttribute(RecapConstants.USER_TOKEN);
+                if(usernamePasswordToken != null) {
+                    boolean authenticated=getUserAuthUtil().authorizedUser(RecapConstants.SCSB_SHIRO_TOUCH_EXISTIN_SESSION_URL, usernamePasswordToken);
+                }
+
             }
         }
         chain.doFilter(req, res);
@@ -62,5 +76,12 @@ public class SessionFilter implements Filter{
     @Override
     public void destroy() {
         //Do nothing
+    }
+
+    public UserAuthUtil getUserAuthUtil() {
+        if(userAuthUtil == null) {
+            userAuthUtil = ApplicationContextProvider.getInstance().getApplicationContext().getBean(UserAuthUtil.class);
+        }
+        return userAuthUtil;
     }
 }
