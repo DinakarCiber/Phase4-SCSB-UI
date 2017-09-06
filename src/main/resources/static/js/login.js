@@ -54,3 +54,7 @@ function isBlankValue(value) {
 function manualLogout() {
     document.getElementById("logoutButton").click();
 }
+
+function closeEmailDailog(){
+    $('#emailCloseButton').click();
+}
