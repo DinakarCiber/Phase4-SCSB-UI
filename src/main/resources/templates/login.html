@@ -85,8 +85,31 @@
                                         <button type="submit" id="submitBtn" class="btn btn-default themed-button">
                                             Submit
                                         </button>
-                                        <div style="padding-left: 200px;margin-top: -35px;">
-                                            <a href="mailto:recap-support@htcindia.com" target="_top">Get in touch with us</a>
+                                        <div id="emailBtn" data-toggle="modal" data-target="#emailModal" style="padding-left: 200px;margin-top: -35px;">
+                                            <a>Get in touch with us</a>
+                                        </div>
+                                    </div>
+
+                                    <!-- Modal -->
+                                    <div id="emailModal" class="modal fade" role="dialog">
+                                        <div class="modal-dialog">
+
+                                            <!-- Modal content-->
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    <h4 class="modal-title">Email</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>Princeton users, Role administration, please contact : <a onclick="closeEmailDailog()" th:href="'mailto:'+${@environment.getProperty('scsb.mailTo.pul.roleAdmin')}" target="_top"><span th:inline="text">[[${@environment.getProperty('scsb.mailTo.pul.roleAdmin')}]]</span></a></p>
+                                                    <p>Princeton users, Technical support, please contact   : <a onclick="closeEmailDailog()" th:href="'mailto:'+${@environment.getProperty('scsb.mailTo.pul.technicalSupport')}" target="_top"><span th:inline="text">[[${@environment.getProperty('scsb.mailTo.pul.technicalSupport')}]]</span></a></p>
+                                                    <p>Columbia users, contact  : <a onclick="closeEmailDailog()" th:href="'mailto:'+${@environment.getProperty('scsb.mailTo.cul')}" target="_top"><span th:inline="text">[[${@environment.getProperty('scsb.mailTo.cul')}]]</span></a></p>
+                                                    <p>NYPL users, contact      : <a onclick="closeEmailDailog()" th:href="'mailto:'+${@environment.getProperty('scsb.mailTo.nypl')}" target="_top"><span th:inline="text">[[${@environment.getProperty('scsb.mailTo.nypl')}]]</span></a></p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-default" data-dismiss="modal" id="emailCloseButton">Close</button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
