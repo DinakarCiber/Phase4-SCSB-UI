@@ -20,7 +20,7 @@
     <script type="text/javascript" th:async="true" th:src="@{../js/twitter-widgets.js}" charset="utf-8"></script>
 </head>
 <body class="login-page">
-<div class="login-content content-top">
+<div class="login-content content-top" style="padding-bottom: 60px;position:relative;">
     <div class="container">
         <div class="row">
             <div class="col-sm-12 padding-15">
@@ -145,7 +145,7 @@
         </div>
     </div>
 </div>
-<div class="content-bottom margin-top-20 margin-btm-20">
+<div class="content-bottom margin-top-20 margin-btm-20" style="padding-bottom: 60px;">
     <div class="container">
         <div class="row">
             <div class="recap-members-logos">
@@ -189,4 +189,9 @@
     </div>
 </div>
 </body>
+<footer id="footerForLoginPage" style="position:relative;bottom:0;width:100%;height:60px;top:20px;padding-top:15px;">
+    <div class="text-center container-fluid">
+        <p><span class="text-center">Created and maintained by HTC Global Services. E-mail: <a style="color:inherit;" th:href="'mailto:'+${@environment.getProperty('scsb.mailTo.htc')}" target="_top"><span th:inline="text">[[${@environment.getProperty('scsb.mailTo.htc')}]]</span></a></span></p>
+        </div>
+</footer>
 </html>
