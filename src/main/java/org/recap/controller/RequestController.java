@@ -8,6 +8,7 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.recap.RecapConstants;
 import org.recap.model.jpa.CustomerCodeEntity;
+import org.recap.model.jpa.InstitutionEntity;
 import org.recap.model.jpa.ItemEntity;
 import org.recap.model.jpa.RequestItemEntity;
 import org.recap.model.request.CancelRequestResponse;
@@ -21,13 +22,16 @@ import org.recap.security.UserManagementService;
 import org.recap.service.RequestService;
 import org.recap.service.RestHeaderService;
 import org.recap.util.RequestServiceUtil;
+import org.recap.util.SecurityUtil;
 import org.recap.util.UserAuthUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -90,6 +94,9 @@ public class RequestController {
 
     @Autowired
     RestHeaderService restHeaderService;
+
+    @Autowired
+    private SecurityUtil securityUtil;
 
     public RestHeaderService getRestHeaderService(){return restHeaderService;}
 
@@ -238,6 +245,7 @@ public class RequestController {
                                        BindingResult result,
                                        Model model) {
         try {
+            disableRequestSearchInstitutionDropDown(requestForm);
             requestForm.resetPageNumber();
             searchAndSetResults(requestForm);
             model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.REQUEST);
@@ -261,16 +269,16 @@ public class RequestController {
     @RequestMapping(value = "/request/goToSearchRequest", method = RequestMethod.GET)
     public ModelAndView goToSearchRequest(@Valid @ModelAttribute("requestForm") RequestForm requestForm,String patronBarcodeInRequest,
                                        BindingResult result,
-                                       Model model) {
+                                       Model model,HttpServletRequest request) {
         try {
+            UserDetailsForm userDetails = getUserAuthUtil().getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE);
             requestForm.resetPageNumber();
             requestForm.setPatronBarcode(patronBarcodeInRequest);
             List<String> requestStatuses = new ArrayList<>();
             List<String> institutionList = new ArrayList<>();
             getRequestService().findAllRequestStatusExceptProcessing(requestStatuses);
             requestForm.setRequestStatuses(requestStatuses);
-            getRequestService().getInstitutionForSuperAdmin(institutionList);
-            requestForm.setInstitutionList(institutionList);
+            setFormValuesToDisableSearchInstitution(requestForm, userDetails, institutionList);
             requestForm.setStatus("");
             searchAndSetResults(requestForm);
             model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.REQUEST);
@@ -294,6 +302,7 @@ public class RequestController {
     public ModelAndView searchFirst(@Valid @ModelAttribute("requestForm") RequestForm requestForm,
                                     BindingResult result,
                                     Model model) {
+        disableRequestSearchInstitutionDropDown(requestForm);
         requestForm.resetPageNumber();
         searchAndSetResults(requestForm);
         model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.REQUEST);
@@ -313,6 +322,7 @@ public class RequestController {
     public ModelAndView searchLast(@Valid @ModelAttribute("requestForm") RequestForm requestForm,
                                    BindingResult result,
                                    Model model) {
+        disableRequestSearchInstitutionDropDown(requestForm);
         requestForm.setPageNumber(requestForm.getTotalPageCount() - 1);
         searchAndSetResults(requestForm);
         model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.REQUEST);
@@ -332,6 +342,7 @@ public class RequestController {
     public ModelAndView searchPrevious(@Valid @ModelAttribute("requestForm") RequestForm requestForm,
                                        BindingResult result,
                                        Model model) {
+        disableRequestSearchInstitutionDropDown(requestForm);
         searchAndSetResults(requestForm);
         model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.REQUEST);
         return new ModelAndView(RecapConstants.VIEW_SEARCH_REQUESTS_SECTION, RecapConstants.REQUEST_FORM, requestForm);
@@ -350,6 +361,7 @@ public class RequestController {
     public ModelAndView searchNext(@Valid @ModelAttribute("requestForm") RequestForm requestForm,
                                    BindingResult result,
                                    Model model) {
+        disableRequestSearchInstitutionDropDown(requestForm);
         searchAndSetResults(requestForm);
         model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.REQUEST);
         return new ModelAndView(RecapConstants.VIEW_SEARCH_REQUESTS_SECTION, RecapConstants.REQUEST_FORM, requestForm);
@@ -368,6 +380,7 @@ public class RequestController {
     public ModelAndView onRequestPageSizeChange(@Valid @ModelAttribute("requestForm") RequestForm requestForm,
                                                 BindingResult result,
                                                 Model model) {
+        disableRequestSearchInstitutionDropDown(requestForm);
         requestForm.setPageNumber(getPageNumberOnPageSizeChange(requestForm));
         searchAndSetResults(requestForm);
         model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.REQUEST);
@@ -419,13 +432,13 @@ public class RequestController {
     @ResponseBody
     @RequestMapping(value = "/request", method = RequestMethod.POST, params = "action=loadSearchRequest")
     public ModelAndView loadSearchRequest(Model model, HttpServletRequest request) {
+        UserDetailsForm userDetails = getUserAuthUtil().getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE);
         RequestForm requestForm = new RequestForm();
         List<String> requestStatuses = new ArrayList<>();
         List<String> institutionList = new ArrayList<>();
         getRequestService().findAllRequestStatusExceptProcessing(requestStatuses);
         requestForm.setRequestStatuses(requestStatuses);
-        getRequestService().getInstitutionForSuperAdmin(institutionList);
-        requestForm.setInstitutionList(institutionList);
+        setFormValuesToDisableSearchInstitution(requestForm, userDetails, institutionList);
         model.addAttribute(RecapConstants.REQUEST_FORM, requestForm);
         model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.REQUEST);
         return new ModelAndView(RecapConstants.REQUEST, RecapConstants.REQUEST_FORM, requestForm);
@@ -625,25 +638,33 @@ public class RequestController {
         if (CollectionUtils.isNotEmpty(requestItemEntities)) {
             List<SearchResultRow> searchResultRows = new ArrayList<>();
             for (RequestItemEntity requestItemEntity : requestItemEntities) {
-                SearchResultRow searchResultRow = new SearchResultRow();
-                searchResultRow.setRequestId(requestItemEntity.getRequestId());
-                searchResultRow.setPatronBarcode(requestItemEntity.getPatronId());
-                searchResultRow.setRequestingInstitution(requestItemEntity.getInstitutionEntity().getInstitutionCode());
-                searchResultRow.setBarcode(requestItemEntity.getItemEntity().getBarcode());
-                searchResultRow.setOwningInstitution(requestItemEntity.getItemEntity().getInstitutionEntity().getInstitutionCode());
-                searchResultRow.setDeliveryLocation(requestItemEntity.getStopCode());
-                searchResultRow.setRequestType(requestItemEntity.getRequestTypeEntity().getRequestTypeCode());
-                searchResultRow.setRequestCreatedBy(requestItemEntity.getCreatedBy());
-                searchResultRow.setPatronEmailId(requestItemEntity.getEmailId());
-                searchResultRow.setRequestNotes(requestItemEntity.getNotes());
-                searchResultRow.setCreatedDate(requestItemEntity.getCreatedDate());
-                searchResultRow.setStatus(requestItemEntity.getRequestStatusEntity().getRequestStatusDescription());
+                try {
+                    SearchResultRow searchResultRow = new SearchResultRow();
+                    searchResultRow.setRequestId(requestItemEntity.getRequestId());
+                    searchResultRow.setPatronBarcode(requestItemEntity.getPatronId());
+                    searchResultRow.setRequestingInstitution(requestItemEntity.getInstitutionEntity().getInstitutionCode());
+                    searchResultRow.setBarcode(requestItemEntity.getItemEntity().getBarcode());
+                    searchResultRow.setOwningInstitution(requestItemEntity.getItemEntity().getInstitutionEntity().getInstitutionCode());
+                    searchResultRow.setDeliveryLocation(requestItemEntity.getStopCode());
+                    searchResultRow.setRequestType(requestItemEntity.getRequestTypeEntity().getRequestTypeCode());
+                    searchResultRow.setRequestCreatedBy(requestItemEntity.getCreatedBy());
+                    if(StringUtils.isNotBlank(requestItemEntity.getEmailId())){
+                        searchResultRow.setPatronEmailId(securityUtil.getDecryptedValue(requestItemEntity.getEmailId()));
+                    }else {
+                        searchResultRow.setPatronEmailId(requestItemEntity.getEmailId());
+                    }
+                    searchResultRow.setRequestNotes(requestItemEntity.getNotes());
+                    searchResultRow.setCreatedDate(requestItemEntity.getCreatedDate());
+                    searchResultRow.setStatus(requestItemEntity.getRequestStatusEntity().getRequestStatusDescription());
 
-                ItemEntity itemEntity = requestItemEntity.getItemEntity();
-                if (null != itemEntity && CollectionUtils.isNotEmpty(itemEntity.getBibliographicEntities())) {
-                    searchResultRow.setBibId(itemEntity.getBibliographicEntities().get(0).getBibliographicId());
+                    ItemEntity itemEntity = requestItemEntity.getItemEntity();
+                    if (null != itemEntity && CollectionUtils.isNotEmpty(itemEntity.getBibliographicEntities())) {
+                        searchResultRow.setBibId(itemEntity.getBibliographicEntities().get(0).getBibliographicId());
+                    }
+                    searchResultRows.add(searchResultRow);
+                }catch (Exception e){
+                    logger.error(RecapConstants.LOG_ERROR,e);
                 }
-                searchResultRows.add(searchResultRow);
             }
             return searchResultRows;
         }
@@ -686,4 +707,25 @@ public class RequestController {
         return getRequestService().getRefreshedStatus(request);
     }
 
+    private void setFormValuesToDisableSearchInstitution(@Valid @ModelAttribute("requestForm") RequestForm requestForm, UserDetailsForm userDetails, List<String> institutionList) {
+        InstitutionEntity institutionEntity = institutionDetailsRepository.findByInstitutionId(userDetails.getLoginInstitutionId());
+        if(userDetails.isSuperAdmin() || userDetails.isRecapUser() || institutionEntity.getInstitutionCode().equalsIgnoreCase("HTC")){
+            getRequestService().getInstitutionForSuperAdmin(institutionList);
+            requestForm.setInstitutionList(institutionList);
+        }else {
+            requestForm.setDisableSearchInstitution(true);
+            requestForm.setInstitutionList(Arrays.asList(institutionEntity.getInstitutionCode()));
+            requestForm.setInstitution(institutionEntity.getInstitutionCode());
+            requestForm.setSearchInstitutionHdn(institutionEntity.getInstitutionCode());
+        }
+    }
+
+    private void disableRequestSearchInstitutionDropDown(@Valid @ModelAttribute("requestForm") RequestForm requestForm) {
+        if (requestForm.getInstitutionList().size() == 1){
+            requestForm.setDisableSearchInstitution(true);
+            requestForm.setInstitution(requestForm.getSearchInstitutionHdn());
+        }
+    }
 }
+
+

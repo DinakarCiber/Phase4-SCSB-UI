@@ -55,13 +55,15 @@
                                                 <div class="select-holder">
                                                     <select id="institutionList"
                                                             name="institutionList"
-                                                            class="themed-input themed-select"
+                                                            th:class="${requestForm.disableSearchInstitution} ? 'form-control themed-input themed-select':'themed-input themed-select'"
                                                             style="border: 1px solid #888988;color: #555555;outline: none;height: 50px;box-shadow: none;"
-                                                            th:field="${requestForm.institution}">
+                                                            th:field="${requestForm.institution}"
+                                                            th:disabled="${requestForm.disableSearchInstitution}">
                                                         <option value=""></option>
                                                         <option th:each="institution : ${requestForm.institutionList}" th:value="${institution}" th:text="${institution}"></option>
                                                     </select>
                                                 </div>
+                                                <input type="hidden" id="searchInstitutionHdn" th:field="${requestForm.searchInstitutionHdn}"/>
                                             </div>
 
                                             <div class="col-md-3 col-sm-3 col-lg-3">
