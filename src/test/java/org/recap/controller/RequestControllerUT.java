@@ -284,6 +284,8 @@ public class RequestControllerUT extends BaseControllerUT {
         Mockito.when(requestController.getRequestStatusDetailsRepository()).thenReturn(requestStatusDetailsRepository);
         Mockito.when(requestController.getRequestServiceUtil()).thenReturn(requestServiceUtil);
         Mockito.when(requestController.getRequestService()).thenReturn(requestService);
+        UserDetailsForm userDetailsForm = getUserDetails();
+        Mockito.when(requestController.getUserAuthUtil().getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE)).thenReturn(userDetailsForm);
         when(requestServiceUtil.searchRequests(requestForm)).thenReturn(requestItemEntities);
         RequestStatusEntity requestStatusEntity = new RequestStatusEntity();
         requestStatusEntity.setRequestStatusDescription("RETRIEVAL ORDER PLACED");
@@ -295,8 +297,8 @@ public class RequestControllerUT extends BaseControllerUT {
         List<String> institutionList=new ArrayList<>();
         Mockito.doCallRealMethod().when(requestService).findAllRequestStatusExceptProcessing(requestStatuses);
         Mockito.doCallRealMethod().when(requestService).findAllRequestStatusExceptProcessing(institutionList);
-        Mockito.when(requestController.goToSearchRequest(requestForm,"45678912",bindingResult, model)).thenCallRealMethod();
-        ModelAndView modelAndView = requestController.goToSearchRequest(requestForm,"45678912",bindingResult, model);
+        Mockito.when(requestController.goToSearchRequest(requestForm,"45678912",bindingResult, model,request)).thenCallRealMethod();
+        ModelAndView modelAndView = requestController.goToSearchRequest(requestForm,"45678912",bindingResult, model,request);
         assertNotNull(modelAndView);
         assertEquals(modelAndView.getViewName(),"request :: #requestContentId");
     }

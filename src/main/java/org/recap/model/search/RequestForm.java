@@ -49,6 +49,8 @@ public class RequestForm {
     private String institution;
     private boolean showRequestErrorMsg;
     private String requestingInstituionHidden;
+    private Boolean disableSearchInstitution = false;
+    private String searchInstitutionHdn;
 
     /**
      * Gets request id.
@@ -757,5 +759,21 @@ public class RequestForm {
      */
     public void setRequestingInstituionHidden(String requestingInstituionHidden) {
         this.requestingInstituionHidden = requestingInstituionHidden;
+    }
+
+    public Boolean getDisableSearchInstitution() {
+        return disableSearchInstitution;
+    }
+
+    public void setDisableSearchInstitution(Boolean disableSearchInstitution) {
+        this.disableSearchInstitution = disableSearchInstitution;
+    }
+
+    public String getSearchInstitutionHdn() {
+        return searchInstitutionHdn;
+    }
+
+    public void setSearchInstitutionHdn(String searchInstitutionHdn) {
+        this.searchInstitutionHdn = searchInstitutionHdn;
     }
 }
