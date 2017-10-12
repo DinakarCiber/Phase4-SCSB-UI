@@ -4,6 +4,7 @@ import org.apache.catalina.Context;
 import org.apache.catalina.connector.Connector;
 import org.apache.tomcat.util.descriptor.web.SecurityCollection;
 import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
+import org.recap.filter.XSSFilter;
 import org.recap.security.SessionFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -21,15 +22,29 @@ import org.springframework.http.HttpMethod;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * The type Main.
+ */
 @SpringBootApplication
 public class Main {
 
+	/**
+	 * The Tomcat max parameter count.
+	 */
 	@Value("${tomcat.maxParameterCount}")
 	Integer tomcatMaxParameterCount;
 
+	/**
+	 * The Tomcat secure.
+	 */
 	@Value("${server.secure}")
 	boolean tomcatSecure;
 
+	/**
+	 * Servlet container factory embedded servlet container factory.
+	 *
+	 * @return the embedded servlet container factory
+	 */
 	@Bean
 	public EmbeddedServletContainerFactory servletContainerFactory() {
 		TomcatEmbeddedServletContainerFactory factory = new TomcatEmbeddedServletContainerFactory();
@@ -42,11 +57,22 @@ public class Main {
 		});
 		return factory;
 	}
+
+	/**
+	 * The entry point of application.
+	 *
+	 * @param args the input arguments
+	 */
 	public static void main(String[] args) {
 		SpringApplication.run(Main.class, args);
 	}
 
 
+	/**
+	 * Get filter registered bean filter registration bean.
+	 *
+	 * @return the filter registration bean
+	 */
 	@Bean
 	public FilterRegistrationBean getFilterRegisteredBean(){
 		FilterRegistrationBean filterRegistrationBean= new FilterRegistrationBean();
@@ -57,6 +83,28 @@ public class Main {
 		return filterRegistrationBean;
 	}
 
+	/**
+	 * Gets xss filter registered bean.
+	 *
+	 * @return the xss filter registered bean
+	 */
+	@Bean
+	public FilterRegistrationBean getXSSFilterRegisteredBean() {
+		FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
+		Set<String> urlPatterns = new HashSet<>();
+		urlPatterns.add("/request");
+		urlPatterns.add("/roles#");
+		urlPatterns.add("/userRoles#");
+		filterRegistrationBean.setUrlPatterns(urlPatterns);
+		filterRegistrationBean.setFilter(new XSSFilter());
+		return filterRegistrationBean;
+	}
+
+	/**
+	 * Container customizer embedded servlet container customizer.
+	 *
+	 * @return the embedded servlet container customizer
+	 */
 	@Bean
 	public EmbeddedServletContainerCustomizer containerCustomizer() {
 		return new EmbeddedServletContainerCustomizer() {
