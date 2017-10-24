@@ -47,7 +47,7 @@ public class SecurityUtil {
         } catch (BadPaddingException e) {
             logger.error(RecapConstants.LOG_ERROR,e);
         }
-        logger.info("encryptedString--->{}",encryptedString);
+        logger.debug("encryptedString--->{}",encryptedString);
         return encryptedString;
     }
 
@@ -73,7 +73,7 @@ public class SecurityUtil {
         } catch (BadPaddingException e) {
             logger.error(RecapConstants.LOG_ERROR,e);
         }
-        logger.info("decryptedString--->{}",decrypted);
+        logger.debug("decryptedString--->{}",decrypted);
         return decrypted;
     }
 }

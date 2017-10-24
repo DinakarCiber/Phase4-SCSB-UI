@@ -55,4 +55,6 @@ public interface CustomerCodeDetailsRepository extends JpaRepository<CustomerCod
      */
     @Query(value="select customerCode from CustomerCodeEntity customerCode where customerCode.customerCode =:customerCode and customerCode.recapDeliveryRestrictions LIKE ('%EDD%')")
     CustomerCodeEntity findByCustomerCodeAndRecapDeliveryRestrictionLikeEDD(@Param("customerCode") String customerCode);
+
+    List<CustomerCodeEntity> findByOwningInstitutionId(Integer owningInstitutionId);
 }

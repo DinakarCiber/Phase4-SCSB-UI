@@ -67,7 +67,7 @@ public class LoginController {
         if(null != auth && !HelperUtil.isAnonymousUser(auth)) {
             return "redirect:/search";
         }
-        logger.info("Login Screen called");
+        logger.debug("Login Screen called");
         return RecapConstants.VIEW_LOGIN;
     }
 

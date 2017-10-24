@@ -176,7 +176,7 @@
                                                     </td>
                                                     <td width="" style="text-align: center">
                                                         <input data-th-id="'notes-' + ${searchResultStat.index}" type="hidden" th:field="${requestForm.searchResultRows[__${searchResultStat.index}__].requestNotes}"/>
-                                                        <button th:if="${searchResult.requestNotes ne null &amp;&amp; searchResult.requestNotes ne ''}" th:title="'Show Notes'" data-th-id="'notesButton-' + ${searchResultStat.index}" type="button" name="action" th:onclick="'javascript:showNotesPopup('+${searchResultStat.index}+')'"><i class="fa fa-file-text-o" aria-hidden="true"></i>
+                                                        <button th:if="${searchResult.requestNotes ne null &amp;&amp; searchResult.requestNotes ne ''}" th:title="${searchResult.requestNotes}" data-th-id="'notesButton-' + ${searchResultStat.index}" type="button" name="action" th:onclick="'javascript:showNotesPopup('+${searchResultStat.index}+')'"><i class="fa fa-file-text-o" aria-hidden="true"></i>
                                                         </button>
                                                     </td>
                                                     <td width="">
