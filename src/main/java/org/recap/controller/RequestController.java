@@ -708,7 +708,7 @@ public class RequestController {
     }
 
     private void setFormValuesToDisableSearchInstitution(@Valid @ModelAttribute("requestForm") RequestForm requestForm, UserDetailsForm userDetails, List<String> institutionList) {
-        InstitutionEntity institutionEntity = institutionDetailsRepository.findByInstitutionId(userDetails.getLoginInstitutionId());
+        InstitutionEntity institutionEntity = getInstitutionDetailsRepository().findByInstitutionId(userDetails.getLoginInstitutionId());
         if(userDetails.isSuperAdmin() || userDetails.isRecapUser() || institutionEntity.getInstitutionCode().equalsIgnoreCase("HTC")){
             getRequestService().getInstitutionForSuperAdmin(institutionList);
             requestForm.setInstitutionList(institutionList);
