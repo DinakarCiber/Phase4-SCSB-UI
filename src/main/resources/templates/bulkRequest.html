@@ -1,0 +1,407 @@
+<!-- Request Tab-->
+<div id="requestContentId" name="requestContentName" th:fragment="content" xmlns:th="http://www.thymeleaf.org">
+    <link rel="stylesheet" th:href="@{../css/request.css}"/>
+    <script type="text/javascript" th:src="@{../js/bulkRequest.js}"></script>
+    <script type="text/javascript" th:src="@{../js/bootstrap-filestyle.min.js}"></script>
+    <div id="requestFormDivId" name="requestFormDivName" th:fragment="request-form" xmlns:th="http://www.thymeleaf.org" th:remove="tag">
+        <form id="bulkRequest-form" name="bulkRequest-form" class="form-horizontal"
+              th:action="@{/bulkRequest/createBulkRequest}"
+              th:object="${bulkRequestForm}" method="post" enctype="multipart/form-data">
+            <input type="hidden"  th:name="${_csrf.parameterName}"   th:value="${_csrf.token}"/>
+            <fieldset>
+                <div role="tabpanel" class="tab-pane" id="request">
+                    <div class="row margin-btm-10">
+                        <div class="col-sm-12 text-right backtext"><a href="#" id="goBackLink" style="display: none" onclick="loadCreateRequest()"><span class="glyphicon glyphicon-menu-left"></span> Go Back</a></div>
+                    </div>
+                    <div id="searchRequestsSection" class="request-main-section" style="display: none">
+                        <input id="pageNumber" name="pageNumber" type="text" th:field="${bulkRequestForm.pageNumber}" hidden="hidden"/>
+                        <input id="totalPageCount" name="totalPageCount" type="text" th:field="${bulkRequestForm.totalPageCount}" hidden="hidden"/>
+                        <input id="totalRecordsCount" name="totalRecordsCount" type="text" th:field="${bulkRequestForm.totalRecordsCount}" hidden="hidden"/>
+                        <input id="requestStatuses" name="requestStatuses" type="text" th:field="${bulkRequestForm.requestStatuses}" hidden="hidden"/>
+                        <input id="institutionIdOfItem" name="institutionIdOfItem" type="text" th:field="${bulkRequestForm.institutionList}" hidden="hidden"/>
+                        <input id="requestIdHdn" name="requestIdHdn" type="text" th:field="${bulkRequestForm.requestId}" hidden="hidden"/>
+                        <div class="search-bar">
+                            <div class="row margin-0">
+                                <div class="col-xs-12  padding-0">
+                                    <form>
+                                        <div class="input-group buscador-principal col-lg-12 col-md-12 col-sm-12" style="background: #F0F1F1">
+                                            <div class="col-md-32 col-sm-3 col-lg-2 padding-right-20 padding-left-0">
+                                                <label class="fontcolor-dark margin-btm-10">Bulk Request Id</label>
+                                                <input id="bulkRequestIdSearch" name="bulkRequestIdSearch" type="text" th:field="${bulkRequestForm.requestIdSearch}" class="form-control themed-input" onkeyup="toggleBulkRequestIdSearch()"/>
+                                                <p id="bulkRequestIdSearchError" style="color: red;display: none">Bulk Request Id should contain only numbers.</p>
+                                            </div>
+                                            <div class="col-md-2 col-sm-3 col-lg-2 padding-right-20">
+                                                <label class="fontcolor-dark margin-btm-10">Bulk Request Name</label>
+                                                <input id="bulkRequestNameSearch" name="bulkRequestNameSearch" type="text" th:field="${bulkRequestForm.requestNameSearch}" class="form-control themed-input" onkeyup="toggleItemBarcodeSearch()"/>
+                                                <p id="bulkRequestNameSearchError" style="color: red;display: none">Bulk Request Name is required.</p>
+                                            </div>
+                                            <div class="col-md-2 col-sm-3 col-lg-2 padding-right-20">
+                                                <label class="fontcolor-dark margin-btm-10">Patron Barcode</label>
+                                                <input id="bulkPatronBarcodeSearch" name="bulkRequestNameSearch" type="text" th:field="${bulkRequestForm.patronBarcodeSearch}" class="form-control themed-input" onkeyup="toggleItemBarcodeSearch()"/>
+                                                <p id="bulkPatronBarcodeSearchError" style="color: red;display: none">Patron Barcode is required.</p>
+                                            </div>
+                                            <div class="col-md-2 col-sm-3 col-lg-2 padding-right-20">
+                                                <label class="fontcolor-dark margin-btm-10">Institution</label>
+                                                <div class="select-holder">
+                                                    <select id="institutionList"
+                                                            name="institutionList"
+                                                            th:class="${bulkRequestForm.disableSearchInstitution} ? 'form-control themed-input themed-select':'themed-input themed-select'"
+                                                            style="border: 1px solid #888988;color: #555555;outline: none;height: 50px;box-shadow: none;"
+                                                            th:field="${bulkRequestForm.institution}"
+                                                            th:disabled="${bulkRequestForm.disableSearchInstitution}">
+                                                        <option value=""></option>
+                                                        <option th:each="institution : ${bulkRequestForm.institutionList}" th:value="${institution}" th:text="${institution}"></option>
+                                                    </select>
+                                                </div>
+                                                <input type="hidden" id="searchInstitutionHdn" th:field="${bulkRequestForm.searchInstitutionHdn}"/>
+                                            </div>
+                                            <div class="col-md-3 col-sm-3 col-lg-3">
+                                                <div class="input-group-btn search-panel padding-right-10">
+                                                    <button id="searchRequestsButton" class="btn themed-button themed-button-search" type="button" name="searchRequestsButton" onclick="searchRequests()">Search</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="input-group buscador-principal col-lg-12 col-md-12 col-sm-12" id="noteAll" style="">
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="search-results-container" data-th-if="${bulkRequestForm.showResults}">
+                            <div class="divider-horizontal margin-top-10 margin-btm-10"></div>
+                            <div class="row margin-btm-10" data-th-if="${bulkRequestForm.message ne null &amp;&amp; bulkRequestForm.message ne ''}">
+                                <div class="col-sm-12">
+                                    <div class="bg-danger text-danger padding-10"><span class="margin-right-05 glyphicon glyphicon-warning-sign"></span><span th:text="${bulkRequestForm.message}"></span></div>
+                                </div>
+                            </div>
+                            <div data-th-if="${bulkRequestForm.bulkSearchResultRows.size() &gt; 0 &amp;&amp; bulkRequestForm.showResults}">
+                                <div class="row">
+                                    <div class="col-sm-3 col-md-2 col-lg-2 margin-top-05 show-entries-section">
+                                        <div class="">
+                                            <span class="show-title margin-right-05">Show Entries</span>
+                                            <select id="numOfRecordsId" name="numOfRecordsName" class="themed-input"
+                                                    th:field="${bulkRequestForm.pageSize}" onchange="requestsOnPageSizeChange()">
+                                                <option value="10">10</option>
+                                                <option value="25">25</option>
+                                                <option value="50">50</option>
+                                                <option value="100">100</option>
+                                            </select>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-9 col-md-10 col-lg-7 margin-top-10"><div class="row">RI - Requesting Institution, OI - Owning Institution, DL - Delivery Location</div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-12 col-lg-3 text-right"><h4>Search Results Found: <span th:text="${bulkRequestForm.totalRecordsCount}"></span></h4></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <table id="request-result-table" class="table table-striped margin-btm-0" style="text-align: center">
+                                            <thead class="tablesorter-headerRow">
+                                            <tr>
+                                                <th style="text-align: center">Bulk Request Id</th>
+                                                <th style="text-align: center">Bulk Request Name</th>
+                                                <th style="text-align: center">File Name</th>
+                                                <th style="text-align: center">Patron Barcode</th>
+                                                <th style="text-align: center">OI/RI</th>
+                                                <th style="text-align: center">DL</th>
+                                                <th style="text-align: center">Request Created By</th>
+                                                <th style="text-align: center">Patron Email Address</th>
+                                                <th style="text-align: center">Created Date</th>
+                                                <th style="text-align: center">Status</th>
+                                                <th style="text-align: center">Bulk Request Notes</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr data-th-id="'requestResults-'+ ${searchResultStat.index}" th:each="searchResult,searchResultStat : ${bulkRequestForm.bulkSearchResultRows}" class="requestRow">
+                                                <td>
+                                                    <span th:text="${searchResult.bulkRequestId}"></span>
+                                                </td>
+                                                <td>
+                                                    <span th:text="${searchResult.bulkRequestName}"></span>
+                                                </td>
+                                                <td>
+                                                    <span th:text="${searchResult.fileName}"></span>
+                                                </td>
+                                                <td>
+                                                    <span th:text="${searchResult.patronBarcode}"></span>
+                                                </td>
+                                                <td>
+                                                    <span th:text="${searchResult.requestingInstitution}"></span>
+                                                </td>
+                                                <td>
+                                                    <span th:text="${searchResult.deliveryLocation}"></span>
+                                                </td>
+                                                <td>
+                                                    <span th:text="${searchResult.createdBy}"></span>
+                                                </td>
+                                                <td>
+                                                    <span th:text="${searchResult.emailAddress}"></span>
+                                                </td>
+                                                <td>
+                                                    <span th:text="${searchResult.createdDate} ? ${#dates.format(searchResult.createdDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
+                                                </td>
+                                                <td>
+                                                    <span><span th:text="${searchResult.status}"></span><br/>
+                                                        <a th:if="${searchResult.status == 'PROCESSED'}" th:href="${'/bulkRequest/downloadReports/'+{searchResult.bulkRequestId}}"><span th:text="'Results_'+${searchResult.fileName}"/></a></span>
+                                                </td>
+                                                <td width="" style="text-align: center">
+                                                    <input data-th-id="'notes-' + ${searchResultStat.index}" type="hidden" th:field="${bulkRequestForm.bulkSearchResultRows[__${searchResultStat.index}__].bulkRequestNotes}"/>
+                                                    <button th:if="${searchResult.bulkRequestNotes ne null &amp;&amp; searchResult.bulkRequestNotes ne ''}" th:title="'Show Notes'" data-th-id="'notesButton-' + ${searchResultStat.index}" type="button" name="action" th:onclick="'javascript:showNotesPopup('+${searchResultStat.index}+')'"><i class="fa fa-file-text-o" aria-hidden="true"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div id="requestPaginationDivId" name="requestPaginationDivName" class="col-md-12" style="margin-bottom: -20px;">
+                                        <div class="pull-right">
+                                            <div id="requestPaginationId" name="requestPaginationName" xmlns:th="http://www.w3.org/1999/xhtml">
+                                                <ul class="pagination">
+                                                    <li th:class="${bulkRequestForm.pageNumber == 0} ? 'disabled' : ''">
+                                                        <span th:if="${bulkRequestForm.pageNumber == 0}">First</span>
+                                                        <a th:if="${bulkRequestForm.pageNumber != 0}" href="#"
+                                                           title="Go to first page"
+                                                           onclick="requestsFirstPage()">First</a>
+                                                    </li>
+                                                    <li th:class="${(bulkRequestForm.pageNumber != 0) &amp;&amp; (bulkRequestForm.totalPageCount &gt; 1)}? '' : 'disabled'">
+                                                        <span th:if="${bulkRequestForm.pageNumber == 0}">Previous</span>
+                                                        <a th:if="${bulkRequestForm.pageNumber != 0}" href="#"
+                                                           title="Go to previous page"
+                                                           onclick="requestsPreviousPage()">Previous</a>
+                                                    </li>
+                                                    <li th:class="${(bulkRequestForm.pageNumber+1 != bulkRequestForm.totalPageCount) &amp;&amp; (bulkRequestForm.totalPageCount &gt; 1)}? '' : 'disabled'">
+                                                        <span th:if="${bulkRequestForm.pageNumber+1 == bulkRequestForm.totalPageCount}">Next</span>
+                                                        <a th:if="${bulkRequestForm.pageNumber+1 != bulkRequestForm.totalPageCount}"
+                                                           href="#" title="Go to next page"
+                                                           onclick="requestsNextPage()">Next</a>
+                                                    </li>
+                                                    <li th:class="${bulkRequestForm.pageNumber+1 == bulkRequestForm.totalPageCount}? 'disabled' : ''">
+                                                        <span th:if="${bulkRequestForm.pageNumber+1 == bulkRequestForm.totalPageCount}">Last</span>
+                                                        <a th:if="${bulkRequestForm.pageNumber+1 != bulkRequestForm.totalPageCount}"
+                                                           href="#"
+                                                           onclick="requestsLastPage()">Last</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="createRequestSection" class="create-request-section">
+                        <div th:if="${bulkRequestForm.showRequestErrorMsg}" id="errorMessageId1" class="row margin-btm-10">
+                            <div class="col-sm-12">
+                                <div class="bg-danger text-danger padding-10"><span class="margin-right-05 glyphicon glyphicon-warning-sign"></span><span id="errorMessageSpanId1" th:text="${bulkRequestForm.errorMessage}"></span></div>
+                            </div>
+                        </div>
+                        <input id="deliveryLocationInRequestHdn" name="deliveryLocationInRequestHdn" type="text" value="" hidden="hidden"/>
+                        <input id="patronEmailIdHdn" name="patronEmailIdHdn" type="text" value="" hidden="hidden"/>
+                        <input id="requestingInstitutionHdn" name="requestingInstitutionHdn" type="text" value="" hidden="hidden"/>
+                        <input id="requestTypesHdn" name="requestIdHdn" type="text" th:field="${bulkRequestForm.requestTypes}" hidden="hidden"/>
+                        <div class="row margin-top-0">
+                            <div class="col-sm-6 margin-top-0"><h3 class="margin-0">Create Request</h3></div>
+                            <div class="col-sm-6 text-right search-request"><a href="#" name="searchRequestlink" onclick="loadSearchRequest()">Search Requests</a></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12 divider-horizontal margin-top-10 margin-btm-10"></div>
+                        </div>
+                        <div class="buscador-principal">
+                            <div th:if="${bulkRequestForm.submitted}" id="successTextIdForRequest" class="text-success">
+                                Your bulk request was received successfully and will be processed.To track the bulk request's status, please <a href="#" th:onclick="'goToSearchRequest(\'' + ${bulkRequestForm.patronBarcodeInRequest}+ '\')'">click here</a><br />
+                                To create another bulk request for the same patron, please <a href="#" onclick="loadCreateRequestForSamePatron()">click here</a><br />
+                                To create another bulk request for a different patron, please <a href="#" onclick="loadCreateRequest()">click here</a>
+                            </div>
+                            <div class="row margin-top-25 margin-btm-30">
+                                <div class="col-sm-12">
+                                    <div class="row">
+                                        <div class="col-md-8 col-sm-6">
+                                            <div class="form-group">
+                                                <div class="col-md-3 col-sm-4 text-right margin-top-15"><label for="BulkRequestName" class="fontcolor-dark">Bulk Request Name<span class="error-color">*</span></label></div>
+                                                <div class="col-md-9 col-sm-8">
+                                                    <input type="text"
+                                                           th:disabled="${bulkRequestForm.submitted}"
+                                                           id="BulkRequestName"
+                                                           name="BulkRequestName"
+                                                           class="form-control themed-input"
+                                                           th:field="${bulkRequestForm.bulkRequestName}"
+                                                           th:onkeyup="'javascript:toggleBulkRequestNameValidation()'">
+                                                    </input>
+                                                    <span id="BulkRequestNameErrorMessage" style="color: red;display: none">Bulk Request Name is required.</span>
+                                                    <span id="BulkRequestNameLengthError" style="color: red;display: none">Bulk Request Name cannot exceed 255 characters.</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-sm-6">
+                                            <div class="form-group">
+                                                <div class="col-md-6 col-sm-6 text-right margin-top-15"><label for="requestingInstitutionId" class="fontcolor-dark">Item Owning/Requesting Institution <span class="error-color">*</span></label></div>
+                                                <div class="col-md-6 col-sm-6">
+                                                    <div class="select-holder">
+                                                        <select id="requestingInstitutionId"
+                                                                th:disabled="${bulkRequestForm.submitted}"
+                                                                name="requestingInstitutionName"
+                                                                class="form-control themed-input themed-select"
+                                                                th:field="${bulkRequestForm.requestingInstitution}"
+                                                                onchange="populateDeliveryLocations()">
+                                                            <option value=""></option>
+                                                            <option th:each="requestingInstitution : ${bulkRequestForm.requestingInstitutions}" th:value="${requestingInstitution}" th:text="${requestingInstitution}"></option>
+                                                        </select>
+                                                        <span id="requestingInstitutionErrorMessage" style="color: red;">Requesting institution is required.</span>
+                                                        <input type="hidden" id="reqInstituionHidden" th:field="${bulkRequestForm.requestingInstituionHidden}"/>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-8 col-sm-6">
+                                            <div class="form-group">
+                                                <div class="col-md-3 col-sm-4 text-right margin-top-15"><label class="fontcolor-dark">Upload File (CSV file only)<span class="error-color">*</span></label></div>
+                                                <div class="col-md-9 col-sm-8">
+                                                    <input type="file" data-size="nr" class="filestyle" data-buttonName="btn-primary" id="file" th:unless="${bulkRequestForm.submitted}" th:field="${bulkRequestForm.file}" onchange="toggleFileValidation()"/>
+                                                    <input type="text" id="bulkRequestNameDisplay" class="form-control themed-input" th:if="${bulkRequestForm.submitted}" th:disabled="${bulkRequestForm.submitted}" th:field="${bulkRequestForm.fileName}"/>
+                                                    <span id="invalidBulkRequestFile" style="color: red;display: none">Only CSV file can be uploaded.</span>
+                                                    <span id="bulkRequestFileRequired" style="color: red;display: none">CSV file is required</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-sm-6">
+                                            <div class="form-group">
+                                                <div class="col-md-6 col-sm-6 text-right margin-top-15"><label for="deliveryLocation" class="fontcolor-dark">Delivery Location<span class="error-color">*</span></label></div>
+                                                <div class="col-md-6 col-sm-6">
+                                                    <div class="select-holder">
+                                                        <select id="deliveryLocation"
+                                                                th:disabled="${bulkRequestForm.submitted}"
+                                                                name="deliveryLocation"
+                                                                class="form-control themed-input themed-select"
+                                                                th:field="${bulkRequestForm.deliveryLocationInRequest}"
+                                                                th:onchange="'javascript:toggleDeliveryLocationValidation()'">
+                                                        <option value=""></option>
+                                                            <option th:each="deliveryLocations : ${bulkRequestForm.deliveryLocations}" th:value="${deliveryLocations.customerCode}" th:text="${deliveryLocations.description}+'-'+${deliveryLocations.customerCode}"></option>
+                                                        </select>
+                                                        <span id="deliveryLocationErrorMessage" style="color: red;">Delivery location is required.</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="row">
+                                                <div class="col-md-4 col-sm-6">
+                                                    <div class="form-group">
+                                                        <div class="col-md-6 col-sm-4 text-right margin-top-15"><label for="patronBarcodeId" class="fontcolor-dark">Patron Barcode <span class="error-color">*</span></label></div>
+                                                        <div class="col-md-6 col-sm-8">
+                                                            <input type="text"
+                                                                   th:disabled="${bulkRequestForm.submitted}"
+                                                                   id="patronBarcodeId"
+                                                                   name="patronBarcodeName"
+                                                                   class="form-control themed-input"
+                                                                   th:field="${bulkRequestForm.patronBarcodeInRequest}"
+                                                                   th:onkeyup="'javascript:togglePatronBarcodeValidation()'">
+                                                            </input>
+                                                            <span id="patronBarcodeErrorMessage" style="color: red;display: none">Patron barcode is required.</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 col-sm-6">
+                                                    <div class="form-group">
+                                                        <div class="col-md-4 col-sm-6 text-right margin-top-05"><label for="patronEmailId" class="fontcolor-dark">Patron <span id="emailMandatory" class="error-color" style="display: none">*</span><br/>Email Address</label></div>
+                                                        <div class="col-md-8 col-sm-6">
+                                                            <input type="email"
+                                                                   th:disabled="${bulkRequestForm.submitted}"
+                                                                   id="patronEmailId"
+                                                                   name="patronEmailName"
+                                                                   class="form-control themed-input"
+                                                                   th:field="${bulkRequestForm.patronEmailAddress}"
+                                                                   onblur="validateEmailAddress()"
+                                                                   onkeyup="toggleEmailAddress()">
+                                                            </input>
+                                                            <span id="patronEmailIdErrorMessage" style="color: red;display: none">Email address is invalid.</span>
+                                                            <span id="EmailMandatoryErrorMessage" style="color: red;display: none;">Patron Email Address is required.</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-8 col-sm-12">
+                                            <div class="form-group">
+                                                <div class="col-md-3 col-sm-2 text-right margin-top-15"><label for="requestNotesId" class="fontcolor-dark">Request Notes</label>
+                                                </div>
+                                                <div class="col-md-9 col-sm-10">
+                                                    <textarea type="text"
+                                                              th:disabled="${bulkRequestForm.submitted}"
+                                                              id="requestNotesId"
+                                                              name="requestNotesName"
+                                                              class="form-control themed-input"
+                                                              th:field="${bulkRequestForm.requestNotes}"
+                                                              onkeyup="NotesLengthValidation(this)"
+                                                              style="overflow:hidden"
+                                                              rows="5"
+                                                              maxlength="1000">
+                                                    </textarea>
+                                                    <span id="notesLengthErrMsg" style="color: red;display: none">Only 1000 characters are allowed.</span>
+                                                    <p id="requestNotesRemainingCharacters">Remaining Characters : <span id="remainingCharacters">1000</span></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-8 col-sm-12">
+                                            <div class="row">
+                                                <div class="col-md-3 col-sm-2 text-right margin-top-15"></div>
+                                                <div id="textField" th:disabled="${bulkRequestForm.submitted}" class="col-md-9 col-sm-10">
+                                                    Fields marked with asterisk(<span class="error-color">*</span>) are mandatory.
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12 text-center">
+                                    <button th:if="${!bulkRequestForm.submitted}" type="button" class="btn btn-default themed-button btn-primary" id="createrequestsubmit" name="createrequestsubmit" onclick="createBulkRequest()">Create Bulk Request</button>
+                                    <button th:if="${!bulkRequestForm.submitted}" type="button" class="pull-right btn btn-default themed-button themed-button-cancel" id="createrequestclear" onclick="resetDefaults()">Clear</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notes Modal Data-->
+                <div id="requestNotesModal" class="modal fade create-request-details" tabindex="-2" role="dialog" aria-labelledby="requestNotesLargeModalLabel" data-keyboard="false" data-backdrop="static">
+                    <div class="modal-dialog" role="document">
+                        <div id="requestNotesModalContent" class="modal-content">
+                            <div class="modal-header bg-success">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h2 class="modal-title text-center text-success" id="requestNotesModalLabel">Bulk Request Notes</h2>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <p id="requestNotesData" style="white-space: pre-wrap;word-wrap: break-word;"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Notes Modal Data-->
+
+            </fieldset>
+        </form>
+
+    </div>
+</div>
+<!-- Request Tab Ends-->

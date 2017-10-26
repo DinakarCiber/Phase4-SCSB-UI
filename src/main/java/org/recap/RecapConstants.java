@@ -281,6 +281,7 @@ public class RecapConstants {
     public static final String ITEMBARCODE = "itemBarcode";
     public static final String VALIDATE_REQUEST_ITEM_URL = "requestItem/validateItemRequestInformations";
     public static final String REQUEST_ITEM_URL = "requestItem/requestItem";
+    public static final String BULK_REQUEST_ITEM_URL = "requestItem/bulkRequest";
     public static final String URL_REQUEST_CANCEL = "requestItem/cancelRequest";
     public static final String VALID_REQUEST = "All request parameters are valid.Patron is eligible to raise a request";
 
@@ -508,6 +509,13 @@ public class RecapConstants {
 
     public static final String REQUEST_STATUS_EDD = "EDD_ORDER_PLACED";
     public static final String REQUEST_STATUS_INITIAL_LOAD = "INITIAL_LOAD";
+
+    public static final String BULK_REQUEST_FORM = "bulkRequestForm";
+    public static final String BULK_REQUEST= "bulkRequest";
+    public static final String BULK_CREATE_REQUEST_SECTION="bulkRequest";
+    public static final String BULK_SEARCH_REQUEST_SECTION="bulkRequest::#searchRequestsSection";
+    public static final String BULK_REQUEST_ID = "bulkRequestId";
+    public static final String IN_PROCESS = "IN PROCESS";
 
     private RecapConstants(){
         //Do nothing
