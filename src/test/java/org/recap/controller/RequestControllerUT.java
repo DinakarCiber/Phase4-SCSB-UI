@@ -284,6 +284,7 @@ public class RequestControllerUT extends BaseControllerUT {
         Mockito.when(requestController.getRequestStatusDetailsRepository()).thenReturn(requestStatusDetailsRepository);
         Mockito.when(requestController.getRequestServiceUtil()).thenReturn(requestServiceUtil);
         Mockito.when(requestController.getRequestService()).thenReturn(requestService);
+        Mockito.when(requestController.getUserAuthUtil()).thenReturn(userAuthUtil);
         UserDetailsForm userDetailsForm = getUserDetails();
         Mockito.when(requestController.getUserAuthUtil().getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE)).thenReturn(userDetailsForm);
         when(requestServiceUtil.searchRequests(requestForm)).thenReturn(requestItemEntities);
@@ -417,6 +418,10 @@ public class RequestControllerUT extends BaseControllerUT {
 
     @Test
     public void testLoadSearchRequest(){
+        UserDetailsForm userDetailsForm = new UserDetailsForm();
+        userDetailsForm.setRecapPermissionAllowed(true);
+        userDetailsForm.setRecapUser(true);
+        userDetailsForm.setSuperAdmin(true);
         RequestStatusEntity requestStatusEntity = new RequestStatusEntity();
         requestStatusEntity.setRequestStatusDescription("RETRIEVAL ORDER PLACED");
         InstitutionEntity institutionEntity = new InstitutionEntity();
@@ -427,6 +432,8 @@ public class RequestControllerUT extends BaseControllerUT {
         Mockito.doCallRealMethod().when(requestService).findAllRequestStatusExceptProcessing(requestStatusCodeList);
         Mockito.doCallRealMethod().when(requestService).getInstitutionForSuperAdmin(institutionCodeList);
         Mockito.when(requestController.getRequestStatusDetailsRepository()).thenReturn(requestStatusDetailsRepository);
+        Mockito.when(requestController.getUserAuthUtil()).thenReturn(userAuthUtil);
+        Mockito.when(userAuthUtil.getUserDetails(Mockito.any(),Mockito.any())).thenReturn(userDetailsForm);
         Mockito.when(requestController.getInstitutionDetailsRepository()).thenReturn(institutionDetailsRepository);
         Mockito.when(requestController.getRequestStatusDetailsRepository().findAll()).thenReturn(Arrays.asList(requestStatusEntity));
         Mockito.when(requestController.getInstitutionDetailsRepository().getInstitutionCodeForSuperAdmin()).thenReturn(Arrays.asList(institutionEntity));
