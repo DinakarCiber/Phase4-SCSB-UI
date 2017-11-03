@@ -601,6 +601,7 @@ public class RequestController {
                                 Model model) {
         JSONObject jsonObject = new JSONObject();
         String requestStatus = null;
+        String requestNotes = null;
         try {
             HttpEntity requestEntity = new HttpEntity<>(getRestHeaderService().getHttpHeaders());
             UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getScsbUrl() + RecapConstants.URL_REQUEST_CANCEL).queryParam(RecapConstants.REQUEST_ID, requestForm.getRequestId());
@@ -611,8 +612,10 @@ public class RequestController {
             RequestItemEntity requestItemEntity = getRequestItemDetailsRepository().findByRequestId(requestForm.getRequestId());
             if (null != requestItemEntity) {
                 requestStatus = requestItemEntity.getRequestStatusEntity().getRequestStatusDescription();
+                requestNotes = requestItemEntity.getNotes();
             }
             jsonObject.put(RecapConstants.REQUEST_STATUS, requestStatus);
+            jsonObject.put(RecapConstants.REQUEST_NOTES, requestNotes);
         } catch (Exception exception) {
             logger.error(RecapConstants.LOG_ERROR, exception);
             logger.debug(exception.getMessage());
