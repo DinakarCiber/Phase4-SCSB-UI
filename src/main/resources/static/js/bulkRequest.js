@@ -37,9 +37,9 @@ function searchRequests(){
             type: 'post',
             data: $form.serialize(),
             success: function (response) {
-                $('#requestContentId').html(response);
-                $('#searchRequestsSection').show();
-                $('#createRequestSection').hide();
+                $('#searchRequestsSection').html(response);
+                $("#request .request-main-section").show();
+                $("#request .create-request-section").hide();
                 $('#goBackLink').show();
             }
         });
@@ -66,9 +66,9 @@ function requestsOnPageSizeChange(){
         type: 'post',
         data: $form.serialize(),
         success: function (response) {
-            $('#requestContentId').html(response);
-            $('#searchRequestsSection').show();
-            $('#createRequestSection').hide();
+            $('#searchRequestsSection').html(response);
+            $("#request .request-main-section").show();
+            $("#request .create-request-section").hide();
             $('#goBackLink').show();
         }
     });
@@ -82,9 +82,9 @@ function requestsFirstPage(){
         type: 'post',
         data: $form.serialize(),
         success: function (response) {
-            $('#requestContentId').html(response);
-            $('#searchRequestsSection').show();
-            $('#createRequestSection').hide();
+            $('#searchRequestsSection').html(response);
+            $("#request .request-main-section").show();
+            $("#request .create-request-section").hide();
             $('#goBackLink').show();
         }
     });
@@ -99,9 +99,9 @@ function requestsPreviousPage(){
         type: 'post',
         data: $form.serialize(),
         success: function (response) {
-            $('#requestContentId').html(response);
-            $('#searchRequestsSection').show();
-            $('#createRequestSection').hide();
+            $('#searchRequestsSection').html(response);
+            $("#request .request-main-section").show();
+            $("#request .create-request-section").hide();
             $('#goBackLink').show();
         }
     });
@@ -116,9 +116,9 @@ function requestsNextPage(){
         type: 'post',
         data: $form.serialize(),
         success: function (response) {
-            $('#requestContentId').html(response);
-            $('#searchRequestsSection').show();
-            $('#createRequestSection').hide();
+            $('#searchRequestsSection').html(response);
+            $("#request .request-main-section").show();
+            $("#request .create-request-section").hide();
             $('#goBackLink').show();
         }
     });
@@ -133,9 +133,9 @@ function requestsLastPage(){
         type: 'post',
         data: $form.serialize(),
         success: function (response) {
-            $('#requestContentId').html(response);
-            $('#searchRequestsSection').show();
-            $('#createRequestSection').hide();
+            $('#searchRequestsSection').html(response);
+            $("#request .request-main-section").show();
+            $("#request .create-request-section").hide();
             $('#goBackLink').show();
         }
     });

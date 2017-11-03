@@ -245,6 +245,7 @@ public class LoginController {
         session.setAttribute(RecapConstants.REQUEST_ITEM_PRIVILEGE,(Boolean)authMap.get(RecapConstants.REQUEST_ITEM_PRIVILEGE));
         session.setAttribute(RecapConstants.BARCODE_RESTRICTED_PRIVILEGE,(Boolean)authMap.get(RecapConstants.BARCODE_RESTRICTED_PRIVILEGE));
         session.setAttribute(RecapConstants.DEACCESSION_PRIVILEGE,(Boolean)authMap.get(RecapConstants.DEACCESSION_PRIVILEGE));
+        session.setAttribute(RecapConstants.BULK_REQUEST_PRIVILEGE,(Boolean)authMap.get(RecapConstants.BULK_REQUEST_PRIVILEGE));
         Object isSuperAdmin = session.getAttribute(RecapConstants.SUPER_ADMIN_USER);
         if((boolean)isSuperAdmin){
             session.setAttribute(RecapConstants.ROLE_FOR_SUPER_ADMIN,true);

@@ -2,6 +2,7 @@ package org.recap.model.jpa;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by akulak on 21/9/17.
@@ -53,6 +54,12 @@ public class BulkRequestItemEntity {
 
     @Column(name = "REQUEST_STATUS")
     private String bulkRequestStatus;
+
+    @OneToMany(cascade = CascadeType.MERGE)
+    @JoinTable(name = "bulk_request_t",
+            joinColumns = @JoinColumn(name = "BULK_REQUEST_ID"),
+            inverseJoinColumns = @JoinColumn(name = "REQUEST_ID"))
+    private List<RequestItemEntity> requestItemEntities;
 
     public Integer getBulkRequestId() {
         return bulkRequestId;
@@ -156,5 +163,13 @@ public class BulkRequestItemEntity {
 
     public void setBulkRequestStatus(String bulkRequestStatus) {
         this.bulkRequestStatus = bulkRequestStatus;
+    }
+
+    public List<RequestItemEntity> getRequestItemEntities() {
+        return requestItemEntities;
+    }
+
+    public void setRequestItemEntities(List<RequestItemEntity> requestItemEntities) {
+        this.requestItemEntities = requestItemEntities;
     }
 }

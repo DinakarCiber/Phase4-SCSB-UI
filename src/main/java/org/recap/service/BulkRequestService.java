@@ -3,11 +3,7 @@ package org.recap.service;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.recap.RecapConstants;
-import org.recap.model.jpa.BulkRequestItemEntity;
-import org.recap.model.jpa.InstitutionEntity;
-import org.recap.model.jpa.UsersEntity;
-import org.recap.model.request.ItemRequestInformation;
-import org.recap.model.request.ItemResponseInformation;
+import org.recap.model.jpa.*;
 import org.recap.model.search.BulkRequestForm;
 import org.recap.model.search.BulkRequestInformation;
 import org.recap.model.search.BulkRequestResponse;
@@ -20,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -33,10 +28,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -207,5 +199,73 @@ public class BulkRequestService {
 
     private String getDecryptedPatronEmailId(String patronEmailAddress) {
         return StringUtils.isNotBlank(patronEmailAddress) ? securityUtil.getDecryptedValue(patronEmailAddress) : patronEmailAddress;
+    }
+
+    public BulkRequestItemEntity saveUpadatedRequestStatus(Integer bulkRequestId) throws Exception {
+        BulkRequestItemEntity bulkRequestItemEntity = bulkRequestDetailsRepository.findOne(bulkRequestId);
+        if(bulkRequestItemEntity !=null){
+            if("PROCESSED".equalsIgnoreCase(bulkRequestItemEntity.getBulkRequestStatus())){
+                StringBuilder csvRowBuilder = new StringBuilder();
+                Map<Integer, String> currentStatus = new HashMap<>();
+                Map<Integer, String> exceptionNote = new HashMap<>();
+                getCurrentRequestStatus(bulkRequestItemEntity,currentStatus,exceptionNote);
+                String bulkRequestFileData = new String(bulkRequestItemEntity.getBulkRequestFileData());
+                String[] bulkRequestFileDataSplit = bulkRequestFileData.split("\n");
+                int count = 0;
+                for (String bulkRequestDataRows : bulkRequestFileDataSplit) {
+                    String[] bulkRequestData = bulkRequestDataRows.split(",");
+                    buildCsvRows(csvRowBuilder, currentStatus, exceptionNote,bulkRequestData,count);
+                    count++;
+                }
+                if (bulkRequestFileDataSplit.length == count){
+                    bulkRequestItemEntity.setBulkRequestFileData(csvRowBuilder.toString().getBytes());
+                    bulkRequestDetailsRepository.save(bulkRequestItemEntity);
+                }else {
+                    bulkRequestItemEntity.setBulkRequestFileData("Error occurred while processing bulk request report".getBytes());
+                }
+            }else {
+                bulkRequestItemEntity.setBulkRequestFileData("Bulk Request is in process state, so bulk request report could not be generated.".getBytes());
+            }
+        }else{
+            BulkRequestItemEntity notFoundEntity = new BulkRequestItemEntity();
+            logger.info("bulk request id requested {}",bulkRequestId);
+            notFoundEntity.setBulkRequestFileData("Unable to generate bulk request report".getBytes());
+            return  notFoundEntity;
+        }
+        return bulkRequestItemEntity;
+    }
+
+    private void getCurrentRequestStatus(BulkRequestItemEntity bulkRequestItemEntity,Map<Integer, String> currentStatus,Map<Integer, String> exceptionNote) {
+        for(RequestItemEntity requestItemEntity : bulkRequestItemEntity.getRequestItemEntities()){
+            currentStatus.put(requestItemEntity.getRequestId(),requestItemEntity.getRequestStatusEntity().getRequestStatusCode());
+            if("EXCEPTION".equalsIgnoreCase(requestItemEntity.getRequestStatusEntity().getRequestStatusCode())){
+                exceptionNote.put(requestItemEntity.getRequestId(),StringUtils.substringAfter(requestItemEntity.getNotes(), "Exception :"));
+            }
+        }
+    }
+
+    private void buildCsvRows(StringBuilder csvRowBuilder, Map<Integer, String> currentStatus, Map<Integer, String> exceptionNote, String[] bulkRequestData,int count) {
+        boolean exceptionStatus = false;
+        csvRowBuilder.append(bulkRequestData[0]).append(",");
+        csvRowBuilder.append(bulkRequestData[1]).append(",");
+        csvRowBuilder.append(bulkRequestData[2]).append(",");
+        if(count!=0){
+            if (!"null".equalsIgnoreCase(bulkRequestData[2]) && StringUtils.isNotBlank(bulkRequestData[2])){
+                String currentRequestStatus = currentStatus.get(Integer.valueOf(bulkRequestData[2]));
+                csvRowBuilder.append(currentRequestStatus).append(",");
+                if("EXCEPTION".equalsIgnoreCase(currentRequestStatus)){
+                    exceptionStatus = true;
+                }
+            }else {
+                csvRowBuilder.append(bulkRequestData[3]).append(",");
+            }
+        } else{
+            csvRowBuilder.append(bulkRequestData[3]).append(",");
+        }
+        if(exceptionStatus){
+            csvRowBuilder.append(exceptionNote.get(Integer.valueOf(bulkRequestData[2]))).append("\n");
+        }else {
+            csvRowBuilder.append(bulkRequestData[4]).append("\n");
+        }
     }
 }
