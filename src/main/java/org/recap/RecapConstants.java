@@ -1,8 +1,5 @@
 package org.recap;
 
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-
 /**
  * Created by SheikS on 6/20/2016.
  */
@@ -516,6 +513,9 @@ public class RecapConstants {
     public static final String BULK_SEARCH_REQUEST_SECTION="bulkRequest::#searchRequestsSection";
     public static final String BULK_REQUEST_ID = "bulkRequestId";
     public static final String IN_PROCESS = "IN PROCESS";
+
+    public static final String BULK_REQUEST_PRIVILEGE = "isBulkRequestAllowed";
+    public static final String SCSB_SHIRO_BULK_REQUEST_URL="auth/bulkRequest";
 
     private RecapConstants(){
         //Do nothing

@@ -1,15 +1,11 @@
 package org.recap.controller;
 
-import org.apache.commons.compress.utils.IOUtils;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.recap.RecapConstants;
 import org.recap.model.jpa.BulkRequestItemEntity;
 import org.recap.model.jpa.InstitutionEntity;
 import org.recap.model.search.BulkRequestForm;
-import org.recap.model.search.IncompleteReportResultsRow;
-import org.recap.model.search.ReportsForm;
 import org.recap.repository.jpa.BulkRequestDetailsRepository;
 import org.recap.repository.jpa.InstitutionDetailsRepository;
 import org.recap.security.UserManagementService;
@@ -29,9 +25,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -61,10 +54,8 @@ public class BulkRequestController {
     @RequestMapping("/bulkRequest")
     public String bulkRequest(Model model, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        Boolean isSuperAdmin = (Boolean)session.getAttribute(RecapConstants.SUPER_ADMIN_USER);
-        Boolean isRecapUser = (Boolean) session.getAttribute(RecapConstants.RECAP_USER);
-        boolean authenticated = userAuthUtil.authorizedUser(RecapConstants.SCSB_SHIRO_REQUEST_URL, (UsernamePasswordToken) session.getAttribute(RecapConstants.USER_TOKEN));
-        if (authenticated && (isSuperAdmin || isRecapUser)) {
+        boolean authenticated = userAuthUtil.authorizedUser(RecapConstants.SCSB_SHIRO_BULK_REQUEST_URL, (UsernamePasswordToken) session.getAttribute(RecapConstants.USER_TOKEN));
+        if (authenticated) {
             BulkRequestForm bulkRequestForm = new BulkRequestForm();
             loadCreateRequestPage(bulkRequestForm);
             model.addAttribute(RecapConstants.BULK_REQUEST_FORM, bulkRequestForm);
@@ -103,7 +94,7 @@ public class BulkRequestController {
     public ModelAndView searchRequest(@Valid @ModelAttribute("bulkRequestForm") BulkRequestForm bulkRequestForm, Model model) {
         bulkRequestService.processSearchRequest(bulkRequestForm);
         model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.BULK_REQUEST);
-        return new ModelAndView(RecapConstants.BULK_REQUEST, RecapConstants.BULK_REQUEST_FORM, bulkRequestForm);
+        return new ModelAndView(RecapConstants.BULK_SEARCH_REQUEST_SECTION, RecapConstants.BULK_REQUEST_FORM, bulkRequestForm);
     }
 
 
@@ -111,7 +102,7 @@ public class BulkRequestController {
     public ModelAndView onPageSizeChange(@Valid @ModelAttribute("bulkRequestForm") BulkRequestForm bulkRequestForm, Model model) {
         bulkRequestService.processOnPageSizeChange(bulkRequestForm);
         model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.BULK_REQUEST);
-        return new ModelAndView(RecapConstants.BULK_REQUEST, RecapConstants.BULK_REQUEST_FORM, bulkRequestForm);
+        return new ModelAndView(RecapConstants.BULK_SEARCH_REQUEST_SECTION, RecapConstants.BULK_REQUEST_FORM, bulkRequestForm);
     }
 
     @PostMapping("/bulkRequest/searchFirst")
@@ -119,7 +110,7 @@ public class BulkRequestController {
         bulkRequestForm.setPageNumber(0);
         bulkRequestService.getPaginatedSearchResults(bulkRequestForm);
         model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.BULK_REQUEST);
-        return new ModelAndView(RecapConstants.BULK_REQUEST, RecapConstants.BULK_REQUEST_FORM, bulkRequestForm);
+        return new ModelAndView(RecapConstants.BULK_SEARCH_REQUEST_SECTION, RecapConstants.BULK_REQUEST_FORM, bulkRequestForm);
     }
 
     @PostMapping("/bulkRequest/searchPrevious")
@@ -127,7 +118,7 @@ public class BulkRequestController {
         bulkRequestForm.setPageNumber(bulkRequestForm.getPageNumber() -1);
         bulkRequestService.getPaginatedSearchResults(bulkRequestForm);
         model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.BULK_REQUEST);
-        return new ModelAndView(RecapConstants.BULK_REQUEST, RecapConstants.BULK_REQUEST_FORM, bulkRequestForm);
+        return new ModelAndView(RecapConstants.BULK_SEARCH_REQUEST_SECTION, RecapConstants.BULK_REQUEST_FORM, bulkRequestForm);
     }
 
     @PostMapping("/bulkRequest/searchNext")
@@ -135,7 +126,7 @@ public class BulkRequestController {
         bulkRequestForm.setPageNumber(bulkRequestForm.getPageNumber() + 1);
         bulkRequestService.getPaginatedSearchResults(bulkRequestForm);
         model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.BULK_REQUEST);
-        return new ModelAndView(RecapConstants.BULK_REQUEST, RecapConstants.BULK_REQUEST_FORM, bulkRequestForm);
+        return new ModelAndView(RecapConstants.BULK_SEARCH_REQUEST_SECTION, RecapConstants.BULK_REQUEST_FORM, bulkRequestForm);
     }
 
     @PostMapping("/bulkRequest/searchLast")
@@ -143,7 +134,7 @@ public class BulkRequestController {
         bulkRequestForm.setPageNumber(bulkRequestForm.getTotalPageCount() -1);
         bulkRequestService.getPaginatedSearchResults(bulkRequestForm);
         model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.BULK_REQUEST);
-        return new ModelAndView(RecapConstants.BULK_REQUEST, RecapConstants.BULK_REQUEST_FORM, bulkRequestForm);
+        return new ModelAndView(RecapConstants.BULK_SEARCH_REQUEST_SECTION, RecapConstants.BULK_REQUEST_FORM, bulkRequestForm);
     }
 
     @GetMapping("/bulkRequest/goToSearchRequest")
@@ -174,9 +165,9 @@ public class BulkRequestController {
     }
 
     @GetMapping("/bulkRequest/downloadReports/{bulkRequestId}")
-    public void downloadReports(@PathVariable String bulkRequestId, HttpServletResponse response, Model model) throws IOException {
+    public void downloadReports(@PathVariable String bulkRequestId, HttpServletResponse response, Model model) throws Exception {
         DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
-        BulkRequestItemEntity bulkRequestItemEntity = bulkRequestDetailsRepository.findOne(Integer.valueOf(bulkRequestId));
+        BulkRequestItemEntity bulkRequestItemEntity = bulkRequestService.saveUpadatedRequestStatus(Integer.valueOf(bulkRequestId));
         String fileNameWithExtension = "Results_" + StringUtils.substringBefore(bulkRequestItemEntity.getBulkRequestFileName(), ".csv") + dateFormat.format(new Date()) + ".csv";
         response.setHeader("Content-Disposition", "attachment; filename=\"" + fileNameWithExtension + "\"");
         response.setContentLength(bulkRequestItemEntity.getBulkRequestFileData().length);
