@@ -35,7 +35,7 @@
                     <li th:if="${session.isRequestAllowed || session.isRequestAllAllowed || session.isRequestItemAllowed}" role="presentation" class="tab-request-holder" th:classappend="${#httpServletRequest.getRequestURI() == '/request' ? 'active':''}">
                         <a href="/request" aria-controls="request" class="tab-request"><span class="icons"></span><span>Request</span></a>
                     </li>
-                    <li th:if="${session.isRecapUser || session.isSuperAdmin}" role="presentation" class="tab-request-holder" th:classappend="${#httpServletRequest.getRequestURI().contains('/bulkRequest') ? 'active':''}">
+                    <li th:if="${session.isBulkRequestAllowed}" role="presentation" class="tab-request-holder" th:classappend="${#httpServletRequest.getRequestURI().contains('/bulkRequest') ? 'active':''}">
                         <a href="/bulkRequest" aria-controls="request" class="tab-request"><span class="icons"></span><span>Bulk Request</span></a>
                     </li>
                     <li th:if="${session.isReportAllowed}" role="presentation" class="tab-reports-holder" th:classappend="${#httpServletRequest.getRequestURI() == '/reports' ? 'active':''}">
