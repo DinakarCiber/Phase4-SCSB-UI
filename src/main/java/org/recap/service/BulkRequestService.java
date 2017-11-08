@@ -3,12 +3,18 @@ package org.recap.service;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.recap.RecapConstants;
-import org.recap.model.jpa.*;
+import org.recap.model.jpa.BulkRequestItemEntity;
+import org.recap.model.jpa.InstitutionEntity;
+import org.recap.model.jpa.RequestItemEntity;
+import org.recap.model.jpa.UsersEntity;
 import org.recap.model.search.BulkRequestForm;
 import org.recap.model.search.BulkRequestInformation;
 import org.recap.model.search.BulkRequestResponse;
 import org.recap.model.search.BulkSearchResultRow;
-import org.recap.repository.jpa.*;
+import org.recap.repository.jpa.BulkCustomerCodeDetailsRepository;
+import org.recap.repository.jpa.BulkRequestDetailsRepository;
+import org.recap.repository.jpa.InstitutionDetailsRepository;
+import org.recap.repository.jpa.UserDetailsRepository;
 import org.recap.util.SecurityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -265,7 +271,11 @@ public class BulkRequestService {
         if(exceptionStatus){
             csvRowBuilder.append(exceptionNote.get(Integer.valueOf(bulkRequestData[2]))).append("\n");
         }else {
-            csvRowBuilder.append(bulkRequestData[4]).append("\n");
+            if (bulkRequestData.length == 5){
+                csvRowBuilder.append(bulkRequestData[4]).append("\n");
+            }else {
+                csvRowBuilder.append("").append("\n");
+            }
         }
     }
 }
