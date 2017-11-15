@@ -597,9 +597,11 @@ function cancelRequestItem(index) {
             var message = jsonResponse['Message'];
             var status = jsonResponse['Status'];
             var requestStatus = jsonResponse['RequestStatus'];
+            var requestNotes = jsonResponse['requestNotes'];
             if (status) {
                 $("#cancelStatus").html("Request canceled successfully");
                 $("#status-" + index).html(requestStatus);
+                $("#notes-" + index).val(requestNotes);
                 $("#cancelButton-" + index).hide();
                 $("#showCancelButton-" + index).hide();
             } else {
