@@ -87,4 +87,11 @@ public interface RolesDetailsRepositorty extends JpaRepository<RoleEntity, Integ
      */
     RoleEntity findByRoleId(Integer roleId);
 
+    /**
+     * Get all roles except 'ReSubmit Request'.
+     *
+     * @return
+     */
+    @Query("select roles from RoleEntity roles where roles.roleName not in ('ReSubmit Request')")
+    List<RoleEntity> findAllExceptReSubmitRole();
 }

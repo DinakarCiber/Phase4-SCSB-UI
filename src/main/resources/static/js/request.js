@@ -605,11 +605,67 @@ function cancelRequestItem(index) {
                 $("#cancelButton-" + index).hide();
                 $("#showCancelButton-" + index).hide();
             } else {
-                $("#cancelStatus").html("Request cancelation failed. " + message);
+                $("#cancelStatus").html("Request cancellation failed. " + message);
             }
             $('#cancelRequestModal').modal('show');
         }
     });
+}
+
+function resubmitRequest(index) {
+    $("#requestSelectedIndexHdn").val(index);
+    var requestId = $("#requestRowRequestId-" + index).val();
+    var itemBarcode = $("#requestRowItemBarcode-" + index).val();
+    $("#requestIdHdn").val(requestId);
+    $("#requestItemBarcodeHdn").val(itemBarcode);
+    $("#resubmitReqConfirmItemBarcode").html(itemBarcode);
+    $("#resubmitRequestBodyId").hide();
+    $('#resubmitRequestModal').modal('show');
+}
+
+function resubmitRequestItem(index) {
+    var $form = $('#request-form');
+    var url = $form.attr('action') + "?action=resubmitRequest";
+    $.ajax({
+        url: url,
+        type: 'post',
+        data: $form.serialize(),
+        beforeSend: function () {
+            $('#resubmitRequestModal').block({
+                message: '<h1>Processing...</h1>'
+            });
+        },
+        success: function (response) {
+            $('#resubmitRequestModal').unblock();
+            var jsonResponse = JSON.parse(response);
+            var itemBarcode = jsonResponse['Barcode'];
+            var message = jsonResponse['Message'];
+            var status = jsonResponse['Status'];
+            $("#resubmitReqItemBarcode").html(itemBarcode);
+            $("#resubmitRequestStatus").html(message);
+            if (status) {
+                $("#resubmitRequestStatus").removeClass('text-danger');
+                $("#resubmitRequestStatus").addClass('text-success');
+            } else {
+                $("#resubmitRequestStatus").removeClass('text-success');
+                $("#resubmitRequestStatus").addClass('text-danger');
+            }
+            $("#resubmitRequestConfirmBodyId").hide();
+            $("#resubmitRequestConfirmFooterId").hide();
+            $("#resubmitRequestBodyId").show();
+            $("#resubmitButton-" + $("#requestSelectedIndexHdn").val()).prop("disabled", status);
+        }
+    });
+}
+
+function closeResubmitRequestItem() {
+    $('#closeResubmitRequest').click();
+}
+
+function resetToResubmitRequest() {
+    $("#resubmitRequestConfirmBodyId").show();
+    $("#resubmitRequestConfirmFooterId").show();
+    $("#resubmitRequestBodyId").hide();
 }
 
 function showNotesPopup(index) {

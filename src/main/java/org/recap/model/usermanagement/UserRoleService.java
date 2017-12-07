@@ -32,9 +32,10 @@ public interface UserRoleService {
      * Gets all the roles that are in scsb except super admin role.
      *
      * @param superAdminRole the super admin role
+     * @param superAdmin
      * @return the roles
      */
-    List<Object> getRoles(Integer superAdminRole);
+    List<Object> getRoles(Integer superAdminRole, boolean superAdmin);
 
     /**
      * Gets all the partners institution for super admin role.

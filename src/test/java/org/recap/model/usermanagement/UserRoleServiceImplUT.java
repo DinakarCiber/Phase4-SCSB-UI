@@ -3,8 +3,6 @@ package org.recap.model.usermanagement;
 import org.junit.Test;
 import org.recap.BaseTestCase;
 import org.recap.model.jpa.UsersEntity;
-import org.recap.model.usermanagement.UserRoleForm;
-import org.recap.model.usermanagement.UserRoleService;
 import org.recap.repository.jpa.UserDetailsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -113,7 +111,7 @@ public class UserRoleServiceImplUT extends BaseTestCase {
 
     @Test
     public void getRoles(){
-        List<Object> roles = userRoleService.getRoles(1);
+        List<Object> roles = userRoleService.getRoles(1, false);
         assertNotNull(roles);
         boolean superAdminRoleId = roles.contains(1);
         assertEquals(false,superAdminRoleId);

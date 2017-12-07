@@ -19,6 +19,8 @@
                         <input id="requestStatuses" name="requestStatuses" type="text" th:field="${requestForm.requestStatuses}" hidden="hidden"/>
                         <input id="institutionIdOfItem" name="institutionIdOfItem" type="text" th:field="${requestForm.institutionList}" hidden="hidden"/>
                         <input id="requestIdHdn" name="requestIdHdn" type="text" th:field="${requestForm.requestId}" hidden="hidden"/>
+                        <input id="requestItemBarcodeHdn" name="requestItemBarcodeHdn" type="text" th:field="${requestForm.itemBarcodeHidden}" hidden="hidden"/>
+                        <input id="requestSelectedIndexHdn" name="requestSelectedIndexHdn" type="text" hidden="hidden"/>
                         <div class="search-bar">
                             <div class="row margin-0">
                                 <div class="col-xs-12  padding-0">
@@ -124,7 +126,7 @@
                                                 <th>Created Date</th>
                                                 <th>Status</th>
                                                 <th>Request Notes</th>
-                                                <th>Cancel</th>
+                                                <th>Action</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -141,7 +143,7 @@
                                                         <span th:text="${searchResult.requestingInstitution}"></span>
                                                     </td>
                                                     <td>
-                                                        <input type="hidden" th:field="${requestForm.searchResultRows[__${searchResultStat.index}__].barcode}"/>
+                                                        <input data-th-id="'requestRowItemBarcode-'+ ${searchResultStat.index}" type="hidden" th:field="${requestForm.searchResultRows[__${searchResultStat.index}__].barcode}"/>
                                                         <a th:href="@{/openMarcRecord(bibId=${searchResult.bibId})}" target="_blank" th:text="${searchResult.barcode}"></a>
                                                     </td>
                                                     <td>
@@ -186,6 +188,8 @@
                                                         <button style="background-color:transparent;box-shadow: none;outline: none;color: #337ab7;border-color:#337ab7" th:title="'Cancel Request'" data-th-id="'cancelButton:' + ${searchResultStat.index}" type="button" class="btn btn-round" name="action" th:onclick="'javascript:cancelRequest('+${searchResultStat.index}+')'">Cancel Note
                                                         </button>
                                                         </div>
+                                                        <button th:if="${searchResult.status == 'EXCEPTION' &amp;&amp; (session.isReSubmitRequestAllowed || session.isSuperAdmin)}" th:disabled="${searchResult.status == 'EXCEPTION' &amp;&amp; searchResult.availability == 'Not Available' &amp;&amp; (session.isReSubmitRequestAllowed || session.isSuperAdmin)}" th:title="'Resubmit Request'" data-th-id="'resubmitButton-' + ${searchResultStat.index}" type="button" class="btn btn-round" style="background-color:transparent;box-shadow: none;outline: none;color: #337ab7;border-color:#337ab7" name="action" th:onclick="'javascript:resubmitRequest('+${searchResultStat.index}+')'">Resubmit Request
+                                                        </button>
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -554,6 +558,44 @@
                     </div>
                 </div>
                 <!-- Cancel Modal Data-->
+
+                <!-- Resubmit Request Modal Data-->
+                <div id="resubmitRequestModal" class="modal fade create-request-details" tabindex="-2" role="dialog" aria-labelledby="resubmitRequestLargeModalLabel" data-keyboard="false" data-backdrop="static">
+                    <div class="modal-dialog" role="document">
+                        <div id="resubmitRequestModalContent" class="modal-content">
+                            <div class="modal-header bg-success">
+                                <button id="closeResubmitRequest" type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="resetToResubmitRequest()"><span aria-hidden="true">&times;</span></button>
+                                <h2 class="modal-title text-center text-success" id="resubmitRequestModalLabel">Resubmit Request</h2>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="padding-10">
+                                            <div id="resubmitRequestConfirmBodyId">
+                                                <span>Do you want to resubmit the request for the barcode : <span id="resubmitReqConfirmItemBarcode"></span></span>
+                                            </div>
+                                            <div id="resubmitRequestBodyId">
+                                                <div>
+                                                    <span>Barcode : <span id="resubmitReqItemBarcode"></span></span>
+                                                </div>
+                                                <div>
+                                                    <span id="resubmitRequestStatus"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer" style="padding-top: 0px;">
+                                <div id="resubmitRequestConfirmFooterId" class="pull-right">
+                                    <button id="resubmitRequestYes" style="height:35px;font-size:15px;" type="button" class="btn btn-default themed-button btn-primary" onclick="resubmitRequestItem()">Yes</button>
+                                    <button id="resubmitRequestNo" style="height:35px;font-size:15px;" type="button" class="btn btn-default themed-button themed-button-cancel" onclick="closeResubmitRequestItem()">No</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Resubmit Request Modal Data-->
 
                 <!-- Notes Modal Data-->
                 <div id="requestNotesModal" class="modal fade create-request-details" tabindex="-2" role="dialog" aria-labelledby="requestNotesLargeModalLabel" data-keyboard="false" data-backdrop="static">

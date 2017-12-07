@@ -159,9 +159,14 @@ public class UserRoleServiceImpl implements UserRoleService {
     }
 
     @Override
-    public List<Object> getRoles(Integer superAdminRole) {
+    public List<Object> getRoles(Integer superAdminRole, boolean superAdmin) {
         List<Object> rolesList = new ArrayList<>();
-        List<RoleEntity> roleEntities = rolesDetailsRepositorty.findAll();
+        List<RoleEntity> roleEntities = null;
+        if (superAdmin){
+            roleEntities = rolesDetailsRepositorty.findAll();
+        }else {
+            roleEntities = rolesDetailsRepositorty.findAllExceptReSubmitRole();
+        }
         for (RoleEntity roleEntity : roleEntities) {
             if (!superAdminRole.equals(roleEntity.getRoleId())) {
                 Object[] role = new Object[4];

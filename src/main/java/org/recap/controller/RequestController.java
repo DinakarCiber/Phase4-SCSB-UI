@@ -14,6 +14,7 @@ import org.recap.model.jpa.RequestItemEntity;
 import org.recap.model.request.CancelRequestResponse;
 import org.recap.model.request.ItemRequestInformation;
 import org.recap.model.request.ItemResponseInformation;
+import org.recap.model.request.ReplaceRequest;
 import org.recap.model.search.RequestForm;
 import org.recap.model.search.SearchResultRow;
 import org.recap.model.usermanagement.UserDetailsForm;
@@ -623,6 +624,51 @@ public class RequestController {
         return jsonObject.toString();
     }
 
+    /**
+     * Resubmit the exception request. Creates a new request with the same data.
+     * @param requestForm
+     * @param result
+     * @param model
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/request", method = RequestMethod.POST, params = "action=resubmitRequest")
+    public String resubmitRequest(@Valid @ModelAttribute("requestForm") RequestForm requestForm,
+                                BindingResult result,
+                                Model model) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            ReplaceRequest replaceRequest = new ReplaceRequest();
+            replaceRequest.setReplaceRequestByType(RecapConstants.REQUEST_IDS);
+            replaceRequest.setRequestStatus(RecapConstants.EXCEPTION);
+            String requestId = String.valueOf(requestForm.getRequestId());
+            replaceRequest.setRequestIds(requestId);
+            HttpEntity request = new HttpEntity<>(replaceRequest, getRestHeaderService().getHttpHeaders());
+            Map resultMap = getRestTemplate().postForObject(scsbUrl + RecapConstants.URL_REQUEST_RESUBMIT, request, Map.class);
+            jsonObject.put(RecapConstants.BARCODE, requestForm.getItemBarcodeHidden());
+            if (resultMap.containsKey(requestId)) {
+                String message = (String) resultMap.get(requestId);
+                jsonObject.put(RecapConstants.MESSAGE, resultMap.get(requestId));
+                if (StringUtils.isNotBlank(message) && message.contains(RecapConstants.SUCCESS)) {
+                    jsonObject.put(RecapConstants.STATUS, true);
+                } else {
+                    jsonObject.put(RecapConstants.STATUS, false);
+                }
+            } else if (resultMap.containsKey(RecapConstants.INVALID_REQUEST)) {
+                jsonObject.put(RecapConstants.MESSAGE, resultMap.get(RecapConstants.INVALID_REQUEST));
+                jsonObject.put(RecapConstants.STATUS, false);
+            } else if (resultMap.containsKey(RecapConstants.FAILURE)) {
+                jsonObject.put(RecapConstants.MESSAGE, resultMap.get(RecapConstants.FAILURE));
+                jsonObject.put(RecapConstants.STATUS, false);
+            }
+        } catch (Exception exception) {
+            logger.error(RecapConstants.LOG_ERROR, exception);
+            logger.debug(exception.getMessage());
+        }
+        logger.info(jsonObject.toString());
+        return jsonObject.toString();
+    }
+
     private void searchAndSetResults(RequestForm requestForm) {
         Page<RequestItemEntity> requestItemEntities = getRequestServiceUtil().searchRequests(requestForm);
         List<SearchResultRow> searchResultRows = buildSearchResultRows(requestItemEntities.getContent());
@@ -651,6 +697,7 @@ public class RequestController {
                     searchResultRow.setDeliveryLocation(requestItemEntity.getStopCode());
                     searchResultRow.setRequestType(requestItemEntity.getRequestTypeEntity().getRequestTypeCode());
                     searchResultRow.setRequestCreatedBy(requestItemEntity.getCreatedBy());
+                    searchResultRow.setAvailability(requestItemEntity.getItemEntity().getItemStatusEntity().getStatusCode());
                     if(StringUtils.isNotBlank(requestItemEntity.getEmailId())){
                         searchResultRow.setPatronEmailId(securityUtil.getDecryptedValue(requestItemEntity.getEmailId()));
                     }else {

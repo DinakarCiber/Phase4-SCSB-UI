@@ -33,9 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 /**
@@ -100,7 +98,7 @@ public class UserRoleControllerUT extends BaseTestCase {
         Mockito.when(mockedUserRoleController.getUserAuthUtil()).thenReturn(userAuthUtil);
         Mockito.when(mockedUserRoleController.getUserRoleService()).thenReturn(userRoleService);
         Mockito.when(mockedUserRoleController.getUserManagementService()).thenReturn(userManagementService);
-        Mockito.when(mockedUserRoleController.getUserRoleService().getRoles(Mockito.any())).thenReturn(roles);
+        Mockito.when(mockedUserRoleController.getUserRoleService().getRoles(Mockito.any(), userDetailsForm.isSuperAdmin())).thenReturn(roles);
         Mockito.when(mockedUserRoleController.getUserRoleService().getInstitutions(userDetailsForm.isSuperAdmin(), userDetailsForm.getLoginInstitutionId())).thenReturn(institution);
         Mockito.when(mockedUserRoleController.getLogger()).thenReturn(logger);
         Mockito.when(mockedUserRoleController.getUserAuthUtil().getUserDetails(session, RecapConstants.BARCODE_RESTRICTED_PRIVILEGE)).thenReturn(userDetailsForm);
@@ -169,7 +167,7 @@ public class UserRoleControllerUT extends BaseTestCase {
         Mockito.when(mockedUserRoleController.getUserDetailsRepository()).thenReturn(userDetailsRepository);
         Mockito.when(mockedUserRoleController.getUserAuthUtil().authorizedUser(RecapConstants.SCSB_SHIRO_USER_ROLE_URL, (UsernamePasswordToken) session.getAttribute(RecapConstants.USER_TOKEN))).thenReturn(true);
         Mockito.when(mockedUserRoleController.getUserDetailsRepository().findByUserId(userId)).thenReturn(usersEntity);
-        Mockito.when(mockedUserRoleController.getUserRoleService().getRoles(Mockito.any())).thenReturn(roles);
+        Mockito.when(mockedUserRoleController.getUserRoleService().getRoles(Mockito.any(), userDetailsForm.isSuperAdmin())).thenReturn(roles);
         Mockito.when(mockedUserRoleController.getUserRoleService().getInstitutions(userDetailsForm.isSuperAdmin(), userDetailsForm.getLoginInstitutionId())).thenReturn(institution);
         Mockito.when(mockedUserRoleController.getUserAuthUtil().getUserDetails(request.getSession(), RecapConstants.BARCODE_RESTRICTED_PRIVILEGE)).thenReturn(userDetailsForm);
         Mockito.when(mockedUserRoleController.deleteUserRole(userRoleForm.getSearchNetworkId(),3,request,10,1,2)).thenCallRealMethod();
@@ -213,7 +211,7 @@ public class UserRoleControllerUT extends BaseTestCase {
         Mockito.when(mockedUserRoleController.getUserAuthUtil()).thenReturn(userAuthUtil);
         Mockito.when(mockedUserRoleController.getUserRoleService()).thenReturn(userRoleService);
         Mockito.when(mockedUserRoleController.getUserManagementService()).thenReturn(userManagementService);
-        Mockito.when(mockedUserRoleController.getUserRoleService().getRoles(Mockito.any())).thenReturn(roles);
+        Mockito.when(mockedUserRoleController.getUserRoleService().getRoles(Mockito.any(), userDetailsForm.isSuperAdmin())).thenReturn(roles);
         Mockito.when(mockedUserRoleController.getUserRoleService().getInstitutions(userDetailsForm.isSuperAdmin(), userDetailsForm.getLoginInstitutionId())).thenReturn(institution);
         Mockito.when(mockedUserRoleController.getLogger()).thenReturn(logger);
         Mockito.when(mockedUserRoleController.getUserDetailsRepository()).thenReturn(userDetailsRepository);
@@ -309,7 +307,7 @@ public class UserRoleControllerUT extends BaseTestCase {
         Mockito.when(mockedUserRoleController.getUserAuthUtil()).thenReturn(userAuthUtil);
         Mockito.when(mockedUserRoleController.getUserRoleService()).thenReturn(userRoleService);
         Mockito.when(mockedUserRoleController.getUserManagementService()).thenReturn(userManagementService);
-        Mockito.when(mockedUserRoleController.getUserRoleService().getRoles(Mockito.any())).thenReturn(roles);
+        Mockito.when(mockedUserRoleController.getUserRoleService().getRoles(Mockito.any(), userDetailsForm.isSuperAdmin())).thenReturn(roles);
         Mockito.when(mockedUserRoleController.getUserRoleService().getInstitutions(userDetailsForm.isSuperAdmin(), userDetailsForm.getLoginInstitutionId())).thenReturn(institution);
         Mockito.when(mockedUserRoleController.getLogger()).thenReturn(logger);
         Mockito.when(mockedUserRoleController.getUserAuthUtil().getUserDetails(session, RecapConstants.BARCODE_RESTRICTED_PRIVILEGE)).thenReturn(userDetailsForm);
@@ -345,7 +343,7 @@ public class UserRoleControllerUT extends BaseTestCase {
         Mockito.when(mockedUserRoleController.getUserRoleService()).thenReturn(userRoleService);
         Mockito.when(mockedUserRoleController.getUserManagementService()).thenReturn(userManagementService);
         Mockito.when(mockedUserRoleController.getUserDetailsRepository()).thenReturn(userDetailsRepository);
-        Mockito.when(mockedUserRoleController.getUserRoleService().getRoles(Mockito.any())).thenReturn(roles);
+        Mockito.when(mockedUserRoleController.getUserRoleService().getRoles(Mockito.any(), userDetailsForm.isSuperAdmin())).thenReturn(roles);
         Mockito.when(mockedUserRoleController.getUserRoleService().getInstitutions(userDetailsForm.isSuperAdmin(), userDetailsForm.getLoginInstitutionId())).thenReturn(institution);
         Mockito.when(mockedUserRoleController.getLogger()).thenReturn(logger);
         Mockito.when(mockedUserRoleController.getUserAuthUtil().getUserDetails(session, RecapConstants.BARCODE_RESTRICTED_PRIVILEGE)).thenReturn(userDetailsForm);
@@ -393,7 +391,7 @@ public class UserRoleControllerUT extends BaseTestCase {
         Mockito.when(mockedUserRoleController.getUserAuthUtil()).thenReturn(userAuthUtil);
         Mockito.when(mockedUserRoleController.getUserRoleService()).thenReturn(userRoleService);
         Mockito.when(mockedUserRoleController.getUserManagementService()).thenReturn(userManagementService);
-        Mockito.when(mockedUserRoleController.getUserRoleService().getRoles(Mockito.any())).thenReturn(roles);
+        Mockito.when(mockedUserRoleController.getUserRoleService().getRoles(Mockito.any(), userDetailsForm.isSuperAdmin())).thenReturn(roles);
         Mockito.when(mockedUserRoleController.getUserRoleService().getInstitutions(userDetailsForm.isSuperAdmin(), userDetailsForm.getLoginInstitutionId())).thenReturn(institution);
         Mockito.when(mockedUserRoleController.getLogger()).thenReturn(logger);
         Mockito.when(mockedUserRoleController.getUserAuthUtil().getUserDetails(session, RecapConstants.BARCODE_RESTRICTED_PRIVILEGE)).thenReturn(userDetailsForm);
@@ -431,7 +429,7 @@ public class UserRoleControllerUT extends BaseTestCase {
         Mockito.when(mockedUserRoleController.getUserAuthUtil()).thenReturn(userAuthUtil);
         Mockito.when(mockedUserRoleController.getUserRoleService()).thenReturn(userRoleService);
         Mockito.when(mockedUserRoleController.getUserManagementService()).thenReturn(userManagementService);
-        Mockito.when(mockedUserRoleController.getUserRoleService().getRoles(Mockito.any())).thenReturn(roles);
+        Mockito.when(mockedUserRoleController.getUserRoleService().getRoles(Mockito.any(), userDetailsForm.isSuperAdmin())).thenReturn(roles);
         Mockito.when(mockedUserRoleController.getUserRoleService().getInstitutions(userDetailsForm.isSuperAdmin(), userDetailsForm.getLoginInstitutionId())).thenReturn(institution);
         Mockito.when(mockedUserRoleController.getLogger()).thenReturn(logger);
         Mockito.when(mockedUserRoleController.getUserAuthUtil().getUserDetails(session, RecapConstants.BARCODE_RESTRICTED_PRIVILEGE)).thenReturn(userDetailsForm);
