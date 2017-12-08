@@ -49,6 +49,7 @@ public class RequestForm {
     private String institution;
     private boolean showRequestErrorMsg;
     private String requestingInstituionHidden;
+    private String itemBarcodeHidden;
     private Boolean disableSearchInstitution = false;
     private String searchInstitutionHdn;
 
@@ -761,19 +762,57 @@ public class RequestForm {
         this.requestingInstituionHidden = requestingInstituionHidden;
     }
 
+    /**
+     * Gets disable search institution.
+     *
+     * @return the disable search institution
+     */
     public Boolean getDisableSearchInstitution() {
         return disableSearchInstitution;
     }
 
+    /**
+     * Sets disable search institution.
+     *
+     * @param disableSearchInstitution the disable search institution
+     */
     public void setDisableSearchInstitution(Boolean disableSearchInstitution) {
         this.disableSearchInstitution = disableSearchInstitution;
     }
 
+    /**
+     * Gets search institution hdn.
+     *
+     * @return the search institution hdn
+     */
     public String getSearchInstitutionHdn() {
         return searchInstitutionHdn;
     }
 
+    /**
+     * Sets search institution hdn.
+     *
+     * @param searchInstitutionHdn the search institution hdn
+     */
     public void setSearchInstitutionHdn(String searchInstitutionHdn) {
         this.searchInstitutionHdn = searchInstitutionHdn;
+    }
+
+    /**
+     * Gets item barcode hidden.
+     *
+     * @return the item barcode hidden
+     */
+    public String getItemBarcodeHidden() {
+        return itemBarcodeHidden;
+    }
+
+    /**
+     * Sets item barcode hidden.
+     *
+     * @param itemBarcodeHidden the item barcode hidden
+     */
+    public void setItemBarcodeHidden(String itemBarcodeHidden) {
+        this.itemBarcodeHidden = itemBarcodeHidden;
     }
 }

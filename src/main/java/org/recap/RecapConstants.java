@@ -280,6 +280,7 @@ public class RecapConstants {
     public static final String REQUEST_ITEM_URL = "requestItem/requestItem";
     public static final String BULK_REQUEST_ITEM_URL = "requestItem/bulkRequest";
     public static final String URL_REQUEST_CANCEL = "requestItem/cancelRequest";
+    public static final String URL_REQUEST_RESUBMIT = "requestItem/replaceRequest";
     public static final String VALID_REQUEST = "All request parameters are valid.Patron is eligible to raise a request";
 
     public static final String ITEM_TITLE = "itemTitle";
@@ -516,6 +517,11 @@ public class RecapConstants {
 
     public static final String BULK_REQUEST_PRIVILEGE = "isBulkRequestAllowed";
     public static final String SCSB_SHIRO_BULK_REQUEST_URL="auth/bulkRequest";
+    public static final String RESUBMIT_REQUEST_PRIVILEGE = "isReSubmitRequestAllowed";
+
+    public static final String INVALID_REQUEST = "InvalidRequest";
+    public static final String REQUEST_IDS = "RequestIds";
+    public static final String EXCEPTION = "EXCEPTION";
 
     private RecapConstants(){
         //Do nothing

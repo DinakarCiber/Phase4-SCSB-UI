@@ -132,8 +132,7 @@ public class UserRoleController {
     }
 
     private void getAndSetRolesAndInstitutions(UserRoleForm userRoleForm, UserDetailsForm userDetailsForm) {
-
-        List<Object> roles = getUserRoleService().getRoles(getUserManagementService().getSuperAdminRoleId());
+        List<Object> roles = getUserRoleService().getRoles(getUserManagementService().getSuperAdminRoleId(),userDetailsForm.isSuperAdmin());
         List<Object> institutions = getUserRoleService().getInstitutions(userDetailsForm.isSuperAdmin(), userDetailsForm.getLoginInstitutionId());
         userRoleForm.setRoles(roles);
         userRoleForm.setInstitutions(institutions);
@@ -486,7 +485,7 @@ public class UserRoleController {
         if (authenticated) {
             getLogger().info(RecapConstants.USERS_TAB_CLICKED);
             UserDetailsForm userDetailsForm = getUserAuthUtil().getUserDetails(session, RecapConstants.BARCODE_RESTRICTED_PRIVILEGE);
-            List<Object> roles = getUserRoleService().getRoles(getUserManagementService().getSuperAdminRoleId());
+            List<Object> roles = getUserRoleService().getRoles(getUserManagementService().getSuperAdminRoleId(), userDetailsForm.isSuperAdmin());
             List<Object> institutions = getUserRoleService().getInstitutions(userDetailsForm.isSuperAdmin(), userDetailsForm.getLoginInstitutionId());
             userRoleForm.setRoles(roles);
             userRoleForm.setInstitutions(institutions);
@@ -499,7 +498,7 @@ public class UserRoleController {
         HttpSession session = request.getSession(false);
         Integer userId = (Integer) session.getAttribute(RecapConstants.USER_ID);
         UserDetailsForm userDetailsForm = getUserAuthUtil().getUserDetails(session, RecapConstants.BARCODE_RESTRICTED_PRIVILEGE);
-        List<Object> roles = getUserRoleService().getRoles(getUserManagementService().getSuperAdminRoleId());
+        List<Object> roles = getUserRoleService().getRoles(getUserManagementService().getSuperAdminRoleId(), userDetailsForm.isSuperAdmin());
         List<Object> institutions = getUserRoleService().getInstitutions(userDetailsForm.isSuperAdmin(), userDetailsForm.getLoginInstitutionId());
         userRoleForm.setUserId(userId);
         userRoleForm.setInstitutionId(userDetailsForm.getLoginInstitutionId());
