@@ -507,6 +507,10 @@ public class RecapConstants {
 
     public static final String REQUEST_STATUS_EDD = "EDD_ORDER_PLACED";
     public static final String REQUEST_STATUS_INITIAL_LOAD = "INITIAL_LOAD";
+    public static final String REQUEST_STATUS_REFILED = "REFILED";
+    public static final String REQUEST_TYPE_RETRIEVAL = "RETRIEVAL";
+    public static final String REQUEST_TYPE_RECALL = "RECALL";
+    public static final String REQUEST_STATUS_CANCELED = "CANCELED";
 
     public static final String BULK_REQUEST_FORM = "bulkRequestForm";
     public static final String BULK_REQUEST= "bulkRequest";
