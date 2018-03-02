@@ -671,7 +671,7 @@ public class RequestController {
 
     private void searchAndSetResults(RequestForm requestForm) {
         Page<RequestItemEntity> requestItemEntities = getRequestServiceUtil().searchRequests(requestForm);
-        List<SearchResultRow> searchResultRows = buildSearchResultRows(requestItemEntities.getContent());
+        List<SearchResultRow> searchResultRows = buildSearchResultRows(requestItemEntities.getContent(),requestForm);
         if (CollectionUtils.isNotEmpty(searchResultRows)) {
             requestForm.setSearchResultRows(searchResultRows);
             requestForm.setTotalRecordsCount(NumberFormat.getNumberInstance().format(requestItemEntities.getTotalElements()));
@@ -683,42 +683,73 @@ public class RequestController {
         requestForm.setShowResults(true);
     }
 
-    private List<SearchResultRow> buildSearchResultRows(List<RequestItemEntity> requestItemEntities) {
+    private List<SearchResultRow> buildSearchResultRows(List<RequestItemEntity> requestItemEntities,RequestForm requestForm) {
         if (CollectionUtils.isNotEmpty(requestItemEntities)) {
             List<SearchResultRow> searchResultRows = new ArrayList<>();
             for (RequestItemEntity requestItemEntity : requestItemEntities) {
+                ItemEntity itemEntity = requestItemEntity.getItemEntity();
                 try {
-                    SearchResultRow searchResultRow = new SearchResultRow();
-                    searchResultRow.setRequestId(requestItemEntity.getRequestId());
-                    searchResultRow.setPatronBarcode(requestItemEntity.getPatronId());
-                    searchResultRow.setRequestingInstitution(requestItemEntity.getInstitutionEntity().getInstitutionCode());
-                    searchResultRow.setBarcode(requestItemEntity.getItemEntity().getBarcode());
-                    searchResultRow.setOwningInstitution(requestItemEntity.getItemEntity().getInstitutionEntity().getInstitutionCode());
-                    searchResultRow.setDeliveryLocation(requestItemEntity.getStopCode());
-                    searchResultRow.setRequestType(requestItemEntity.getRequestTypeEntity().getRequestTypeCode());
-                    searchResultRow.setRequestCreatedBy(requestItemEntity.getCreatedBy());
-                    searchResultRow.setAvailability(requestItemEntity.getItemEntity().getItemStatusEntity().getStatusCode());
-                    if(StringUtils.isNotBlank(requestItemEntity.getEmailId())){
-                        searchResultRow.setPatronEmailId(securityUtil.getDecryptedValue(requestItemEntity.getEmailId()));
-                    }else {
-                        searchResultRow.setPatronEmailId(requestItemEntity.getEmailId());
+                if(requestForm.getInstitutionList().size()==1 && (itemEntity.getInstitutionEntity().getInstitutionCode().equalsIgnoreCase(requestForm.getInstitution()) && !itemEntity.getOwningInstitutionId().equals(requestItemEntity.getRequestingInstitutionId()))){
+                    populateRequestResultsForRecall(searchResultRows, requestItemEntity);
+                }
+                else {
+                    populateRequestResults(searchResultRows, requestItemEntity);
                     }
-                    searchResultRow.setRequestNotes(requestItemEntity.getNotes());
-                    searchResultRow.setCreatedDate(requestItemEntity.getCreatedDate());
-                    searchResultRow.setStatus(requestItemEntity.getRequestStatusEntity().getRequestStatusDescription());
-
-                    ItemEntity itemEntity = requestItemEntity.getItemEntity();
-                    if (null != itemEntity && CollectionUtils.isNotEmpty(itemEntity.getBibliographicEntities())) {
-                        searchResultRow.setBibId(itemEntity.getBibliographicEntities().get(0).getBibliographicId());
-                    }
-                    searchResultRows.add(searchResultRow);
-                }catch (Exception e){
-                    logger.error(RecapConstants.LOG_ERROR,e);
+                }
+                catch (Exception e) {
+                    logger.error(RecapConstants.LOG_ERROR, e);
                 }
             }
             return searchResultRows;
         }
         return Collections.emptyList();
+    }
+
+    private void populateRequestResultsForRecall(List<SearchResultRow> searchResultRows, RequestItemEntity requestItemEntity) {
+        SearchResultRow searchResultRow = new SearchResultRow();
+        searchResultRow.setRequestId(requestItemEntity.getRequestId());
+        searchResultRow.setRequestingInstitution(requestItemEntity.getInstitutionEntity().getInstitutionCode());
+        searchResultRow.setBarcode(requestItemEntity.getItemEntity().getBarcode());
+        searchResultRow.setOwningInstitution(requestItemEntity.getItemEntity().getInstitutionEntity().getInstitutionCode());
+        searchResultRow.setRequestType(requestItemEntity.getRequestTypeEntity().getRequestTypeCode());
+        searchResultRow.setAvailability(requestItemEntity.getItemEntity().getItemStatusEntity().getStatusCode());
+        searchResultRow.setCreatedDate(requestItemEntity.getCreatedDate());
+        searchResultRow.setStatus(requestItemEntity.getRequestStatusEntity().getRequestStatusDescription());
+        searchResultRow.setRequestNotes(requestItemEntity.getNotes());
+        searchResultRow.setShowItems(false);
+        ItemEntity itemEntity = requestItemEntity.getItemEntity();
+        if (null != itemEntity && CollectionUtils.isNotEmpty(itemEntity.getBibliographicEntities())) {
+            searchResultRow.setBibId(itemEntity.getBibliographicEntities().get(0).getBibliographicId());
+        }
+        searchResultRows.add(searchResultRow);
+    }
+
+    private void populateRequestResults(List<SearchResultRow> searchResultRows, RequestItemEntity requestItemEntity) {
+        SearchResultRow searchResultRow = new SearchResultRow();
+        searchResultRow.setRequestId(requestItemEntity.getRequestId());
+        searchResultRow.setPatronBarcode(requestItemEntity.getPatronId());
+        searchResultRow.setRequestingInstitution(requestItemEntity.getInstitutionEntity().getInstitutionCode());
+        searchResultRow.setBarcode(requestItemEntity.getItemEntity().getBarcode());
+        searchResultRow.setOwningInstitution(requestItemEntity.getItemEntity().getInstitutionEntity().getInstitutionCode());
+        searchResultRow.setDeliveryLocation(requestItemEntity.getStopCode());
+        searchResultRow.setRequestType(requestItemEntity.getRequestTypeEntity().getRequestTypeCode());
+        searchResultRow.setRequestCreatedBy(requestItemEntity.getCreatedBy());
+        searchResultRow.setAvailability(requestItemEntity.getItemEntity().getItemStatusEntity().getStatusCode());
+        searchResultRow.setShowItems(true);
+        if(StringUtils.isNotBlank(requestItemEntity.getEmailId())){
+            searchResultRow.setPatronEmailId(securityUtil.getDecryptedValue(requestItemEntity.getEmailId()));
+        }else {
+            searchResultRow.setPatronEmailId(requestItemEntity.getEmailId());
+        }
+        searchResultRow.setRequestNotes(requestItemEntity.getNotes());
+        searchResultRow.setCreatedDate(requestItemEntity.getCreatedDate());
+        searchResultRow.setStatus(requestItemEntity.getRequestStatusEntity().getRequestStatusDescription());
+
+        ItemEntity itemEntity = requestItemEntity.getItemEntity();
+        if (null != itemEntity && CollectionUtils.isNotEmpty(itemEntity.getBibliographicEntities())) {
+            searchResultRow.setBibId(itemEntity.getBibliographicEntities().get(0).getBibliographicId());
+        }
+        searchResultRows.add(searchResultRow);
     }
 
     private Integer getPageNumberOnPageSizeChange(RequestForm requestForm) {

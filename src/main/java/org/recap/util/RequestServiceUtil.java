@@ -14,6 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 /**
  * Created by rajeshbabuk on 29/10/16.
  */
@@ -38,6 +40,11 @@ public class RequestServiceUtil {
         String status = StringUtils.isNotBlank(requestForm.getStatus()) ? requestForm.getStatus().trim() : requestForm.getStatus();
         String institution = StringUtils.isNotBlank(requestForm.getInstitution()) ? requestForm.getInstitution().trim() : requestForm.getInstitution();
         InstitutionEntity institutionEntity = institutionDetailsRepository.findByInstitutionCode(institution);
+        Optional<InstitutionEntity> institutionEntityOptional = Optional.ofNullable(institutionEntity);
+        if(!institutionEntityOptional.isPresent()){
+            institutionEntity=new InstitutionEntity();
+            institutionEntity.setInstitutionId(0);
+        }
         Pageable pageable = new PageRequest(requestForm.getPageNumber(), requestForm.getPageSize(), Sort.Direction.DESC, RecapConstants.REQUEST_ID);
 
         Page<RequestItemEntity> requestItemEntities;
@@ -50,22 +57,22 @@ public class RequestServiceUtil {
         }
         else if (StringUtils.isNotBlank(patronBarcode) && StringUtils.isNotBlank(itemBarcode) && StringUtils.isNotBlank(status) && StringUtils.isBlank(institution)) {
             if (status.equals(RecapConstants.SEARCH_REQUEST_ACTIVE)) {
-                requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndItemBarcodeAndActive(pageable, patronBarcode, itemBarcode);
+                requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndItemBarcodeAndActive(pageable, patronBarcode, itemBarcode,institutionEntity.getInstitutionId());
             } else {
-                requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndItemBarcodeAndStatus(pageable, patronBarcode, itemBarcode,status);
+                requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndItemBarcodeAndStatus(pageable, patronBarcode, itemBarcode,status,institutionEntity.getInstitutionId());
             }
         }
         else if (StringUtils.isNotBlank(patronBarcode) && StringUtils.isNotBlank(itemBarcode) && StringUtils.isBlank(status) && StringUtils.isBlank(institution)) {
-            requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndItemBarcode(pageable, patronBarcode, itemBarcode);
+            requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndItemBarcode(pageable, patronBarcode, itemBarcode,institutionEntity.getInstitutionId());
         }
         else if (StringUtils.isNotBlank(patronBarcode) && StringUtils.isNotBlank(itemBarcode) && StringUtils.isBlank(status) && StringUtils.isNotBlank(institution)) {
             requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndItemBarcodeAndInstitution(pageable, patronBarcode, itemBarcode,institutionEntity.getInstitutionId());
         }
         else if (StringUtils.isNotBlank(patronBarcode) && StringUtils.isBlank(itemBarcode) && StringUtils.isNotBlank(status) && StringUtils.isBlank(institution)) {
             if (status.equals(RecapConstants.SEARCH_REQUEST_ACTIVE)) {
-                requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndActive(pageable, patronBarcode);
+                requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndActive(pageable, patronBarcode,institutionEntity.getInstitutionId());
             } else {
-                requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndStatus(pageable, patronBarcode, status);
+                requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndStatus(pageable, patronBarcode, status,institutionEntity.getInstitutionId());
             }
         } else if (StringUtils.isNotBlank(patronBarcode) && StringUtils.isBlank(itemBarcode) && StringUtils.isNotBlank(status) && StringUtils.isNotBlank(institution)) {
             if (status.equals(RecapConstants.SEARCH_REQUEST_ACTIVE)) {
@@ -76,9 +83,9 @@ public class RequestServiceUtil {
         }
         else if (StringUtils.isBlank(patronBarcode) && StringUtils.isNotBlank(itemBarcode) && StringUtils.isNotBlank(status) && StringUtils.isBlank(institution)) {
             if (status.equals(RecapConstants.SEARCH_REQUEST_ACTIVE)) {
-                requestItemEntities = requestItemDetailsRepository.findByItemBarcodeAndActive(pageable, itemBarcode);
+                requestItemEntities = requestItemDetailsRepository.findByItemBarcodeAndActive(pageable, itemBarcode,institutionEntity.getInstitutionId());
             } else {
-                requestItemEntities = requestItemDetailsRepository.findByItemBarcodeAndStatus(pageable, itemBarcode, status);
+                requestItemEntities = requestItemDetailsRepository.findByItemBarcodeAndStatus(pageable, itemBarcode, status,institutionEntity.getInstitutionId());
             }
         }
         else if (StringUtils.isBlank(patronBarcode) && StringUtils.isNotBlank(itemBarcode) && StringUtils.isNotBlank(status) && StringUtils.isNotBlank(institution)) {
@@ -95,7 +102,7 @@ public class RequestServiceUtil {
             requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndInstitution(pageable, patronBarcode,institutionEntity.getInstitutionId());
         }
         else if (StringUtils.isBlank(patronBarcode) && StringUtils.isNotBlank(itemBarcode) && StringUtils.isBlank(status) && StringUtils.isBlank(institution)) {
-            requestItemEntities = requestItemDetailsRepository.findByItemBarcode(pageable, itemBarcode);
+            requestItemEntities = requestItemDetailsRepository.findByItemBarcode(pageable, itemBarcode,institutionEntity.getInstitutionId());
         }
         else if (StringUtils.isBlank(patronBarcode) && StringUtils.isNotBlank(itemBarcode) && StringUtils.isBlank(status) && StringUtils.isNotBlank(institution)) {
             requestItemEntities = requestItemDetailsRepository.findByItemBarcodeAndInstitution(pageable, itemBarcode,institutionEntity.getInstitutionId());
