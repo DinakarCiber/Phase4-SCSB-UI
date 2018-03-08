@@ -351,7 +351,7 @@ public class RecapConstants {
 
     public static final String SCSB_SEARCH_SERVICE_URL = "searchService/search";
     public static final String SCSB_UPDATE_CGD_URL = "updateCgdService/updateCgd";
-    public static final String SCSB_DEACCESSION_URL = "sharedCollection/deaccession";
+    public static final String SCSB_DEACCESSION_URL = "deAccessionService/deaccession";
 
     public static final String SCSB_REPORTS_ACCESSION_DEACCESSION_COUNTS_URL = "reportsService/accessionDeaccessionCounts";
     public static final String SCSB_REPORTS_CGD_ITEM_COUNTS_URL = "reportsService/cgdItemCounts";
