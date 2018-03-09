@@ -1,12 +1,10 @@
 package org.recap.util;
 
-import org.apache.commons.collections.CollectionUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.recap.RecapConstants;
 import org.recap.model.deaccession.DeAccessionItem;
 import org.recap.model.deaccession.DeAccessionRequest;
-import org.recap.model.jpa.ItemChangeLogEntity;
-import org.recap.model.jpa.ItemEntity;
 import org.recap.model.search.BibliographicMarcForm;
 import org.recap.repository.jpa.CustomerCodeDetailsRepository;
 import org.recap.repository.jpa.ItemChangeLogDetailsRepository;
@@ -16,14 +14,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -154,6 +152,7 @@ public class CollectionServiceUtil {
      */
     public void deAccessionItem(BibliographicMarcForm bibliographicMarcForm) {
         try {
+            ObjectMapper objectMapper = new ObjectMapper();
             String itemBarcode = bibliographicMarcForm.getBarcode();
             String deliveryLocation = bibliographicMarcForm.getDeliveryLocation();
             String userName = bibliographicMarcForm.getUsername();
@@ -163,14 +162,13 @@ public class CollectionServiceUtil {
             deAccessionItem.setDeliveryLocation(deliveryLocation);
             deAccessionRequest.setDeAccessionItems(Arrays.asList(deAccessionItem));
             deAccessionRequest.setUsername(userName);
-            HttpEntity<DeAccessionRequest> requestEntity = new HttpEntity<>(deAccessionRequest, getRestHeaderService().getHttpHeaders());
+            deAccessionRequest.setNotes(bibliographicMarcForm.getDeaccessionNotes());
+            String jsonString = objectMapper.writeValueAsString(deAccessionRequest);
+            HttpEntity<String> requestEntity = new HttpEntity<>(jsonString, getRestHeaderService().getHttpHeaders());
             Map<String, String> resultMap = getRestTemplate().postForObject(getScsbUrl() + RecapConstants.SCSB_DEACCESSION_URL, requestEntity, Map.class);
             String resultMessage = resultMap.get(itemBarcode);
             if (StringUtils.isNotBlank(resultMessage)) {
                 if (resultMessage.contains(RecapConstants.SUCCESS)) {
-                    Date lastUpdatedDate = new Date();
-                    List<ItemEntity> itemEntities = getItemDetailsRepository().findByBarcode(itemBarcode);
-                    saveItemChangeLogEntity(itemEntities, userName, lastUpdatedDate, RecapConstants.DEACCESSION, bibliographicMarcForm.getDeaccessionNotes());
                     bibliographicMarcForm.setSubmitted(true);
                     bibliographicMarcForm.setMessage(RecapConstants.DEACCESSION_SUCCESSFUL);
                 } else if (resultMessage.contains(RecapConstants.REQUESTED_ITEM_DEACCESSIONED)) {
@@ -191,19 +189,4 @@ public class CollectionServiceUtil {
             bibliographicMarcForm.setErrorMessage(RecapConstants.DEACCESSION_FAILED + " - " + e.getMessage());
         }
     }
-
-    private void saveItemChangeLogEntity(List<ItemEntity> itemEntities, String userName, Date lastUpdatedDate, String operationType, String notes) {
-        if (CollectionUtils.isNotEmpty(itemEntities)) {
-            for (ItemEntity itemEntity : itemEntities) {
-                ItemChangeLogEntity itemChangeLogEntity = new ItemChangeLogEntity();
-                itemChangeLogEntity.setUpdatedBy(userName);
-                itemChangeLogEntity.setUpdatedDate(lastUpdatedDate);
-                itemChangeLogEntity.setOperationType(operationType);
-                itemChangeLogEntity.setRecordId(itemEntity.getItemId());
-                itemChangeLogEntity.setNotes(notes);
-                getItemChangeLogDetailsRepository().save(itemChangeLogEntity);
-            }
-        }
-    }
-
 }
