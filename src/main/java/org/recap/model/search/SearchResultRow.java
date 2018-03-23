@@ -60,8 +60,9 @@ public class SearchResultRow {
     private String requestNotes;
     private String requestCreatedBy;
     private String patronEmailId;
-    private Date createdDate;
     private String status;
+    private Date createdDate;
+    private Date lastUpdatedDate;
 
     /**
      * Gets bib id.
@@ -583,5 +584,21 @@ public class SearchResultRow {
      */
     public void setShowAllItems(boolean showAllItems) {
         this.showAllItems = showAllItems;
+    }
+
+    /**
+     * Gets Last updated date.
+     * @return
+     */
+    public Date getLastUpdatedDate() {
+        return lastUpdatedDate;
+    }
+
+    /**
+     * Sets last updated date.
+     * @param lastUpdatedDate
+     */
+    public void setLastUpdatedDate(Date lastUpdatedDate) {
+        this.lastUpdatedDate = lastUpdatedDate;
     }
 }

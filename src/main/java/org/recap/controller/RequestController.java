@@ -714,6 +714,7 @@ public class RequestController {
         searchResultRow.setRequestType(requestItemEntity.getRequestTypeEntity().getRequestTypeCode());
         searchResultRow.setAvailability(requestItemEntity.getItemEntity().getItemStatusEntity().getStatusCode());
         searchResultRow.setCreatedDate(requestItemEntity.getCreatedDate());
+        searchResultRow.setLastUpdatedDate(requestItemEntity.getLastUpdatedDate());
         searchResultRow.setStatus(requestItemEntity.getRequestStatusEntity().getRequestStatusDescription());
         searchResultRow.setRequestNotes(requestItemEntity.getNotes());
         searchResultRow.setShowItems(false);
@@ -743,8 +744,8 @@ public class RequestController {
         }
         searchResultRow.setRequestNotes(requestItemEntity.getNotes());
         searchResultRow.setCreatedDate(requestItemEntity.getCreatedDate());
+        searchResultRow.setLastUpdatedDate(requestItemEntity.getLastUpdatedDate());
         searchResultRow.setStatus(requestItemEntity.getRequestStatusEntity().getRequestStatusDescription());
-
         ItemEntity itemEntity = requestItemEntity.getItemEntity();
         if (null != itemEntity && CollectionUtils.isNotEmpty(itemEntity.getBibliographicEntities())) {
             searchResultRow.setBibId(itemEntity.getBibliographicEntities().get(0).getBibliographicId());
