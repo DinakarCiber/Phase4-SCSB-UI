@@ -124,6 +124,7 @@
                                                 <th>Request Created By</th>
                                                 <th>Patron Email Address</th>
                                                 <th>Created Date</th>
+                                                <th>Last Updated Date</th>
                                                 <th>Status</th>
                                                 <th>Request Notes</th>
                                                 <th>Action</th>
@@ -169,6 +170,10 @@
                                                     <td width="">
                                                         <input type="hidden" th:field="${requestForm.searchResultRows[__${searchResultStat.index}__].createdDate}"/>
                                                         <span th:text="${#dates.format(searchResult.createdDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
+                                                    </td>
+                                                    <td width="">
+                                                        <input type="hidden"  th:field="${requestForm.searchResultRows[__${searchResultStat.index}__].lastUpdatedDate}"/>
+                                                        <span th:text="${#dates.format(searchResult.lastUpdatedDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
                                                     </td>
                                                     <td width="">
                                                         <input type="hidden" th:field="${requestForm.searchResultRows[__${searchResultStat.index}__].status}"/>

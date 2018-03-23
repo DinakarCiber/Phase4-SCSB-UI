@@ -1,9 +1,11 @@
 package org.recap.model.search;
 
+import java.util.Comparator;
+
 /**
  * Created by rajeshbabuk on 25/7/16.
  */
-public class BibDataField {
+public class BibDataField implements Comparable<BibDataField>{
 
     private String dataFieldTag;
     private char indicator1;
@@ -81,4 +83,12 @@ public class BibDataField {
     public void setDataFieldValue(String dataFieldValue) {
         this.dataFieldValue = dataFieldValue;
     }
+
+    private static final Comparator<BibDataField> BIB_DATA_FIELD_COMPARATOR = Comparator.comparing(BibDataField::getDataFieldTag,Comparator.nullsFirst(String::compareTo)).thenComparing(BibDataField::getDataFieldValue,Comparator.nullsFirst(String::compareTo));
+
+    @Override
+    public int compareTo(BibDataField bibDataField) {
+        return BIB_DATA_FIELD_COMPARATOR.compare(this,bibDataField);
+    }
+
 }
