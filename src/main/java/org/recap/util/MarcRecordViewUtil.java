@@ -163,6 +163,7 @@ public class MarcRecordViewUtil {
                 bibDataFields.add(bibDataField);
             }
         }
+        Collections.sort(bibDataFields);
         return bibDataFields;
     }
 }
