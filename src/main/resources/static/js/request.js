@@ -464,7 +464,10 @@ function resetDefaults() {
     $('#patronEmailId').val('');
     $('#requestTypeId').val('RETRIEVAL');
     $('#deliveryLocationId').val('');
-    $('#requestingInstitutionId').val('');
+    var length = $('select#requestingInstitutionId option').length;
+    if(length>2){
+        $('#requestingInstitutionId').val('');
+    }
     $('#requestNotesId').val('');
     $('#deliverylocation_request').show();
     $('#deliveryLocationId').empty();
