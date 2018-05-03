@@ -579,7 +579,9 @@ public class RequestController {
         }
 
         requestForm.setRequestingInstitutions(requestForm.getInstitutionList());
-
+        if(requestForm.getInstitutionList().size()==1){
+            requestForm.setDisableRequestingInstitution(true);
+        }
         if(requestForm.getErrorMessage()==null){
         requestForm.setSubmitted(true);
         requestForm.setDisableRequestingInstitution(true);
