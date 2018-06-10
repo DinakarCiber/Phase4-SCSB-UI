@@ -1,3 +1,8 @@
+
+
+    $("a[href='https://htcrecap.atlassian.net/wiki/display/RTG/Search']").attr('href',
+        'https://htcrecap.atlassian.net/wiki/display/RTG/Bulk+Request');
+
 function loadCreateRequest(){
     var $form = $('#bulkRequest-form');
     var url = "/bulkRequest/loadCreateRequest";
