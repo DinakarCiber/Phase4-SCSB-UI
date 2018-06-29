@@ -2,6 +2,9 @@
  * Created by rajeshbabuk on 4/4/17.
  */
 
+$("a[href='https://htcrecap.atlassian.net/wiki/display/RTG/Search']").attr('href',
+    'https://htcrecap.atlassian.net/wiki/spaces/RTG/pages/434831363/Scheduled+Batch+Jobs');
+
 function showScheduleJob(index) {
     showScheduleJobView(index, 'Schedule');
     $("#scheduleJobButtonId").show();
