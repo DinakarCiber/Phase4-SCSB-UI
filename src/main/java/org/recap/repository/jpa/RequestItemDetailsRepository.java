@@ -330,4 +330,28 @@ public interface RequestItemDetailsRepository extends JpaRepository<RequestItemE
      * @return the list
      */
     List<RequestItemEntity> findByRequestIdIn(List<Integer> requestId);
+
+    @Query(value = "select request from RequestItemEntity request inner join request.itemEntity item inner join request.requestStatusEntity status where (request.patronId = :patronBarcode and item.barcode = :itemBarcode and request.requestingInstitutionId = :institutionId and request.isGFAStatusSch = true) OR (request.patronId = :patronBarcode and item.barcode = :itemBarcode and item.owningInstitutionId = :institutionId and request.requestingInstitutionId not in (:institutionId) and request.isGFAStatusSch = true)")
+    Page<RequestItemEntity> findByPatronBarcodeAndItemBarcodeAndIsGFAStatusSchAndInstitution(Pageable pageable,@Param("patronBarcode") String patronBarcode,@Param("itemBarcode")String itemBarcode,@Param("institutionId")Integer institutionId);
+
+    @Query(value = "select request from RequestItemEntity request inner join request.itemEntity item inner join request.requestStatusEntity status where (request.patronId = :patronBarcode and item.barcode = :itemBarcode and request.isGFAStatusSch = true)  OR (request.patronId = :patronBarcode and item.barcode = :itemBarcode and request.requestingInstitutionId not in (:institutionId) and item.owningInstitutionId = :institutionId and request.isGFAStatusSch = true)")
+    Page<RequestItemEntity> findByPatronBarcodeAndItemBarcodeAndIsGFAStatusSch(Pageable pageable,@Param("patronBarcode") String patronBarcode,@Param("itemBarcode") String itemBarcode,@Param("institutionId") Integer institutionId);
+
+    @Query(value = "select request from RequestItemEntity request inner join request.itemEntity item inner join request.requestStatusEntity status where (request.patronId = :patronBarcode and request.isGFAStatusSch = true) OR (request.patronId = :patronBarcode and request.requestingInstitutionId not in (:institutionId) and item.owningInstitutionId = :institutionId and request.isGFAStatusSch = true)")
+    Page<RequestItemEntity> findByPatronBarcodeAndIsGFAStatusSch(Pageable pageable,@Param("patronBarcode") String patronBarcode,@Param("institutionId") Integer institutionId);
+
+    @Query(value = "select request from RequestItemEntity request inner join request.itemEntity item inner join request.requestStatusEntity status where (request.patronId = :patronBarcode and request.requestingInstitutionId = :institutionId and request.isGFAStatusSch = true) OR (request.patronId = :patronBarcode and request.requestingInstitutionId not in (:institutionId) and item.owningInstitutionId = :institutionId and request.isGFAStatusSch = true)")
+    Page<RequestItemEntity> findByPatronBarcodeAndIsGFAStatusSchAndInstitution(Pageable pageable,@Param("patronBarcode") String patronBarcode,@Param("institutionId") Integer institutionId);
+
+    @Query(value = "select request from RequestItemEntity request inner join request.itemEntity item inner join request.requestStatusEntity status where (item.barcode = :itemBarcode and request.isGFAStatusSch = true) OR (item.barcode = :itemBarcode and request.requestingInstitutionId not in (:institutionId) and item.owningInstitutionId = :institutionId and request.isGFAStatusSch = true)")
+    Page<RequestItemEntity> findByItemBarcodeAndIsGFAStatusSch(Pageable pageable,@Param("itemBarcode") String itemBarcode,@Param("institutionId") Integer institutionId);
+
+    @Query(value = "select request from RequestItemEntity request inner join request.itemEntity item inner join request.requestStatusEntity status where (item.barcode = :itemBarcode and request.requestingInstitutionId = :institutionId and request.isGFAStatusSch = true) OR (item.barcode = :itemBarcode and request.requestingInstitutionId not in (:institutionId) and item.owningInstitutionId = :institutionId and request.isGFAStatusSch = true)")
+    Page<RequestItemEntity> findByItemBarcodeAndIsGFAStatusSchAndInstitution(Pageable pageable,@Param("itemBarcode") String itemBarcode,@Param ("institutionId") Integer institutionId);
+
+    @Query(value = "select request from RequestItemEntity request inner join request.itemEntity item inner join request.requestStatusEntity status where request.isGFAStatusSch = true")
+    Page<RequestItemEntity> findAllIsGFAStatusSch(Pageable pageable);
+
+    @Query(value = "select request from RequestItemEntity request inner join request.requestStatusEntity status inner join request.itemEntity item where (request.requestingInstitutionId = :institutionId and request.isGFAStatusSch = true) OR (request.requestingInstitutionId not in (:institutionId) and item.owningInstitutionId = :institutionId and request.isGFAStatusSch = true)")
+    Page<RequestItemEntity> findAllIsGFAStatusSchAndInstitution(Pageable pageable,@Param("institutionId") Integer institutionId);
 }
