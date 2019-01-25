@@ -526,6 +526,7 @@ public class RecapConstants {
     public static final String INVALID_REQUEST = "InvalidRequest";
     public static final String REQUEST_IDS = "RequestIds";
     public static final String EXCEPTION = "EXCEPTION";
+    public static final String REQUESTS_PLACED_ON_SCH = "REQUESTS PLACED ON SCH";
 
     private RecapConstants(){
         //Do nothing

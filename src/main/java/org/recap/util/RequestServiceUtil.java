@@ -51,14 +51,20 @@ public class RequestServiceUtil {
         if (StringUtils.isNotBlank(patronBarcode) && StringUtils.isNotBlank(itemBarcode) && StringUtils.isNotBlank(status) && StringUtils.isNotBlank(institution)) {
             if (status.equals(RecapConstants.SEARCH_REQUEST_ACTIVE)) {
                 requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndItemBarcodeAndActiveAndInstitution(pageable, patronBarcode, itemBarcode,institutionEntity.getInstitutionId());
-            } else {
+            } else if(status.equals(RecapConstants.REQUESTS_PLACED_ON_SCH)){
+                requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndItemBarcodeAndIsGFAStatusSchAndInstitution(pageable,patronBarcode,itemBarcode,institutionEntity.getInstitutionId());
+            }
+            else {
                 requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndItemBarcodeAndStatusAndInstitution(pageable, patronBarcode, itemBarcode, status,institutionEntity.getInstitutionId());
             }
         }
         else if (StringUtils.isNotBlank(patronBarcode) && StringUtils.isNotBlank(itemBarcode) && StringUtils.isNotBlank(status) && StringUtils.isBlank(institution)) {
             if (status.equals(RecapConstants.SEARCH_REQUEST_ACTIVE)) {
                 requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndItemBarcodeAndActive(pageable, patronBarcode, itemBarcode,institutionEntity.getInstitutionId());
-            } else {
+            } else if(status.equals(RecapConstants.REQUESTS_PLACED_ON_SCH)){
+                requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndItemBarcodeAndIsGFAStatusSch(pageable,patronBarcode,itemBarcode,institutionEntity.getInstitutionId());
+            }
+            else {
                 requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndItemBarcodeAndStatus(pageable, patronBarcode, itemBarcode,status,institutionEntity.getInstitutionId());
             }
         }
@@ -71,27 +77,37 @@ public class RequestServiceUtil {
         else if (StringUtils.isNotBlank(patronBarcode) && StringUtils.isBlank(itemBarcode) && StringUtils.isNotBlank(status) && StringUtils.isBlank(institution)) {
             if (status.equals(RecapConstants.SEARCH_REQUEST_ACTIVE)) {
                 requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndActive(pageable, patronBarcode,institutionEntity.getInstitutionId());
-            } else {
+            } else if(status.equals(RecapConstants.REQUESTS_PLACED_ON_SCH)){
+                requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndIsGFAStatusSch(pageable,patronBarcode,institutionEntity.getInstitutionId());
+            }
+            else {
                 requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndStatus(pageable, patronBarcode, status,institutionEntity.getInstitutionId());
             }
         } else if (StringUtils.isNotBlank(patronBarcode) && StringUtils.isBlank(itemBarcode) && StringUtils.isNotBlank(status) && StringUtils.isNotBlank(institution)) {
             if (status.equals(RecapConstants.SEARCH_REQUEST_ACTIVE)) {
                 requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndActiveAndInstitution(pageable, patronBarcode,institutionEntity.getInstitutionId());
-            } else {
+            } else if(status.equals(RecapConstants.REQUESTS_PLACED_ON_SCH)){
+                requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndIsGFAStatusSchAndInstitution(pageable,patronBarcode,institutionEntity.getInstitutionId());
+            }
+            else {
                 requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndStatusAndInstitution(pageable, patronBarcode, status,institutionEntity.getInstitutionId());
             }
         }
         else if (StringUtils.isBlank(patronBarcode) && StringUtils.isNotBlank(itemBarcode) && StringUtils.isNotBlank(status) && StringUtils.isBlank(institution)) {
             if (status.equals(RecapConstants.SEARCH_REQUEST_ACTIVE)) {
                 requestItemEntities = requestItemDetailsRepository.findByItemBarcodeAndActive(pageable, itemBarcode,institutionEntity.getInstitutionId());
-            } else {
+            } else if(status.equals(RecapConstants.REQUESTS_PLACED_ON_SCH)){
+                requestItemEntities = requestItemDetailsRepository.findByItemBarcodeAndIsGFAStatusSch(pageable,itemBarcode,institutionEntity.getInstitutionId());
+            }else {
                 requestItemEntities = requestItemDetailsRepository.findByItemBarcodeAndStatus(pageable, itemBarcode, status,institutionEntity.getInstitutionId());
             }
         }
         else if (StringUtils.isBlank(patronBarcode) && StringUtils.isNotBlank(itemBarcode) && StringUtils.isNotBlank(status) && StringUtils.isNotBlank(institution)) {
             if (status.equals(RecapConstants.SEARCH_REQUEST_ACTIVE)) {
                 requestItemEntities = requestItemDetailsRepository.findByItemBarcodeAndActiveAndInstitution(pageable, itemBarcode,institutionEntity.getInstitutionId());
-            } else {
+            } else if(status.equals(RecapConstants.REQUESTS_PLACED_ON_SCH)){
+                requestItemEntities = requestItemDetailsRepository.findByItemBarcodeAndIsGFAStatusSchAndInstitution(pageable,itemBarcode,institutionEntity.getInstitutionId());
+            }else {
                 requestItemEntities = requestItemDetailsRepository.findByItemBarcodeAndStatusAndInstitution(pageable, itemBarcode, status,institutionEntity.getInstitutionId());
             }
         }
@@ -110,14 +126,18 @@ public class RequestServiceUtil {
         else if (StringUtils.isBlank(patronBarcode) && StringUtils.isBlank(itemBarcode) && StringUtils.isNotBlank(status) && StringUtils.isBlank(institution)) {
             if (status.equals(RecapConstants.SEARCH_REQUEST_ACTIVE)) {
                 requestItemEntities = requestItemDetailsRepository.findAllActive(pageable);
-            } else {
+            } else if(status.equals(RecapConstants.REQUESTS_PLACED_ON_SCH)){
+                requestItemEntities = requestItemDetailsRepository.findAllIsGFAStatusSch(pageable);
+            }else {
                 requestItemEntities = requestItemDetailsRepository.findByStatus(pageable, status);
             }
         }
         else if (StringUtils.isBlank(patronBarcode) && StringUtils.isBlank(itemBarcode) && StringUtils.isNotBlank(status) && StringUtils.isNotBlank(institution)) {
             if (status.equals(RecapConstants.SEARCH_REQUEST_ACTIVE)) {
                 requestItemEntities = requestItemDetailsRepository.findAllActiveAndInstitution(pageable,institutionEntity.getInstitutionId());
-            } else {
+            } else if(status.equals(RecapConstants.REQUESTS_PLACED_ON_SCH)){
+                requestItemEntities = requestItemDetailsRepository.findAllIsGFAStatusSchAndInstitution(pageable,institutionEntity.getInstitutionId());
+            }else {
                 requestItemEntities = requestItemDetailsRepository.findByStatusAndInstitution(pageable, status,institutionEntity.getInstitutionId());
             }
         }
