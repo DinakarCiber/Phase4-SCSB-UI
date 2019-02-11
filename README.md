@@ -1,4 +1,4 @@
 # scsb-ui
-UI Module for ReCAP
+User Interface Module for ReCAP
 
-[![HTC](https://github.com/premkumarbalu/images/blob/master/htc-global-services-squarelogo.png)](https://www.htcinc.com/)
+SCSB-UI is a microservice application that provides the User Interface for the application.The User Interface has a user login on successful authentication. Based on the user’s privileges, the User Interface provides search functionality, request, reporting, batch jobs accessibility, and user management.
