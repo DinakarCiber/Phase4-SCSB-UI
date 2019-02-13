@@ -222,7 +222,7 @@ function statusChange(){
                             $('#refreshIcon-' + key).hide();
                             $('#removeName-' + key).removeAttr("name");
                         }
-                        if(reqStatus == "RETRIEVAL ORDER PLACED" ||  reqStatus == "RECALL ORDER PLACED" || reqStatus == "EDD ORDER PLACED") {
+                        if(reqStatus == "RETRIEVAL ORDER PLACED" ||  reqStatus == "RECALL ORDER PLACED" || reqStatus == "EDD ORDER PLACED" || reqStatus == "LAS REFILE REQUEST PLACED") {
                             $('#showCancelButton-' + key).css("display", "block");}
                             $.each(changeNotes,function (key,value) {
                                 $("#notes-" + key).val(value);
