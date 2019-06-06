@@ -579,10 +579,14 @@ function createRequestSamePatron() {
 function cancelRequest(index) {
     var requestId = $("#requestRowRequestId-" + index).val();
     $("#requestIdHdn").val(requestId);
-    cancelRequestItem(index);
+    $('#cancelConfirmationModal').modal('show');
+    $("#cancelConfirmIndexId").val(index);
+    $("#cancelConfirmRequestId").val(requestId);
 }
 
-function cancelRequestItem(index) {
+function cancelRequestItem() {
+    $('#cancelConfirmationModal').modal('hide');
+    var index = $("#cancelConfirmIndexId").val();
     var $form = $('#request-form');
     var url = $form.attr('action') + "?action=cancelRequest";
     $.ajax({
