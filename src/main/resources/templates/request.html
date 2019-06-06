@@ -196,6 +196,30 @@
                                                         <button th:if="${searchResult.status == 'EXCEPTION' &amp;&amp; (session.isReSubmitRequestAllowed || session.isSuperAdmin)}" th:disabled="${searchResult.status == 'EXCEPTION' &amp;&amp; searchResult.availability == 'Not Available' &amp;&amp; (session.isReSubmitRequestAllowed || session.isSuperAdmin)}" th:title="'Resubmit Request'" data-th-id="'resubmitButton-' + ${searchResultStat.index}" type="button" class="btn btn-round" style="background-color:transparent;box-shadow: none;outline: none;color: #337ab7;border-color:#337ab7" name="action" th:onclick="'javascript:resubmitRequest('+${searchResultStat.index}+')'">Resubmit Request
                                                         </button>
                                                     </td>
+                                                    <!-- PopUP for Cancel Request-->
+                                                    <div id="cancelConfirmationModal" class="modal fade" role="dialog" data-keyboard="false" data-backdrop="static">
+                                                        <div class="modal-dialog">
+                                                            <div id="deleteConfModalContent" class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h4 class="modal-title">Cancel Confirmation</h4>
+                                                                </div>
+                                                                <div class="modal-body" style="height: 100px;">
+                                                                    <p>Do you want to Cancel the existing Request?</p>
+                                                                    <div class="col-sm-4 pull-right">
+                                                                        <input id="cancelConfirmIndexId" name="cancelConfirmIndexId" type="text" hidden="hidden"/>
+                                                                        <input id="cancelConfirmRequestId" name="cancelConfirmRequestId" type="text" hidden="hidden"/>
+                                                                        <button id="proceedBtn"  type="button" name="action"
+                                                                                class="btn btn-primary" onclick="cancelRequestItem()">Proceed
+                                                                        </button>
+                                                                        <button id="cancelBtn" type="button" name="cancel" data-dismiss="modal"
+                                                                                class="btn btn-danger">Cancel
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- PopUP for Cancel Request-->
                                                 </tr>
                                             </tbody>
                                         </table>
