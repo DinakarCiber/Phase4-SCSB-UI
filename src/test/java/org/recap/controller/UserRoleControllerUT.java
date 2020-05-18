@@ -21,7 +21,6 @@ import org.recap.util.UserAuthUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -32,6 +31,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.*;
+import java.util.function.Function;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
@@ -488,7 +488,7 @@ public class UserRoleControllerUT extends BaseTestCase {
     }
 
     public Page getPage(){
-        Page<UsersEntity> page = new Page<UsersEntity>() {
+       Page<UsersEntity> page = new Page<UsersEntity>() {
             @Override
             public int getTotalPages() {
                 return 0;
@@ -499,10 +499,15 @@ public class UserRoleControllerUT extends BaseTestCase {
                 return 2;
             }
 
-            @Override
+           @Override
+           public <U> Page<U> map(Function<? super UsersEntity, ? extends U> converter) {
+               return null;
+           }
+
+           /*@Override
             public <S> Page<S> map(Converter<? super UsersEntity, ? extends S> converter) {
                 return null;
-            }
+            }*/
 
             @Override
             public int getNumber() {

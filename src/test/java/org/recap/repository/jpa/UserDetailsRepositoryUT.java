@@ -59,7 +59,7 @@ public class UserDetailsRepositoryUT extends BaseTestCase {
     public void findAll(){
         UsersEntity usersEntity = saveUser("testUt", "desc", 1, Arrays.asList(1, 2), "testUt@mail.com");
         assertNotNull(usersEntity);
-        Page<UsersEntity> usersEntity1 = userDetailsRepository.findAll(new PageRequest(1, 10));
+        Page<UsersEntity> usersEntity1 = userDetailsRepository.findAll(PageRequest.of(1, 10));
         assertNotNull(usersEntity1);
     }
 
@@ -69,7 +69,7 @@ public class UserDetailsRepositoryUT extends BaseTestCase {
         assertNotNull(usersEntity);
         InstitutionEntity institutionEntity = new InstitutionEntity();
         institutionEntity.setInstitutionId(1);
-        Page<UsersEntity> usersEntity1 = userDetailsRepository.findByInstitutionEntity(1 ,new PageRequest(1, 10));
+        Page<UsersEntity> usersEntity1 = userDetailsRepository.findByInstitutionEntity(1 , PageRequest.of(1, 10));
         assertNotNull(usersEntity1);
     }
 
@@ -77,7 +77,7 @@ public class UserDetailsRepositoryUT extends BaseTestCase {
     public void findByLoginIdPage(){
         UsersEntity usersEntity = saveUser("testUt", "desc", 1, Arrays.asList(1, 2), "testUt@mail.com");
         assertNotNull(usersEntity);
-        Page<UsersEntity> usersEntity1 = userDetailsRepository.findByLoginId(usersEntity.getLoginId(),new PageRequest(1, 10));
+        Page<UsersEntity> usersEntity1 = userDetailsRepository.findByLoginId(usersEntity.getLoginId(),PageRequest.of(1, 10));
         assertNotNull(usersEntity1);
     }
 
@@ -87,7 +87,7 @@ public class UserDetailsRepositoryUT extends BaseTestCase {
         assertNotNull(usersEntity);
         InstitutionEntity institutionEntity = new InstitutionEntity();
         institutionEntity.setInstitutionId(1);
-        Page<UsersEntity> usersEntity1 = userDetailsRepository.findByLoginIdAndInstitutionEntity(usersEntity.getLoginId(),1 ,new PageRequest(1, 10));
+        Page<UsersEntity> usersEntity1 = userDetailsRepository.findByLoginIdAndInstitutionEntity(usersEntity.getLoginId(),1 ,PageRequest.of(1, 10));
         assertNotNull(usersEntity1);
     }
 
@@ -105,7 +105,7 @@ public class UserDetailsRepositoryUT extends BaseTestCase {
     public void findByEmailId(){
         UsersEntity usersEntity = saveUser("testUt", "desc", 1, Arrays.asList(1, 2), "testUt@mail.com");
         assertNotNull(usersEntity);
-        Page<UsersEntity> usersEntity1 = userDetailsRepository.findByEmailId(usersEntity.getEmailId(), new PageRequest(1, 10));
+        Page<UsersEntity> usersEntity1 = userDetailsRepository.findByEmailId(usersEntity.getEmailId(), PageRequest.of(1, 10));
         assertNotNull(usersEntity1);
     }
 
@@ -115,7 +115,7 @@ public class UserDetailsRepositoryUT extends BaseTestCase {
         assertNotNull(usersEntity);
         InstitutionEntity institutionEntity = new InstitutionEntity();
         institutionEntity.setInstitutionId(1);
-        Page<UsersEntity> usersEntity1 = userDetailsRepository.findByEmailIdAndInstitutionEntity(usersEntity.getEmailId(),institutionEntity,new PageRequest(1, 10));
+        Page<UsersEntity> usersEntity1 = userDetailsRepository.findByEmailIdAndInstitutionEntity(usersEntity.getEmailId(),institutionEntity, PageRequest.of(1, 10));
         assertNotNull(usersEntity1);
     }
 
@@ -123,7 +123,7 @@ public class UserDetailsRepositoryUT extends BaseTestCase {
     public void findByLoginIdAndEmailId(){
         UsersEntity usersEntity = saveUser("testUt", "desc", 1, Arrays.asList(1, 2), "testUt@mail.com");
         assertNotNull(usersEntity);
-        Page<UsersEntity> usersEntity1 = userDetailsRepository.findByLoginIdAndEmailId(usersEntity.getEmailId(), usersEntity.getEmailId(),new PageRequest(1, 10));
+        Page<UsersEntity> usersEntity1 = userDetailsRepository.findByLoginIdAndEmailId(usersEntity.getEmailId(), usersEntity.getEmailId(), PageRequest.of(1, 10));
         assertNotNull(usersEntity1);
     }
 
@@ -133,7 +133,7 @@ public class UserDetailsRepositoryUT extends BaseTestCase {
         assertNotNull(usersEntity);
         InstitutionEntity institutionEntity = new InstitutionEntity();
         institutionEntity.setInstitutionId(1);
-        Page<UsersEntity> usersEntity1 = userDetailsRepository.findByLoginIdAndEmailIdAndInstitutionEntity(usersEntity.getLoginId(),usersEntity.getEmailId(),institutionEntity,new PageRequest(1, 10));
+        Page<UsersEntity> usersEntity1 = userDetailsRepository.findByLoginIdAndEmailIdAndInstitutionEntity(usersEntity.getLoginId(),usersEntity.getEmailId(),institutionEntity,PageRequest.of(1, 10));
         assertNotNull(usersEntity1);
         assertNotNull(usersEntity1);
     }

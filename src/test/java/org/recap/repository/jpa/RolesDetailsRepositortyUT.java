@@ -125,7 +125,7 @@ public class RolesDetailsRepositortyUT extends BaseTestCase {
 
         RoleEntity savedRoleEntity = rolesDetailsRepositorty.save(roleEntity);
 
-        rolesDetailsRepositorty.delete(savedRoleEntity.getRoleId());
+        rolesDetailsRepositorty.deleteById(savedRoleEntity.getRoleId());
 
     }
 
@@ -148,7 +148,7 @@ public class RolesDetailsRepositortyUT extends BaseTestCase {
 
         RoleEntity savedRoleEntity = rolesDetailsRepositorty.save(roleEntity);
 
-        Pageable pageable = new PageRequest(0,1);
+        Pageable pageable = PageRequest.of(0,1);
         Page<RoleEntity> rolesWithoutSuperAdmin = rolesDetailsRepositorty.getRolesWithoutSuperAdmin(pageable);
         List<RoleEntity> roleContent = rolesWithoutSuperAdmin.getContent();
         for (RoleEntity entity : roleContent) {

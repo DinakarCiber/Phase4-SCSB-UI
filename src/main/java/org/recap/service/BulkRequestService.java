@@ -208,14 +208,14 @@ public class BulkRequestService {
     }
 
     public BulkRequestItemEntity saveUpadatedRequestStatus(Integer bulkRequestId) throws Exception {
-        BulkRequestItemEntity bulkRequestItemEntity = bulkRequestDetailsRepository.findOne(bulkRequestId);
+        Optional<BulkRequestItemEntity> bulkRequestItemEntity = bulkRequestDetailsRepository.findById(bulkRequestId);
         if(bulkRequestItemEntity !=null){
-            if("PROCESSED".equalsIgnoreCase(bulkRequestItemEntity.getBulkRequestStatus())){
+            if("PROCESSED".equalsIgnoreCase(bulkRequestItemEntity.get().getBulkRequestStatus())){
                 StringBuilder csvRowBuilder = new StringBuilder();
                 Map<Integer, String> currentStatus = new HashMap<>();
                 Map<Integer, String> exceptionNote = new HashMap<>();
-                getCurrentRequestStatus(bulkRequestItemEntity,currentStatus,exceptionNote);
-                String bulkRequestFileData = new String(bulkRequestItemEntity.getBulkRequestFileData());
+                getCurrentRequestStatus(bulkRequestItemEntity.get(),currentStatus,exceptionNote);
+                String bulkRequestFileData = new String(bulkRequestItemEntity.get().getBulkRequestFileData());
                 String[] bulkRequestFileDataSplit = bulkRequestFileData.split("\n");
                 int count = 0;
                 for (String bulkRequestDataRows : bulkRequestFileDataSplit) {
@@ -224,13 +224,13 @@ public class BulkRequestService {
                     count++;
                 }
                 if (bulkRequestFileDataSplit.length == count){
-                    bulkRequestItemEntity.setBulkRequestFileData(csvRowBuilder.toString().getBytes());
-                    bulkRequestDetailsRepository.save(bulkRequestItemEntity);
+                    bulkRequestItemEntity.get().setBulkRequestFileData(csvRowBuilder.toString().getBytes());
+                    bulkRequestDetailsRepository.save(bulkRequestItemEntity.get());
                 }else {
-                    bulkRequestItemEntity.setBulkRequestFileData("Error occurred while processing bulk request report".getBytes());
+                    bulkRequestItemEntity.get().setBulkRequestFileData("Error occurred while processing bulk request report".getBytes());
                 }
             }else {
-                bulkRequestItemEntity.setBulkRequestFileData("Bulk Request is in process state, so bulk request report could not be generated.".getBytes());
+                bulkRequestItemEntity.get().setBulkRequestFileData("Bulk Request is in process state, so bulk request report could not be generated.".getBytes());
             }
         }else{
             BulkRequestItemEntity notFoundEntity = new BulkRequestItemEntity();
@@ -238,7 +238,7 @@ public class BulkRequestService {
             notFoundEntity.setBulkRequestFileData("Unable to generate bulk request report".getBytes());
             return  notFoundEntity;
         }
-        return bulkRequestItemEntity;
+        return bulkRequestItemEntity.get();
     }
 
     private void getCurrentRequestStatus(BulkRequestItemEntity bulkRequestItemEntity,Map<Integer, String> currentStatus,Map<Integer, String> exceptionNote) {

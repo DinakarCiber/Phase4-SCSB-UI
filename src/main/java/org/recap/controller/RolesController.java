@@ -387,7 +387,7 @@ public class RolesController {
 
         } else if (!StringUtils.isEmpty(rolesForm.getRoleName()) && StringUtils.isEmpty(rolesForm.getPermissionNames())) {
             if (isSpecialCharacterCheck(rolesForm.getRoleName())) {
-                Pageable pageable = new PageRequest(rolesForm.getPageNumber(), rolesForm.getPageSize());
+                Pageable pageable = PageRequest.of(rolesForm.getPageNumber(), rolesForm.getPageSize());
                 Page<RoleEntity> rolesEntityListByPagination = rolesDetailsRepositorty.findByRoleName(pageable, rolesForm.getRoleName());
                 List<RoleEntity> roleEntityList = rolesEntityListByPagination.getContent();
                 rolesForm.setTotalRecordCount(NumberFormat.getNumberInstance().format(rolesEntityListByPagination.getTotalElements()));
@@ -408,7 +408,7 @@ public class RolesController {
             rolesForm.setPageSize(10);
         } else if (!StringUtils.isEmpty(rolesForm.getPermissionNames()) && StringUtils.isEmpty(rolesForm.getRoleName())) {
                 if (isSpecialCharacterCheck(rolesForm.getPermissionNames())) {
-                    Pageable pageable = new PageRequest(rolesForm.getPageNumber(), rolesForm.getPageSize());
+                    Pageable pageable = PageRequest.of(rolesForm.getPageNumber(), rolesForm.getPageSize());
                     PermissionEntity pemissionEntity = permissionsRepository.findByPermissionName(rolesForm.getPermissionNames());
                     getResultsForNonEmptyRolePermissionName(rolesForm, rolesSearchResults, pageable, pemissionEntity);
                 }
@@ -449,7 +449,7 @@ public class RolesController {
                 }
             rolesForm.setPageSize(10);
             } else if (StringUtils.isEmpty(rolesForm.getRoleName()) && StringUtils.isEmpty(rolesForm.getPermissionNames())) {
-                Pageable pageable = new PageRequest(rolesForm.getPageNumber(), rolesForm.getPageSize());
+                Pageable pageable = PageRequest.of(rolesForm.getPageNumber(), rolesForm.getPageSize());
                 Page<RoleEntity> rolesEntityListByPagination = rolesDetailsRepositorty.getRolesWithoutSuperAdmin(pageable);
                 List<RoleEntity> rolesEntityList = rolesEntityListByPagination.getContent();
                 rolesForm.setTotalRecordCount(NumberFormat.getNumberInstance().format(rolesEntityListByPagination.getTotalElements()));
@@ -536,7 +536,7 @@ public class RolesController {
      */
     public void findByPagination(RolesForm rolesForm){
         List<RolesSearchResult> rolesSearchResults = new ArrayList<>();
-        Pageable pageable = new PageRequest(rolesForm.getPageNumber(), rolesForm.getPageSize());
+        Pageable pageable = PageRequest.of(rolesForm.getPageNumber(), rolesForm.getPageSize());
         List<RoleEntity> rolesEntityList;
         if(!StringUtils.isEmpty(rolesForm.getRoleName()) && StringUtils.isEmpty(rolesForm.getPermissionNames())){
             Page<RoleEntity> rolesEntityListByPagination = rolesDetailsRepositorty.findByRoleName(pageable, rolesForm.getRoleName());
@@ -550,7 +550,7 @@ public class RolesController {
             rolesForm.setRolesSearchResults(rolesSearchResults);
         }
         else if(StringUtils.isEmpty(rolesForm.getRoleName()) && !StringUtils.isEmpty(rolesForm.getPermissionNames())){
-            Pageable pageable1 = new PageRequest(rolesForm.getPageNumber(), rolesForm.getPageSize());
+            Pageable pageable1 = PageRequest.of(rolesForm.getPageNumber(), rolesForm.getPageSize());
             PermissionEntity pemissionEntity = permissionsRepository.findByPermissionName(rolesForm.getPermissionNames());
             getResultsForNonEmptyRolePermissionName(rolesForm, rolesSearchResults, pageable1, pemissionEntity);
 
