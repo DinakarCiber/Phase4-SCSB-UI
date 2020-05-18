@@ -1,8 +1,9 @@
 
 package org.recap.model.jaxb.marc;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.recap.model.jaxb.JAXBContextHandler;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
@@ -42,7 +43,7 @@ import java.util.List;
 @XmlRootElement(name = "collection")
 public class CollectionType implements Serializable {
 
-    private static final Logger LOG = Logger.getLogger(CollectionType.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CollectionType.class);
 
     @XmlElement(nillable = true)
     private List<RecordType> record;

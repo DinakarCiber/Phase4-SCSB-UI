@@ -114,14 +114,14 @@ public class BibliographicEntityUT extends BaseTestCase {
             BibliographicEntity entity3 = bibliographicDetailsRepository.save(bibliographicEntity2);
             assertNotNull(entity3);
 
-            Page<BibliographicEntity> byInstitutionId = bibliographicDetailsRepository.findByOwningInstitutionIdAndIsDeletedFalse(new PageRequest(0, 3), 3);
+            Page<BibliographicEntity> byInstitutionId = bibliographicDetailsRepository.findByOwningInstitutionIdAndIsDeletedFalse(PageRequest.of(0, 3), 3);
             assertNotNull(byInstitutionId);
             assertTrue(byInstitutionId.getContent().size() == 3);
             bibliographicDetailsRepository.delete(bibliographicEntity);
             bibliographicDetailsRepository.delete(bibliographicEntity1);
             bibliographicDetailsRepository.delete(bibliographicEntity2);
         } else {
-            Page<BibliographicEntity> byInstitutionId = bibliographicDetailsRepository.findByOwningInstitutionIdAndIsDeletedFalse(new PageRequest(0, 3), 3);
+            Page<BibliographicEntity> byInstitutionId = bibliographicDetailsRepository.findByOwningInstitutionIdAndIsDeletedFalse(PageRequest.of(0, 3), 3);
             assertNotNull(byInstitutionId);
             assertTrue(byInstitutionId.getContent().size() == 3);
         }
@@ -271,7 +271,7 @@ public class BibliographicEntityUT extends BaseTestCase {
         bibliographicEntity1.setHoldingsEntities(Arrays.asList(holdingsEntity));
         bibliographicEntity2.setHoldingsEntities(Arrays.asList(holdingsEntity));
 
-        Iterable<BibliographicEntity> savedBibliographicEntities = bibliographicDetailsRepository.save(Arrays.asList(bibliographicEntity1, bibliographicEntity2));
+        Iterable<BibliographicEntity> savedBibliographicEntities = bibliographicDetailsRepository.saveAll(Arrays.asList(bibliographicEntity1, bibliographicEntity2));
         assertNotNull(savedBibliographicEntities);
     }
 

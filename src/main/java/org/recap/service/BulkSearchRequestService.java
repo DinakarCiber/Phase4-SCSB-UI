@@ -38,7 +38,7 @@ public class BulkSearchRequestService {
         if (institutionEntity != null){
             requestingInstitutionId = institutionEntity.getInstitutionId();
         }
-        Pageable pageable = new PageRequest(bulkRequestForm.getPageNumber(), bulkRequestForm.getPageSize(), Sort.Direction.DESC, RecapConstants.BULK_REQUEST_ID);
+        Pageable pageable = PageRequest.of(bulkRequestForm.getPageNumber(), bulkRequestForm.getPageSize(), Sort.Direction.DESC, RecapConstants.BULK_REQUEST_ID);
 
         if (StringUtils.isNotBlank(requestId) && StringUtils.isBlank(bulkRequestName) && StringUtils.isBlank(patronId)) {
             return StringUtils.isNotBlank(institution) ? bulkRequestDetailsRepository.findByBulkRequestIdAndRequestingInstitutionId(pageable,bulkRequestId,requestingInstitutionId)

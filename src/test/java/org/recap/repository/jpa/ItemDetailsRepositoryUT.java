@@ -112,7 +112,7 @@ public class ItemDetailsRepositoryUT extends BaseTestCase {
         ItemEntity byOwningInstitutionItemId = itemDetailsRepository.findByOwningInstitutionItemId(owningInstitutionItemId);
         assertNotNull(byOwningInstitutionItemId);
 
-        Page<ItemEntity> pageByOwningInstitutionId = itemDetailsRepository.findByOwningInstitutionIdAndIsDeletedFalse(new PageRequest(0, 10), owningInstitutionId);
+        Page<ItemEntity> pageByOwningInstitutionId = itemDetailsRepository.findByOwningInstitutionIdAndIsDeletedFalse(PageRequest.of(0, 10), owningInstitutionId);
         assertNotNull(pageByOwningInstitutionId);
         assertTrue(countAfterAdd == pageByOwningInstitutionId.getTotalElements());
 

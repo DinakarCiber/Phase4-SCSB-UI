@@ -9,14 +9,18 @@ import org.recap.security.SessionFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
-import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
-import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
-import org.springframework.boot.context.embedded.tomcat.TomcatConnectorCustomizer;
-import org.springframework.boot.context.embedded.tomcat.TomcatContextCustomizer;
-import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
+//import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
+import org.springframework.boot.web.server.ConfigurableWebServerFactory;
+import org.springframework.boot.web.server.WebServerFactory;
+import org.springframework.boot.web.server.WebServerFactoryCustomizer;
+//import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
+import org.springframework.boot.web.embedded.tomcat.TomcatConnectorCustomizer;
+import org.springframework.boot.web.embedded.tomcat.TomcatContextCustomizer;
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpMethod;
 
 import java.util.HashSet;
@@ -25,6 +29,7 @@ import java.util.Set;
 /**
  * The type Main.
  */
+@PropertySource("classpath:application.properties")
 @SpringBootApplication
 public class Main {
 
@@ -46,8 +51,8 @@ public class Main {
 	 * @return the embedded servlet container factory
 	 */
 	@Bean
-	public EmbeddedServletContainerFactory servletContainerFactory() {
-		TomcatEmbeddedServletContainerFactory factory = new TomcatEmbeddedServletContainerFactory();
+	public ServletWebServerFactory servletContainerFactory() {
+		TomcatServletWebServerFactory factory = new TomcatServletWebServerFactory();
 		factory.addConnectorCustomizers(new TomcatConnectorCustomizer() {
 			@Override
 			public void customize(Connector connector) {
@@ -105,13 +110,14 @@ public class Main {
 	 *
 	 * @return the embedded servlet container customizer
 	 */
+
 	@Bean
-	public EmbeddedServletContainerCustomizer containerCustomizer() {
-		return new EmbeddedServletContainerCustomizer() {
+	public WebServerFactoryCustomizer containerCustomizer() {
+		return new WebServerFactoryCustomizer() {
 			@Override
-			public void customize(ConfigurableEmbeddedServletContainer container) {
-				if (container.getClass().isAssignableFrom(TomcatEmbeddedServletContainerFactory.class)) {
-					TomcatEmbeddedServletContainerFactory tomcatContainer = (TomcatEmbeddedServletContainerFactory) container;
+			public void customize(WebServerFactory container) {
+				if (container.getClass().isAssignableFrom(TomcatServletWebServerFactory.class)) {
+					TomcatServletWebServerFactory tomcatContainer = (TomcatServletWebServerFactory) container;
 					tomcatContainer.addContextCustomizers(new ContextSecurityCustomizer());
 				}
 			}
