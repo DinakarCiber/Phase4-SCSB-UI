@@ -11,7 +11,7 @@ import java.io.Serializable;
 public class BulkCustomerCodeEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "BULK_CUSTOMER_CODE_ID")
     private Integer bulkCustomerCodeId;
 

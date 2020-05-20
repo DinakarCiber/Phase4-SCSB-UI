@@ -12,7 +12,7 @@ import java.util.Date;
 public class ItemChangeLogEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ITEM_CHANGE_LOG_ID")
     private Integer changeLogId;
 

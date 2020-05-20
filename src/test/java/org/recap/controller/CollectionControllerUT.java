@@ -1,6 +1,6 @@
 package org.recap.controller;
 
-import org.apache.catalina.servlet4preview.http.HttpServletRequest;
+import org.apache.catalina.servlet4preview.http .HttpServletRequest;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.junit.Before;
 import org.junit.Test;

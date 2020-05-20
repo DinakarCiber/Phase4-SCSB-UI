@@ -10,7 +10,7 @@ import java.io.Serializable;
 @Table(name = "request_item_status_t", schema = "recap", catalog = "")
 public class RequestStatusEntity implements Serializable{
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "REQUEST_STATUS_ID")
     private Integer requestStatusId;
 

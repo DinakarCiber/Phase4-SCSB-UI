@@ -12,7 +12,7 @@ import java.util.List;
 public class BulkRequestItemEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "BULK_REQUEST_ID")
     private Integer bulkRequestId;
 

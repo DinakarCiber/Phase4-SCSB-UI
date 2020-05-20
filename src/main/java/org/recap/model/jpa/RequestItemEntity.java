@@ -12,7 +12,7 @@ import java.util.Date;
 public class RequestItemEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "REQUEST_ID")
     private Integer requestId;
 
