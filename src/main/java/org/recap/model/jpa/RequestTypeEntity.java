@@ -11,7 +11,7 @@ import java.io.Serializable;
 public class RequestTypeEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "REQUEST_TYPE_ID")
     private Integer requestTypeId;
 

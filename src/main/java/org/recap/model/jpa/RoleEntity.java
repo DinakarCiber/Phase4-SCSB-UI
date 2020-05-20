@@ -11,7 +11,7 @@ import java.util.Set;
 @Table(name="roles_t",schema="recap",catalog="")
 public class RoleEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="role_id")
     private Integer roleId;
 

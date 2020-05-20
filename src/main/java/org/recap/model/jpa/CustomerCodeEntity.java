@@ -12,7 +12,7 @@ import java.util.List;
 public class CustomerCodeEntity implements Serializable, Comparable<CustomerCodeEntity> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "CUSTOMER_CODE_ID")
     private Integer customerCodeId;
 
