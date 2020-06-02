@@ -411,7 +411,7 @@
                                                 <input type="hidden" th:field="*{searchResultRows[__${searchResultStat.index}__].summaryHoldings}"/>
                                                 <span data-th-id="'searchResultsDataSHS-'+ ${searchResultStat.index}" th:text="${searchResult.summaryHoldings}"></span>
                                             </td>
-                                        <tr data-th-if="${searchResult.showItems}" data-th-id="'searchItemResultsRow-' + ${searchResultStat.index}" class="collapse childRow" th:classappend="'row' + ${searchResultStat.index}">
+                                        <tr data-th-if="${searchResult?.showItems}" data-th-id="'searchItemResultsRow-' + ${searchResultStat.index}" class="collapse childRow" th:classappend="'row' + ${searchResultStat.index}">
                                             <th></th>
                                             <th></th>
                                             <th data-th-id="'searchItemResultsSelectHead-' + ${searchResultStat.index}" style="background-color: grey; color: white; width: 20px;" width="7%" align="center" class="text-center" data-sorter="false">
@@ -435,7 +435,7 @@
                                             <th data-th-id="'searchItemResultsURHead-' + ${searchResultStat.index}" th:title="'Use Restriction'" style="background-color: grey; color: white;">Use Restriction</th>
                                             <th th:if="${!session.isBarcodeRestricted}" data-th-id="'searchItemResultsBarHead-' + ${searchResultStat.index}" th:title="'Barcode'" style="background-color: grey; color: white;">Barcode</th>
                                         </tr>
-                                        <tr data-th-if="${searchResult.showItems}" data-th-id="'searchItemResultsRow-' + ${searchResultStat.index} + '-' + ${searchItemResultStat.index}" th:each="searchItemResult,searchItemResultStat : ${searchResult.searchItemResultRows}" class="collapse childRow" th:classappend="'row' + ${searchResultStat.index}">
+                                        <tr data-th-if="${searchResult?.showItems}" data-th-id="'searchItemResultsRow-' + ${searchResultStat.index} + '-' + ${searchItemResultStat.index}" th:each="searchItemResult,searchItemResultStat : ${searchResult?.searchItemResultRows}" class="collapse childRow" th:classappend="'row' + ${searchResultStat.index}">
                                             <td></td>
                                             <td></td>
                                             <td data-th-id="'searchItemResultsDataPlus-'+ ${searchItemResultStat.index}">
