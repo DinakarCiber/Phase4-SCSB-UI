@@ -1,28 +1,15 @@
 package org.recap.model.marc;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.marc4j.marc.Record;
 
 /**
  * Created by chenchulakshmig on 14/10/16.
  */
+@Setter
+@Getter
 public class ItemMarcRecord {
     private Record itemRecord;
 
-    /**
-     * Gets item record.
-     *
-     * @return the item record
-     */
-    public Record getItemRecord() {
-        return itemRecord;
-    }
-
-    /**
-     * Sets item record.
-     *
-     * @param itemRecord the item record
-     */
-    public void setItemRecord(Record itemRecord) {
-        this.itemRecord = itemRecord;
-    }
 }
