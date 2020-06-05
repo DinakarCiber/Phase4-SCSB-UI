@@ -11,12 +11,8 @@ import java.util.List;
  */
 @Entity
 @Table(name = "REPORT_T", schema = "RECAP", catalog = "")
-public class ReportEntity implements Serializable{
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "RECORD_NUM")
-    private Integer recordNumber;
+@AttributeOverride(name = "id", column = @Column(name = "RECORD_NUM"))
+public class ReportEntity extends AbstractEntity<Integer>{
 
     @Column(name = "FILE_NAME")
     private String fileName;
@@ -51,24 +47,6 @@ public class ReportEntity implements Serializable{
      */
     public void setFileName(String fileName) {
         this.fileName = fileName;
-    }
-
-    /**
-     * Gets record number.
-     *
-     * @return the record number
-     */
-    public Integer getRecordNumber() {
-        return recordNumber;
-    }
-
-    /**
-     * Sets record number.
-     *
-     * @param recordNumber the record number
-     */
-    public void setRecordNumber(Integer recordNumber) {
-        this.recordNumber = recordNumber;
     }
 
     /**

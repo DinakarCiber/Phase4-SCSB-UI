@@ -43,75 +43,75 @@ public class RequestServiceUtil {
         Optional<InstitutionEntity> institutionEntityOptional = Optional.ofNullable(institutionEntity);
         if(!institutionEntityOptional.isPresent()){
             institutionEntity=new InstitutionEntity();
-            institutionEntity.setInstitutionId(0);
+            institutionEntity.setId(0);
         }
         Pageable pageable = PageRequest.of(requestForm.getPageNumber(), requestForm.getPageSize(), Sort.Direction.DESC, RecapConstants.REQUEST_ID);
 
         Page<RequestItemEntity> requestItemEntities;
         if (StringUtils.isNotBlank(patronBarcode) && StringUtils.isNotBlank(itemBarcode) && StringUtils.isNotBlank(status) && StringUtils.isNotBlank(institution)) {
             if (status.equals(RecapConstants.SEARCH_REQUEST_ACTIVE)) {
-                requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndItemBarcodeAndActiveAndInstitution(pageable, patronBarcode, itemBarcode,institutionEntity.getInstitutionId());
+                requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndItemBarcodeAndActiveAndInstitution(pageable, patronBarcode, itemBarcode,institutionEntity.getId());
             }
             else {
-                requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndItemBarcodeAndStatusAndInstitution(pageable, patronBarcode, itemBarcode, status,institutionEntity.getInstitutionId());
+                requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndItemBarcodeAndStatusAndInstitution(pageable, patronBarcode, itemBarcode, status,institutionEntity.getId());
             }
         }
         else if (StringUtils.isNotBlank(patronBarcode) && StringUtils.isNotBlank(itemBarcode) && StringUtils.isNotBlank(status) && StringUtils.isBlank(institution)) {
             if (status.equals(RecapConstants.SEARCH_REQUEST_ACTIVE)) {
-                requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndItemBarcodeAndActive(pageable, patronBarcode, itemBarcode,institutionEntity.getInstitutionId());
+                requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndItemBarcodeAndActive(pageable, patronBarcode, itemBarcode,institutionEntity.getId());
             }
             else {
-                requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndItemBarcodeAndStatus(pageable, patronBarcode, itemBarcode,status,institutionEntity.getInstitutionId());
+                requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndItemBarcodeAndStatus(pageable, patronBarcode, itemBarcode,status,institutionEntity.getId());
             }
         }
         else if (StringUtils.isNotBlank(patronBarcode) && StringUtils.isNotBlank(itemBarcode) && StringUtils.isBlank(status) && StringUtils.isBlank(institution)) {
-            requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndItemBarcode(pageable, patronBarcode, itemBarcode,institutionEntity.getInstitutionId());
+            requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndItemBarcode(pageable, patronBarcode, itemBarcode,institutionEntity.getId());
         }
         else if (StringUtils.isNotBlank(patronBarcode) && StringUtils.isNotBlank(itemBarcode) && StringUtils.isBlank(status) && StringUtils.isNotBlank(institution)) {
-            requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndItemBarcodeAndInstitution(pageable, patronBarcode, itemBarcode,institutionEntity.getInstitutionId());
+            requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndItemBarcodeAndInstitution(pageable, patronBarcode, itemBarcode,institutionEntity.getId());
         }
         else if (StringUtils.isNotBlank(patronBarcode) && StringUtils.isBlank(itemBarcode) && StringUtils.isNotBlank(status) && StringUtils.isBlank(institution)) {
             if (status.equals(RecapConstants.SEARCH_REQUEST_ACTIVE)) {
-                requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndActive(pageable, patronBarcode,institutionEntity.getInstitutionId());
+                requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndActive(pageable, patronBarcode,institutionEntity.getId());
             }
             else {
-                requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndStatus(pageable, patronBarcode, status,institutionEntity.getInstitutionId());
+                requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndStatus(pageable, patronBarcode, status,institutionEntity.getId());
             }
         } else if (StringUtils.isNotBlank(patronBarcode) && StringUtils.isBlank(itemBarcode) && StringUtils.isNotBlank(status) && StringUtils.isNotBlank(institution)) {
             if (status.equals(RecapConstants.SEARCH_REQUEST_ACTIVE)) {
-                requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndActiveAndInstitution(pageable, patronBarcode,institutionEntity.getInstitutionId());
+                requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndActiveAndInstitution(pageable, patronBarcode,institutionEntity.getId());
             }
             else {
-                requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndStatusAndInstitution(pageable, patronBarcode, status,institutionEntity.getInstitutionId());
+                requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndStatusAndInstitution(pageable, patronBarcode, status,institutionEntity.getId());
             }
         }
         else if (StringUtils.isBlank(patronBarcode) && StringUtils.isNotBlank(itemBarcode) && StringUtils.isNotBlank(status) && StringUtils.isBlank(institution)) {
             if (status.equals(RecapConstants.SEARCH_REQUEST_ACTIVE)) {
-                requestItemEntities = requestItemDetailsRepository.findByItemBarcodeAndActive(pageable, itemBarcode,institutionEntity.getInstitutionId());
+                requestItemEntities = requestItemDetailsRepository.findByItemBarcodeAndActive(pageable, itemBarcode,institutionEntity.getId());
             }
             else {
-                requestItemEntities = requestItemDetailsRepository.findByItemBarcodeAndStatus(pageable, itemBarcode, status,institutionEntity.getInstitutionId());
+                requestItemEntities = requestItemDetailsRepository.findByItemBarcodeAndStatus(pageable, itemBarcode, status,institutionEntity.getId());
             }
         }
         else if (StringUtils.isBlank(patronBarcode) && StringUtils.isNotBlank(itemBarcode) && StringUtils.isNotBlank(status) && StringUtils.isNotBlank(institution)) {
             if (status.equals(RecapConstants.SEARCH_REQUEST_ACTIVE)) {
-                requestItemEntities = requestItemDetailsRepository.findByItemBarcodeAndActiveAndInstitution(pageable, itemBarcode,institutionEntity.getInstitutionId());
+                requestItemEntities = requestItemDetailsRepository.findByItemBarcodeAndActiveAndInstitution(pageable, itemBarcode,institutionEntity.getId());
             }
             else {
-                requestItemEntities = requestItemDetailsRepository.findByItemBarcodeAndStatusAndInstitution(pageable, itemBarcode, status,institutionEntity.getInstitutionId());
+                requestItemEntities = requestItemDetailsRepository.findByItemBarcodeAndStatusAndInstitution(pageable, itemBarcode, status,institutionEntity.getId());
             }
         }
         else if (StringUtils.isNotBlank(patronBarcode) && StringUtils.isBlank(itemBarcode) && StringUtils.isBlank(status) && StringUtils.isBlank(institution)) {
             requestItemEntities = requestItemDetailsRepository.findByPatronBarcode(pageable, patronBarcode);
         }
         else if (StringUtils.isNotBlank(patronBarcode) && StringUtils.isBlank(itemBarcode) && StringUtils.isBlank(status) && StringUtils.isNotBlank(institution)) {
-            requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndInstitution(pageable, patronBarcode,institutionEntity.getInstitutionId());
+            requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndInstitution(pageable, patronBarcode,institutionEntity.getId());
         }
         else if (StringUtils.isBlank(patronBarcode) && StringUtils.isNotBlank(itemBarcode) && StringUtils.isBlank(status) && StringUtils.isBlank(institution)) {
-            requestItemEntities = requestItemDetailsRepository.findByItemBarcode(pageable, itemBarcode,institutionEntity.getInstitutionId());
+            requestItemEntities = requestItemDetailsRepository.findByItemBarcode(pageable, itemBarcode,institutionEntity.getId());
         }
         else if (StringUtils.isBlank(patronBarcode) && StringUtils.isNotBlank(itemBarcode) && StringUtils.isBlank(status) && StringUtils.isNotBlank(institution)) {
-            requestItemEntities = requestItemDetailsRepository.findByItemBarcodeAndInstitution(pageable, itemBarcode,institutionEntity.getInstitutionId());
+            requestItemEntities = requestItemDetailsRepository.findByItemBarcodeAndInstitution(pageable, itemBarcode,institutionEntity.getId());
         }
         else if (StringUtils.isBlank(patronBarcode) && StringUtils.isBlank(itemBarcode) && StringUtils.isNotBlank(status) && StringUtils.isBlank(institution)) {
             if (status.equals(RecapConstants.SEARCH_REQUEST_ACTIVE)) {
@@ -123,14 +123,14 @@ public class RequestServiceUtil {
         }
         else if (StringUtils.isBlank(patronBarcode) && StringUtils.isBlank(itemBarcode) && StringUtils.isNotBlank(status) && StringUtils.isNotBlank(institution)) {
             if (status.equals(RecapConstants.SEARCH_REQUEST_ACTIVE)) {
-                requestItemEntities = requestItemDetailsRepository.findAllActiveAndInstitution(pageable,institutionEntity.getInstitutionId());
+                requestItemEntities = requestItemDetailsRepository.findAllActiveAndInstitution(pageable,institutionEntity.getId());
             }
             else {
-                requestItemEntities = requestItemDetailsRepository.findByStatusAndInstitution(pageable, status,institutionEntity.getInstitutionId());
+                requestItemEntities = requestItemDetailsRepository.findByStatusAndInstitution(pageable, status,institutionEntity.getId());
             }
         }
         else if(StringUtils.isBlank(patronBarcode) && StringUtils.isBlank(itemBarcode) && StringUtils.isBlank(status) && StringUtils.isNotBlank(institution)){
-            requestItemEntities = requestItemDetailsRepository.findAllActiveAndInstitution(pageable,institutionEntity.getInstitutionId());
+            requestItemEntities = requestItemDetailsRepository.findAllActiveAndInstitution(pageable,institutionEntity.getId());
         }
         else{
             requestItemEntities = requestItemDetailsRepository.findAllActive(pageable);

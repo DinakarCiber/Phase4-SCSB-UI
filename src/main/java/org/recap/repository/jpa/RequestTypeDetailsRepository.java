@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by rajeshbabuk on 28/10/16.
  */
-public interface RequestTypeDetailsRepository extends JpaRepository<RequestTypeEntity, Integer> {
+public interface RequestTypeDetailsRepository extends BaseRepository<RequestTypeEntity> {
 
     /**
      * To get the request type entity for the given request type code.

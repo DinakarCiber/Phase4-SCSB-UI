@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by dharmendrag on 23/12/16.
@@ -41,7 +42,7 @@ public class UserRoleServiceImpl implements UserRoleService {
             return userDetailsRepository.findAll(pageable);
         } else {
             InstitutionEntity institutionEntity = new InstitutionEntity();
-            institutionEntity.setInstitutionId(userRoleForm.getInstitutionId());
+            institutionEntity.setId(userRoleForm.getInstitutionId());
             return userDetailsRepository.findByInstitutionEntity(userRoleForm.getInstitutionId(), pageable);
         }
 
@@ -54,7 +55,7 @@ public class UserRoleServiceImpl implements UserRoleService {
             return userDetailsRepository.findByLoginId(userRoleForm.getSearchNetworkId(), pageable);
         } else {
             InstitutionEntity institutionEntity = new InstitutionEntity();
-            institutionEntity.setInstitutionId(userRoleForm.getInstitutionId());
+            institutionEntity.setId(userRoleForm.getInstitutionId());
             return userDetailsRepository.findByLoginIdAndInstitutionEntity(userRoleForm.getSearchNetworkId(), userRoleForm.getInstitutionId(), pageable);
         }
     }
@@ -66,7 +67,7 @@ public class UserRoleServiceImpl implements UserRoleService {
             return userDetailsRepository.findByEmailId(userRoleForm.getUserEmailId(), pageable);
         } else {
             InstitutionEntity institutionEntity = new InstitutionEntity();
-            institutionEntity.setInstitutionId(userRoleForm.getInstitutionId());
+            institutionEntity.setId(userRoleForm.getInstitutionId());
             return userDetailsRepository.findByEmailIdAndInstitutionEntity(userRoleForm.getUserEmailId(), institutionEntity, pageable);
         }
     }
@@ -78,7 +79,7 @@ public class UserRoleServiceImpl implements UserRoleService {
             return userDetailsRepository.findByLoginIdAndEmailId(userRoleForm.getSearchNetworkId(), userRoleForm.getUserEmailId(), pageable);
         } else {
             InstitutionEntity institutionEntity = new InstitutionEntity();
-            institutionEntity.setInstitutionId(userRoleForm.getInstitutionId());
+            institutionEntity.setId(userRoleForm.getInstitutionId());
             return userDetailsRepository.findByLoginIdAndEmailIdAndInstitutionEntity(userRoleForm.getSearchNetworkId(), userRoleForm.getUserEmailId(), institutionEntity, pageable);
         }
     }
@@ -93,21 +94,25 @@ public class UserRoleServiceImpl implements UserRoleService {
         usersEntity.setCreatedBy(userRoleForm.getCreatedBy());
         usersEntity.setLastUpdatedDate(new Date());
         usersEntity.setLastUpdatedBy(userRoleForm.getCreatedBy());
-        InstitutionEntity institutionEntity = institutionDetailsRepository.findByInstitutionId(userRoleForm.getInstitutionId());
-        usersEntity.setInstitutionId(institutionEntity.getInstitutionId());
-        usersEntity.setInstitutionEntity(institutionEntity);
-        List<RoleEntity> roleEntityList = rolesDetailsRepositorty.findByRoleIdIn(userRoleForm.getSelectedForCreate());
+        Optional<InstitutionEntity> institutionEntity = institutionDetailsRepository.findById(userRoleForm.getInstitutionId());
+        if (institutionEntity != null) {
+            usersEntity.setId(institutionEntity.get().getId());
+            usersEntity.setInstitutionEntity(institutionEntity.get());
+        }
+        List<RoleEntity> roleEntityList = rolesDetailsRepositorty.findByIdIn(userRoleForm.getSelectedForCreate());
         usersEntity.setUserRole(roleEntityList);
         usersEntity.setUserDescription(userRoleForm.getUserDescription());
         String networkLoginId = userRoleForm.getNetworkLoginId();
-        Integer institutionId = institutionEntity.getInstitutionId();
-        UsersEntity byLoginIdAndInstitutionEntity = userDetailsRepository.findByLoginIdAndInstitutionId(networkLoginId, institutionId);
-        if (byLoginIdAndInstitutionEntity == null) {
+        if(institutionEntity != null) {
+            Integer institutionId = institutionEntity.get().getId();
+            UsersEntity byLoginIdAndInstitutionEntity = userDetailsRepository.findByLoginIdAndInstitutionId(networkLoginId, institutionId);
+            if (byLoginIdAndInstitutionEntity == null) {
                 saveUsersEntity = userDetailsRepository.saveAndFlush(usersEntity);
                 userRoleForm.setMessage(networkLoginId + RecapConstants.ADDED_SUCCESSFULLY);
             } else {
-            userRoleForm.setShowCreateError(true);
-            userRoleForm.setErrorMessage(networkLoginId + RecapConstants.ALREADY_EXISTS);
+                userRoleForm.setShowCreateError(true);
+                userRoleForm.setErrorMessage(networkLoginId + RecapConstants.ALREADY_EXISTS);
+            }
         }
         return saveUsersEntity;
     }
@@ -116,42 +121,42 @@ public class UserRoleServiceImpl implements UserRoleService {
     public UsersEntity saveEditedUserToDB(Integer userId, String networkLoginId, String userDescription, Integer institutionId, List<Integer> roleIds, String userEmailId,UserRoleForm userRoleForm) {
         UsersEntity usersEntity = new UsersEntity();
         UsersEntity savedUsersEntity = null;
-        UsersEntity checkUserId = userDetailsRepository.findByUserId(userId);
+        Optional<UsersEntity> checkUserId = userDetailsRepository.findById(userId);
         if (checkUserId != null) {
-            usersEntity.setUserId(userId);
+            usersEntity.setId(userId);
             usersEntity.setLoginId(networkLoginId);
             usersEntity.setUserDescription(userDescription);
-            usersEntity.setInstitutionId(institutionId);
+            usersEntity.setId(institutionId);
             usersEntity.setEmailId(userEmailId);
-            usersEntity.setCreatedDate(checkUserId.getCreatedDate());
-            usersEntity.setCreatedBy(checkUserId.getCreatedBy());
+            usersEntity.setCreatedDate(checkUserId.get().getCreatedDate());
+            usersEntity.setCreatedBy(checkUserId.get().getCreatedBy());
             usersEntity.setLastUpdatedDate(new Date());
             usersEntity.setLastUpdatedBy(userRoleForm.getLastUpdatedBy());
-            InstitutionEntity institutionEntity = institutionDetailsRepository.findByInstitutionId(institutionId);
+            Optional<InstitutionEntity> institutionEntity = institutionDetailsRepository.findById(institutionId);
             if (institutionEntity != null) {
                 InstitutionEntity institutionEntity1 = new InstitutionEntity();
-                institutionEntity1.setInstitutionId(institutionEntity.getInstitutionId());
-                institutionEntity1.setInstitutionCode(institutionEntity.getInstitutionCode());
-                institutionEntity1.setInstitutionName(institutionEntity.getInstitutionName());
+                institutionEntity1.setId(institutionEntity.get().getId());
+                institutionEntity1.setInstitutionCode(institutionEntity.get().getInstitutionCode());
+                institutionEntity1.setInstitutionName(institutionEntity.get().getInstitutionName());
                 usersEntity.setInstitutionEntity(institutionEntity1);
             }
-            List<RoleEntity> roleEntityList = rolesDetailsRepositorty.findByRoleIdIn(roleIds);
+            List<RoleEntity> roleEntityList = rolesDetailsRepositorty.findByIdIn(roleIds);
             if (roleEntityList != null) {
                 usersEntity.setUserRole(roleEntityList);
             }
-            UsersEntity byUserIdUserEntity = userDetailsRepository.findByUserId(userId);
-            if (byUserIdUserEntity.getInstitutionId().equals(institutionId)){
-                savedUsersEntity = userDetailsRepository.saveAndFlush(usersEntity);
-                userRoleForm.setMessage(networkLoginId + RecapConstants.EDITED_SUCCESSFULLY);
-            }
-            else {
-                UsersEntity byLoginIdAndInstitutionIdUserEntity = userDetailsRepository.findByLoginIdAndInstitutionId(networkLoginId, institutionId);
-                if(byLoginIdAndInstitutionIdUserEntity == null){
+            Optional<UsersEntity> byUserIdUserEntity = userDetailsRepository.findById(userId);
+            if(byUserIdUserEntity != null) {
+                if (byUserIdUserEntity.get().getId().equals(institutionId)) {
                     savedUsersEntity = userDetailsRepository.saveAndFlush(usersEntity);
-                    userRoleForm.setMessage(networkLoginId + RecapConstants.ADDED_SUCCESSFULLY);
-                }
-                else{
-                    userRoleForm.setErrorMessage(networkLoginId + RecapConstants.ALREADY_EXISTS);
+                    userRoleForm.setMessage(networkLoginId + RecapConstants.EDITED_SUCCESSFULLY);
+                } else {
+                    UsersEntity byLoginIdAndInstitutionIdUserEntity = userDetailsRepository.findByLoginIdAndInstitutionId(networkLoginId, institutionId);
+                    if (byLoginIdAndInstitutionIdUserEntity == null) {
+                        savedUsersEntity = userDetailsRepository.saveAndFlush(usersEntity);
+                        userRoleForm.setMessage(networkLoginId + RecapConstants.ADDED_SUCCESSFULLY);
+                    } else {
+                        userRoleForm.setErrorMessage(networkLoginId + RecapConstants.ALREADY_EXISTS);
+                    }
                 }
             }
         }
@@ -168,9 +173,9 @@ public class UserRoleServiceImpl implements UserRoleService {
             roleEntities = rolesDetailsRepositorty.findAllExceptReSubmitRole();
         }
         for (RoleEntity roleEntity : roleEntities) {
-            if (!superAdminRole.equals(roleEntity.getRoleId())) {
+            if (!superAdminRole.equals(roleEntity.getId())) {
                 Object[] role = new Object[4];
-                role[0] = roleEntity.getRoleId();
+                role[0] = roleEntity.getId();
                 role[1] = roleEntity.getRoleName();
                 role[2] = roleEntity.getRoleDescription();
                 List<String> permissionNames=new ArrayList<>();
@@ -189,9 +194,9 @@ public class UserRoleServiceImpl implements UserRoleService {
         List<Object> institutions = new ArrayList<>();
         Iterable<InstitutionEntity> institutionsList = institutionDetailsRepository.findAll();
         for (InstitutionEntity institutionEntity : institutionsList) {
-            if (isSuperAdmin || loginInstitutionId.equals(institutionEntity.getInstitutionId())) {
+            if (isSuperAdmin || loginInstitutionId.equals(institutionEntity.getId())) {
                 Object[] inst = new Object[2];
-                inst[0] = institutionEntity.getInstitutionId();
+                inst[0] = institutionEntity.getId();
                 inst[1] = institutionEntity.getInstitutionCode();
                 institutions.add(inst);
             }

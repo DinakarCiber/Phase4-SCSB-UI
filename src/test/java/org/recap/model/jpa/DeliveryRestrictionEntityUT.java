@@ -15,13 +15,13 @@ public class DeliveryRestrictionEntityUT extends BaseTestCase{
     @Test
     public void testDeliveryRestrictionEntity(){
         DeliveryRestrictionEntity deliveryRestrictionEntity = new DeliveryRestrictionEntity();
-        deliveryRestrictionEntity.setDeliveryRestrictionId(1);
+        deliveryRestrictionEntity.setId(1);
         deliveryRestrictionEntity.setDeliveryRestriction("Test");
         deliveryRestrictionEntity.setInstitutionEntity(new InstitutionEntity());
         deliveryRestrictionEntity.setCustomerCodeEntityList(Arrays.asList(new CustomerCodeEntity()));
         assertNotNull(deliveryRestrictionEntity.getCustomerCodeEntityList());
         assertNotNull(deliveryRestrictionEntity.getDeliveryRestriction());
-        assertNotNull(deliveryRestrictionEntity.getDeliveryRestrictionId());
+        assertNotNull(deliveryRestrictionEntity.getId());
         assertNotNull(deliveryRestrictionEntity.getInstitutionEntity());
     }
 

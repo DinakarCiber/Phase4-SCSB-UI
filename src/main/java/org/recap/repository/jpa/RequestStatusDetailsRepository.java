@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by rajeshbabuk on 8/2/17.
  */
-public interface RequestStatusDetailsRepository extends JpaRepository<RequestStatusEntity, Integer> {
+public interface RequestStatusDetailsRepository extends BaseRepository<RequestStatusEntity> {
     /**
      * To get all the request status entity in scsb expect processing request status.
      *

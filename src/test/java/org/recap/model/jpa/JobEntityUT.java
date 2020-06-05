@@ -15,7 +15,7 @@ public class JobEntityUT extends BaseTestCase{
     @Test
     public void testJobEntity(){
         JobEntity jobEntity = new JobEntity();
-        jobEntity.setJobId(1);
+        jobEntity.setId(1);
         jobEntity.setJobName("Test");
         jobEntity.setCronExpression("0 53 19 1/1 * ? *");
         jobEntity.setJobDescription("Test");
@@ -25,7 +25,7 @@ public class JobEntityUT extends BaseTestCase{
         assertNotNull(jobEntity.getNextRunTime());
         assertNotNull(jobEntity.getCronExpression());
         assertNotNull(jobEntity.getJobDescription());
-        assertNotNull(jobEntity.getJobId());
+        assertNotNull(jobEntity.getId());
         assertNotNull(jobEntity.getJobName());
         assertNotNull(jobEntity.getLastExecutedTime());
         assertNotNull(jobEntity.getStatus());

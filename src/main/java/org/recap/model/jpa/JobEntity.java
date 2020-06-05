@@ -8,12 +8,8 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "JOB_T", schema = "recap", catalog = "")
-public class JobEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "JOB_ID")
-    private Integer jobId;
+@AttributeOverride(name = "id", column = @Column(name = "JOB_ID"))
+public class JobEntity extends AbstractEntity<Integer>{
 
     @Column(name = "JOB_NAME")
     private String jobName;
@@ -37,24 +33,6 @@ public class JobEntity {
 
     @Column(name = "JOB_INSTANCE_ID")
     private Integer jobInstanceId;
-
-    /**
-     * Gets job id.
-     *
-     * @return the job id
-     */
-    public Integer getJobId() {
-        return jobId;
-    }
-
-    /**
-     * Sets job id.
-     *
-     * @param jobId the job id
-     */
-    public void setJobId(Integer jobId) {
-        this.jobId = jobId;
-    }
 
     /**
      * Gets job name.

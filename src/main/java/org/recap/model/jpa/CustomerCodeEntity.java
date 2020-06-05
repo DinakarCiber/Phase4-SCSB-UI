@@ -9,12 +9,8 @@ import java.util.List;
  */
 @Entity
 @Table(name = "customer_code_t", schema = "recap", catalog = "")
-public class CustomerCodeEntity implements Serializable, Comparable<CustomerCodeEntity> {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "CUSTOMER_CODE_ID")
-    private Integer customerCodeId;
+@AttributeOverride(name = "id", column = @Column(name = "CUSTOMER_CODE_ID"))
+public class CustomerCodeEntity extends AbstractEntity<Integer> implements Comparable<CustomerCodeEntity> {
 
     @Column(name = "CUSTOMER_CODE")
     private String customerCode;
@@ -45,25 +41,6 @@ public class CustomerCodeEntity implements Serializable, Comparable<CustomerCode
             inverseJoinColumns = {
                     @JoinColumn(name = "DELIVERY_RESTRICTION_CROSS_PARTNER_ID", referencedColumnName = "DELIVERY_RESTRICTION_CROSS_PARTNER_ID")})
     private List<DeliveryRestrictionEntity> deliveryRestrictionEntityList;
-
-
-    /**
-     * Gets customer code id.
-     *
-     * @return the customer code id
-     */
-    public Integer getCustomerCodeId() {
-        return customerCodeId;
-    }
-
-    /**
-     * Sets customer code id.
-     *
-     * @param customerCodeId the customer code id
-     */
-    public void setCustomerCodeId(Integer customerCodeId) {
-        this.customerCodeId = customerCodeId;
-    }
 
     /**
      * Gets customer code.
@@ -172,7 +149,7 @@ public class CustomerCodeEntity implements Serializable, Comparable<CustomerCode
 
         CustomerCodeEntity customerCodeEntity = (CustomerCodeEntity) object;
 
-        if (customerCodeId != null ? !customerCodeId.equals(customerCodeEntity.customerCodeId) : customerCodeEntity.customerCodeId != null)
+        if (id != null ? !id.equals(customerCodeEntity.id) : customerCodeEntity.id != null)
             return false;
         if (customerCode != null ? !customerCode.equals(customerCodeEntity.customerCode) : customerCodeEntity.customerCode != null)
             return false;
@@ -184,7 +161,7 @@ public class CustomerCodeEntity implements Serializable, Comparable<CustomerCode
 
     @Override
     public int hashCode() {
-        int result = customerCodeId != null ? customerCodeId.hashCode() : 0;
+        int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (customerCode != null ? customerCode.hashCode() : 0);
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (owningInstitutionId != null ? owningInstitutionId.hashCode() : 0);

@@ -9,12 +9,8 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "ITEM_CHANGE_LOG_T", schema = "recap", catalog = "")
-public class ItemChangeLogEntity implements Serializable {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ITEM_CHANGE_LOG_ID")
-    private Integer changeLogId;
+@AttributeOverride(name = "id", column = @Column(name = "ITEM_CHANGE_LOG_ID"))
+public class ItemChangeLogEntity extends AbstractEntity<Integer> {
 
     @Column(name = "UPDATED_BY")
     private String updatedBy;
@@ -31,24 +27,6 @@ public class ItemChangeLogEntity implements Serializable {
 
     @Column(name = "NOTES")
     private String notes;
-
-    /**
-     * Gets change log id.
-     *
-     * @return the change log id
-     */
-    public Integer getChangeLogId() {
-        return changeLogId;
-    }
-
-    /**
-     * Sets change log id.
-     *
-     * @param changeLogId the change log id
-     */
-    public void setChangeLogId(Integer changeLogId) {
-        this.changeLogId = changeLogId;
-    }
 
     /**
      * Gets updated by.

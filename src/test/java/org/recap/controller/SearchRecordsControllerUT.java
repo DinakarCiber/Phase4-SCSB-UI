@@ -195,7 +195,7 @@ public class SearchRecordsControllerUT extends BaseControllerUT{
         institutionEntity.setInstitutionName("University of Chicago");
         Mockito.when(searchRecordsController.getUserAuthUtil()).thenReturn(userAuthUtil);
         Mockito.when(searchRecordsController.getInstitutionDetailsRepository()).thenReturn(institutionDetailsRepository);
-        Mockito.when(searchRecordsController.getInstitutionDetailsRepository().findByInstitutionId(userDetailsForm.getLoginInstitutionId())).thenReturn(institutionEntity);
+        Mockito.when(searchRecordsController.getInstitutionDetailsRepository().findById(userDetailsForm.getLoginInstitutionId())).thenReturn(institutionEntity);
         Mockito.when(searchRecordsController.getUserAuthUtil().getUserDetails(request.getSession(),RecapConstants.REQUEST_PRIVILEGE)).thenReturn(userDetailsForm);
         when(searchRecordsController.requestRecords(searchRecordsRequest,bindingResult,model, request, redirectAttributes)).thenCallRealMethod();
         ModelAndView modelAndView = searchRecordsController.requestRecords(searchRecordsRequest,bindingResult,model, request, redirectAttributes);

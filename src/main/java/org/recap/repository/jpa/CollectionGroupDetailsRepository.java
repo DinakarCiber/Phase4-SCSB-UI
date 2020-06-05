@@ -6,7 +6,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 /**
  * Created by hemalathas on 22/6/16.
  */
-public interface CollectionGroupDetailsRepository extends PagingAndSortingRepository<CollectionGroupEntity, Integer> {
+public interface CollectionGroupDetailsRepository extends BaseRepository<CollectionGroupEntity> {
 
     /**
      * To get the collection group entity based on the collection group code.

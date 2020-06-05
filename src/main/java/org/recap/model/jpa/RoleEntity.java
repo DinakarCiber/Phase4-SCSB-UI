@@ -9,11 +9,8 @@ import java.util.Set;
  */
 @Entity
 @Table(name="roles_t",schema="recap",catalog="")
-public class RoleEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="role_id")
-    private Integer roleId;
+@AttributeOverride(name = "id", column = @Column(name = "role_id"))
+public class RoleEntity extends AbstractEntity<Integer>{
 
     @Column(name="role_name")
     private String roleName;
@@ -66,24 +63,6 @@ public class RoleEntity {
      */
     public void setUsers(Set<UsersEntity> users) {
         this.users = users;
-    }
-
-    /**
-     * Gets role id.
-     *
-     * @return the role id
-     */
-    public Integer getRoleId() {
-        return roleId;
-    }
-
-    /**
-     * Sets role id.
-     *
-     * @param roleId the role id
-     */
-    public void setRoleId(Integer roleId) {
-        this.roleId = roleId;
     }
 
     /**

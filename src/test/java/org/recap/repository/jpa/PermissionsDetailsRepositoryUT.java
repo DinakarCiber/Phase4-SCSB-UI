@@ -31,13 +31,13 @@ public class PermissionsDetailsRepositoryUT extends BaseTestCase {
         PermissionEntity savedPermission=permissionsRepository.saveAndFlush(permissionEntity);
         entityManager.refresh(savedPermission);
 
-        assertNotNull(savedPermission.getPermissionId());
+        assertNotNull(savedPermission.getId());
         assertEquals(permissionEntity.getPermissionName(),savedPermission.getPermissionName());
         assertEquals(permissionEntity.getPermissionDesc(),savedPermission.getPermissionDesc());
         assertEquals(permissionEntity.getRoleEntityList(),savedPermission.getRoleEntityList());
 
         PermissionEntity findByName=permissionsRepository.findByPermissionName(permissionEntity.getPermissionName());
-        assertEquals(savedPermission.getPermissionId(),findByName.getPermissionId());
+        assertEquals(savedPermission.getId(),findByName.getId());
 
     }
 

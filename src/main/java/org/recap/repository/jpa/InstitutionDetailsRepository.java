@@ -9,14 +9,7 @@ import java.util.List;
 /**
  * Created by hemalathas on 22/6/16.
  */
-public interface InstitutionDetailsRepository extends PagingAndSortingRepository<InstitutionEntity,Integer> {
-    /**
-     * To get the institution entity for the given institution id.
-     *
-     * @param institutionId the institution id
-     * @return the institution entity
-     */
-    InstitutionEntity findByInstitutionId(Integer institutionId);
+public interface InstitutionDetailsRepository extends BaseRepository<InstitutionEntity> {
 
     /**
      *To get the institution entity for the given institution code.

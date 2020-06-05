@@ -8,12 +8,8 @@ import java.util.List;
  */
 @Entity
 @Table(name="delivery_restriction_cross_partner_t",schema="recap",catalog="")
-public class DeliveryRestrictionEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="DELIVERY_RESTRICTION_CROSS_PARTNER_ID")
-    private Integer deliveryRestrictionId;
+@AttributeOverride(name = "id", column = @Column(name = "DELIVERY_RESTRICTION_CROSS_PARTNER_ID"))
+public class DeliveryRestrictionEntity extends AbstractEntity<Integer> {
 
     @Column(name="DELIVERY_RESTRICTIONS")
     private String deliveryRestriction;
@@ -24,24 +20,6 @@ public class DeliveryRestrictionEntity {
 
     @ManyToMany(mappedBy = "deliveryRestrictionEntityList")
     private List<CustomerCodeEntity> customerCodeEntityList;
-
-    /**
-     * Gets delivery restriction id.
-     *
-     * @return the delivery restriction id
-     */
-    public Integer getDeliveryRestrictionId() {
-        return deliveryRestrictionId;
-    }
-
-    /**
-     * Sets delivery restriction id.
-     *
-     * @param deliveryRestrictionId the delivery restriction id
-     */
-    public void setDeliveryRestrictionId(Integer deliveryRestrictionId) {
-        this.deliveryRestrictionId = deliveryRestrictionId;
-    }
 
     /**
      * Gets delivery restriction.

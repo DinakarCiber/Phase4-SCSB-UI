@@ -47,7 +47,7 @@ public class SearchResultRowUT {
         assertNotNull(searchResultRow.getPatronEmailId());
         assertNotNull(searchResultRow.getCreatedDate());
         assertNotNull(searchResultRow.getStatus());
-        assertNotNull(searchResultRow.getRequestId());
+        assertNotNull(searchResultRow.getId());
         assertNotNull(searchResultRow.isShowAllItems());
 
     }
@@ -72,7 +72,7 @@ public class SearchResultRowUT {
         searchResultRow.setItemId(1);
         searchResultRow.setSearchItemResultRows(new ArrayList<>());
         searchResultRow.setShowAllItems(false);
-        searchResultRow.setRequestId(1);
+        searchResultRow.setId(1);
         searchResultRow.setPatronBarcode("452356654");
         searchResultRow.setRequestingInstitution("PUL");
         searchResultRow.setDeliveryLocation("PB");

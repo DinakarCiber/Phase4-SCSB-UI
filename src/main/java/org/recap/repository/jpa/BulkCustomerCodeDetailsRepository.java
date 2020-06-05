@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by akulak on 20/10/17.
  */
-public interface BulkCustomerCodeDetailsRepository extends CrudRepository<BulkCustomerCodeEntity,Integer> {
+public interface BulkCustomerCodeDetailsRepository extends BaseRepository<BulkCustomerCodeEntity> {
 
     List<BulkCustomerCodeEntity> findByOwningInstitutionId(Integer owningInstitutionId);
 }

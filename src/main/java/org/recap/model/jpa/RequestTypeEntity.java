@@ -8,36 +8,14 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "request_type_t", schema = "recap", catalog = "")
-public class RequestTypeEntity implements Serializable {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "REQUEST_TYPE_ID")
-    private Integer requestTypeId;
+@AttributeOverride(name = "id", column = @Column(name = "REQUEST_TYPE_ID"))
+public class RequestTypeEntity extends AbstractEntity<Integer> {
 
     @Column(name = "REQUEST_TYPE_CODE")
     private String requestTypeCode;
 
     @Column(name = "REQUEST_TYPE_DESC")
     private String requestTypeDesc;
-
-    /**
-     * Gets request type id.
-     *
-     * @return the request type id
-     */
-    public Integer getRequestTypeId() {
-        return requestTypeId;
-    }
-
-    /**
-     * Sets request type id.
-     *
-     * @param requestTypeId the request type id
-     */
-    public void setRequestTypeId(Integer requestTypeId) {
-        this.requestTypeId = requestTypeId;
-    }
 
     /**
      * Gets request type code.

@@ -612,10 +612,10 @@ public class RequestController {
             CancelRequestResponse cancelRequestResponse = responseEntity.getBody();
             jsonObject.put(RecapConstants.MESSAGE, cancelRequestResponse.getScreenMessage());
             jsonObject.put(RecapConstants.STATUS, cancelRequestResponse.isSuccess());
-            RequestItemEntity requestItemEntity = getRequestItemDetailsRepository().findByRequestId(requestForm.getRequestId());
+            Optional<RequestItemEntity> requestItemEntity = getRequestItemDetailsRepository().findById(requestForm.getRequestId());
             if (null != requestItemEntity) {
-                requestStatus = requestItemEntity.getRequestStatusEntity().getRequestStatusDescription();
-                requestNotes = requestItemEntity.getNotes();
+                requestStatus = requestItemEntity.get().getRequestStatusEntity().getRequestStatusDescription();
+                requestNotes = requestItemEntity.get().getNotes();
             }
             jsonObject.put(RecapConstants.REQUEST_STATUS, requestStatus);
             jsonObject.put(RecapConstants.REQUEST_NOTES, requestNotes);
@@ -709,7 +709,7 @@ public class RequestController {
 
     private void populateRequestResultsForRecall(List<SearchResultRow> searchResultRows, RequestItemEntity requestItemEntity) {
         SearchResultRow searchResultRow = new SearchResultRow();
-        searchResultRow.setRequestId(requestItemEntity.getRequestId());
+        searchResultRow.setRequestId(requestItemEntity.getId());
         searchResultRow.setRequestingInstitution(requestItemEntity.getInstitutionEntity().getInstitutionCode());
         searchResultRow.setBarcode(requestItemEntity.getItemEntity().getBarcode());
         searchResultRow.setOwningInstitution(requestItemEntity.getItemEntity().getInstitutionEntity().getInstitutionCode());
@@ -729,7 +729,7 @@ public class RequestController {
 
     private void populateRequestResults(List<SearchResultRow> searchResultRows, RequestItemEntity requestItemEntity) {
         SearchResultRow searchResultRow = new SearchResultRow();
-        searchResultRow.setRequestId(requestItemEntity.getRequestId());
+        searchResultRow.setRequestId(requestItemEntity.getId());
         searchResultRow.setPatronBarcode(requestItemEntity.getPatronId());
         searchResultRow.setRequestingInstitution(requestItemEntity.getInstitutionEntity().getInstitutionCode());
         searchResultRow.setBarcode(requestItemEntity.getItemEntity().getBarcode());
@@ -792,15 +792,17 @@ public class RequestController {
     }
 
     private void setFormValuesToDisableSearchInstitution(@Valid @ModelAttribute("requestForm") RequestForm requestForm, UserDetailsForm userDetails, List<String> institutionList) {
-        InstitutionEntity institutionEntity = getInstitutionDetailsRepository().findByInstitutionId(userDetails.getLoginInstitutionId());
-        if(userDetails.isSuperAdmin() || userDetails.isRecapUser() || institutionEntity.getInstitutionCode().equalsIgnoreCase("HTC")){
+        Optional<InstitutionEntity> institutionEntity = getInstitutionDetailsRepository().findById(userDetails.getLoginInstitutionId());
+        if(userDetails.isSuperAdmin() || userDetails.isRecapUser() || institutionEntity.get().getInstitutionCode().equalsIgnoreCase("HTC")){
             getRequestService().getInstitutionForSuperAdmin(institutionList);
             requestForm.setInstitutionList(institutionList);
         }else {
             requestForm.setDisableSearchInstitution(true);
-            requestForm.setInstitutionList(Arrays.asList(institutionEntity.getInstitutionCode()));
-            requestForm.setInstitution(institutionEntity.getInstitutionCode());
-            requestForm.setSearchInstitutionHdn(institutionEntity.getInstitutionCode());
+            if(institutionEntity != null) {
+                requestForm.setInstitutionList(Arrays.asList(institutionEntity.get().getInstitutionCode()));
+                requestForm.setInstitution(institutionEntity.get().getInstitutionCode());
+                requestForm.setSearchInstitutionHdn(institutionEntity.get().getInstitutionCode());
+            }
         }
     }
 

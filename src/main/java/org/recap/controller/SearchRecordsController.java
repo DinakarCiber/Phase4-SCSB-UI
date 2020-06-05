@@ -394,9 +394,9 @@ public class SearchRecordsController {
 
     private void processRequest(SearchRecordsRequest searchRecordsRequest, UserDetailsForm userDetailsForm, RedirectAttributes redirectAttributes) {
         String userInstitution = null;
-        InstitutionEntity institutionEntity = getInstitutionDetailsRepository().findByInstitutionId(userDetailsForm.getLoginInstitutionId());
+        Optional<InstitutionEntity> institutionEntity = getInstitutionDetailsRepository().findById(userDetailsForm.getLoginInstitutionId());
         if (null != institutionEntity) {
-            userInstitution = institutionEntity.getInstitutionCode();
+            userInstitution = institutionEntity.get().getInstitutionCode();
         }
         List<SearchResultRow> searchResultRows = searchRecordsRequest.getSearchResultRows();
         Set<String> barcodes = new HashSet<>();

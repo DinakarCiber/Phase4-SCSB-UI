@@ -44,7 +44,7 @@ public class HoldingsDetailsRepositoryUT extends BaseTestCase {
 
         HoldingsEntity holdingsEntity=new HoldingsEntity();
         InstitutionEntity institutionEntity=new InstitutionEntity();
-        institutionEntity.setInstitutionId(1);
+        institutionEntity.setId(1);
 
 
         holdingsEntity.setContent("mock holdings".getBytes());

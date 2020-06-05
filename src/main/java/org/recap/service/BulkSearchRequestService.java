@@ -36,13 +36,13 @@ public class BulkSearchRequestService {
         InstitutionEntity institutionEntity = institutionDetailsRepository.findByInstitutionCode(institution);
         Integer requestingInstitutionId = 0;
         if (institutionEntity != null){
-            requestingInstitutionId = institutionEntity.getInstitutionId();
+            requestingInstitutionId = institutionEntity.getId();
         }
         Pageable pageable = PageRequest.of(bulkRequestForm.getPageNumber(), bulkRequestForm.getPageSize(), Sort.Direction.DESC, RecapConstants.BULK_REQUEST_ID);
 
         if (StringUtils.isNotBlank(requestId) && StringUtils.isBlank(bulkRequestName) && StringUtils.isBlank(patronId)) {
-            return StringUtils.isNotBlank(institution) ? bulkRequestDetailsRepository.findByBulkRequestIdAndRequestingInstitutionId(pageable,bulkRequestId,requestingInstitutionId)
-                    : bulkRequestDetailsRepository.findByBulkRequestId(pageable,bulkRequestId);
+            return StringUtils.isNotBlank(institution) ? bulkRequestDetailsRepository.findByIdAndRequestingInstitutionId(pageable,bulkRequestId,requestingInstitutionId)
+                    : bulkRequestDetailsRepository.findById(pageable,bulkRequestId);
         } else if (StringUtils.isBlank(requestId) && StringUtils.isNotBlank(bulkRequestName) && StringUtils.isBlank(patronId)) {
             return StringUtils.isNotBlank(institution) ? bulkRequestDetailsRepository.findByBulkRequestNameAndRequestingInstitutionId(pageable,bulkRequestName,requestingInstitutionId)
                     : bulkRequestDetailsRepository.findByBulkRequestName(pageable,bulkRequestName);
@@ -50,17 +50,17 @@ public class BulkSearchRequestService {
             return StringUtils.isNotBlank(institution) ? bulkRequestDetailsRepository.findByPatronIdAndRequestingInstitutionId(pageable,patronId,requestingInstitutionId)
                     : bulkRequestDetailsRepository.findByPatronId(pageable,patronId);
         } else if (StringUtils.isNotBlank(requestId) && StringUtils.isNotBlank(bulkRequestName) && StringUtils.isBlank(patronId)) {
-            return StringUtils.isNotBlank(institution) ? bulkRequestDetailsRepository.findByBulkRequestIdAndBulkRequestNameAndRequestingInstitutionId(pageable,bulkRequestId,bulkRequestName,requestingInstitutionId)
-                    : bulkRequestDetailsRepository.findByBulkRequestIdAndBulkRequestName(pageable,bulkRequestId,bulkRequestName);
+            return StringUtils.isNotBlank(institution) ? bulkRequestDetailsRepository.findByIdAndBulkRequestNameAndRequestingInstitutionId(pageable,bulkRequestId,bulkRequestName,requestingInstitutionId)
+                    : bulkRequestDetailsRepository.findByIdAndBulkRequestName(pageable,bulkRequestId,bulkRequestName);
         } else if (StringUtils.isBlank(requestId) && StringUtils.isNotBlank(bulkRequestName) && StringUtils.isNotBlank(patronId)) {
             return StringUtils.isNotBlank(institution) ? bulkRequestDetailsRepository.findByBulkRequestNameAndPatronIdAndRequestingInstitutionId(pageable,bulkRequestName,patronId,requestingInstitutionId)
                     : bulkRequestDetailsRepository.findByBulkRequestNameAndPatronId(pageable,bulkRequestName,patronId);
         } else if (StringUtils.isNotBlank(requestId) && StringUtils.isBlank(bulkRequestName) && StringUtils.isNotBlank(patronId)) {
-            return StringUtils.isNotBlank(institution) ? bulkRequestDetailsRepository.findByBulkRequestIdAndPatronIdAndRequestingInstitutionId(pageable,bulkRequestId,patronId,requestingInstitutionId)
-                    : bulkRequestDetailsRepository.findByBulkRequestIdAndPatronId(pageable,bulkRequestId,patronId);
+            return StringUtils.isNotBlank(institution) ? bulkRequestDetailsRepository.findByIdAndPatronIdAndRequestingInstitutionId(pageable,bulkRequestId,patronId,requestingInstitutionId)
+                    : bulkRequestDetailsRepository.findByIdAndPatronId(pageable,bulkRequestId,patronId);
         } else if (StringUtils.isNotBlank(requestId) && StringUtils.isNotBlank(bulkRequestName) && StringUtils.isNotBlank(patronId)) {
-            return StringUtils.isNotBlank(institution) ? bulkRequestDetailsRepository.findByBulkRequestIdAndBulkRequestNameAndPatronIdAndRequestingInstitutionId(pageable,bulkRequestId,bulkRequestName,patronId,requestingInstitutionId)
-                    : bulkRequestDetailsRepository.findByBulkRequestIdAndBulkRequestNameAndPatronId(pageable,bulkRequestId,bulkRequestName,patronId);
+            return StringUtils.isNotBlank(institution) ? bulkRequestDetailsRepository.findByIdAndBulkRequestNameAndPatronIdAndRequestingInstitutionId(pageable,bulkRequestId,bulkRequestName,patronId,requestingInstitutionId)
+                    : bulkRequestDetailsRepository.findByIdAndBulkRequestNameAndPatronId(pageable,bulkRequestId,bulkRequestName,patronId);
         } else {
             return StringUtils.isNotBlank(institution) ? bulkRequestDetailsRepository.findByRequestingInstitutionId(pageable,requestingInstitutionId)
                     : bulkRequestDetailsRepository.findAll(pageable);

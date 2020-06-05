@@ -15,15 +15,7 @@ import java.util.List;
 /**
  * Created by rajeshbabuk on 26/10/16.
  */
-public interface RequestItemDetailsRepository extends JpaRepository<RequestItemEntity, Integer>, JpaSpecificationExecutor {
-
-    /**
-     * To get the request item entity for the given request id.
-     *
-     * @param requestId the request id
-     * @return the request item entity
-     */
-    RequestItemEntity findByRequestId(@Param("requestId") Integer requestId);
+public interface RequestItemDetailsRepository extends BaseRepository<RequestItemEntity>, JpaSpecificationExecutor {
 
     /**
      * To get the pageable request item entities for the given status.
@@ -326,8 +318,8 @@ public interface RequestItemDetailsRepository extends JpaRepository<RequestItemE
     /**
      * To get the list of  request item entities for the given list of request id.
      *
-     * @param requestId the request id
+     * @param id the request id
      * @return the list
      */
-    List<RequestItemEntity> findByRequestIdIn(List<Integer> requestId);
+    List<RequestItemEntity> findByIdIn(List<Integer> id);
 }

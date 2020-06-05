@@ -8,12 +8,8 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "bulk_customer_code_t", schema = "recap", catalog = "")
-public class BulkCustomerCodeEntity implements Serializable {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "BULK_CUSTOMER_CODE_ID")
-    private Integer bulkCustomerCodeId;
+@AttributeOverride(name = "id", column = @Column(name = "BULK_CUSTOMER_CODE_ID"))
+public class BulkCustomerCodeEntity extends AbstractEntity<Integer> {
 
     @Column(name = "CUSTOMER_CODE")
     private String customerCode;
@@ -27,14 +23,6 @@ public class BulkCustomerCodeEntity implements Serializable {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "OWNING_INST_ID", insertable = false, updatable = false)
     private InstitutionEntity institutionEntity;
-
-    public Integer getBulkCustomerCodeId() {
-        return bulkCustomerCodeId;
-    }
-
-    public void setBulkCustomerCodeId(Integer bulkCustomerCodeId) {
-        this.bulkCustomerCodeId = bulkCustomerCodeId;
-    }
 
     public String getCustomerCode() {
         return customerCode;
