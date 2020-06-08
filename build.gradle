@@ -66,6 +66,7 @@ dependencies {
 	implementation('javax.validation:validation-api:2.0.1.Final')
 	implementation('org.projectlombok:lombok:1.18.12')
 	implementation 'io.micrometer:micrometer-registry-prometheus'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	annotationProcessor('org.projectlombok:lombok:1.18.12')
 	testImplementation('org.projectlombok:lombok:1.18.12')
 	testAnnotationProcessor('org.projectlombok:lombok:1.18.12')
