@@ -26,7 +26,7 @@ public class ReportDetailRepositoryUT extends BaseTestCase {
         ReportEntity savedReportEntity = saveReportEntity();
 
         assertNotNull(savedReportEntity);
-        assertNotNull(savedReportEntity.getRecordNumber());
+        assertNotNull(savedReportEntity.getId());
         assertNotNull(savedReportEntity.getCreatedDate());
         assertNotNull(savedReportEntity.getFileName());
         assertNotNull(savedReportEntity.getInstitutionName());
@@ -47,7 +47,7 @@ public class ReportDetailRepositoryUT extends BaseTestCase {
         ReportEntity reportEntity1 = reportEntities.get(0);
         assertNotNull(reportEntity1);
         assertNotNull(reportEntity1.getReportDataEntities());
-        assertNotNull(reportEntity.getRecordNumber());
+        assertNotNull(reportEntity.getId());
     }
 
     private ReportEntity saveReportEntity() {

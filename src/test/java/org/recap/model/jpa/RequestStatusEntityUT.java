@@ -22,7 +22,7 @@ public class RequestStatusEntityUT extends BaseTestCase{
         requestStatusEntity.setRequestStatusDescription("recall");
         RequestStatusEntity savedRequestStatusEntity = requestStatusDetailsRepository.save(requestStatusEntity);
         assertNotNull(savedRequestStatusEntity);
-        assertNotNull(savedRequestStatusEntity.getRequestStatusId());
+        assertNotNull(savedRequestStatusEntity.getId());
     }
 
 }

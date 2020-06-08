@@ -32,7 +32,7 @@ public class CollectionGroupDetailsRepositoryUT extends BaseTestCase {
 
         CollectionGroupEntity savedCollectionGroupEntity = collectionGroupDetailsRepository.save(collectionGroupEntity);
         assertNotNull(savedCollectionGroupEntity);
-        assertNotNull(savedCollectionGroupEntity.getCollectionGroupId());
+        assertNotNull(savedCollectionGroupEntity.getId());
         assertEquals(savedCollectionGroupEntity.getCollectionGroupCode(), "test");
         assertEquals(savedCollectionGroupEntity.getCollectionGroupDescription(), "test");
         assertEquals(savedCollectionGroupEntity.getCreatedDate(), date);

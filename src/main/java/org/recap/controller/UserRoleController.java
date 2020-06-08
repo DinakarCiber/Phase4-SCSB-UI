@@ -32,6 +32,7 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by dharmendrag on 23/12/16.
@@ -187,29 +188,31 @@ public class UserRoleController {
         if (authenticated) {
             UserDetailsForm userDetailsForm = getUserAuthUtil().getUserDetails(request.getSession(false), RecapConstants.BARCODE_RESTRICTED_PRIVILEGE);
             getLogger().info("User - Delete User clicked");
-            UsersEntity usersEntity = getUserDetailsRepository().findByUserId(userId);
+            Optional<UsersEntity> usersEntity = getUserDetailsRepository().findById(userId);
             UserRoleForm userRoleForm = new UserRoleForm();
             userRoleForm.setAfterDelPageSize(pagesize);
             userRoleForm.setAfterDelPageNumber(pageNumber);
             userRoleForm.setAfterDelTotalPageCount(totalPageCount);
             getAndSetRolesAndInstitutions(userRoleForm, userDetailsForm);
-            userRoleForm.setEditNetworkLoginId(usersEntity.getLoginId());
-            userRoleForm.setEditUserDescription(usersEntity.getUserDescription());
             userRoleForm.setEditUserId(userId);
             userRoleForm.setUserId(userId);
-            userRoleForm.setEmailId(usersEntity.getEmailId());
-            userRoleForm.setEditEmailId(usersEntity.getEmailId());
-            List<RoleEntity> roleEntityList = usersEntity.getUserRole();
-            List<Integer> roleIds = new ArrayList<>();
-            if (roleEntityList != null) {
-                for (RoleEntity roleEntity : roleEntityList) {
-                    roleIds.add(roleEntity.getRoleId());
+            if(usersEntity != null) {
+                userRoleForm.setEditNetworkLoginId(usersEntity.get().getLoginId());
+                userRoleForm.setEditUserDescription(usersEntity.get().getUserDescription());
+                userRoleForm.setEmailId(usersEntity.get().getEmailId());
+                userRoleForm.setEditEmailId(usersEntity.get().getEmailId());
+                userRoleForm.setEditInstitutionId(usersEntity.get().getInstitutionId());
+                List<RoleEntity> roleEntityList = usersEntity.get().getUserRole();
+                List<Integer> roleIds = new ArrayList<>();
+                if (roleEntityList != null) {
+                    for (RoleEntity roleEntity : roleEntityList) {
+                        roleIds.add(roleEntity.getId());
 
+                    }
                 }
+                userRoleForm.setEditSelectedForCreate(roleIds);
             }
-            userRoleForm.setEditSelectedForCreate(roleIds);
             userRoleForm.setShowSelectedForCreate(userRoleForm.getEditSelectedForCreate());
-            userRoleForm.setEditInstitutionId(usersEntity.getInstitutionId());
             userRoleForm.setShowUserSearchView(false);
             return new ModelAndView(RecapConstants.USER_ROLES_SEARCH, RecapConstants.USER_ROLE_FORM, userRoleForm);
         } else {
@@ -238,7 +241,7 @@ public class UserRoleController {
         boolean authenticated = getUserAuthUtil().authorizedUser(RecapConstants.SCSB_SHIRO_USER_ROLE_URL, (UsernamePasswordToken) session.getAttribute(RecapConstants.USER_TOKEN));
         if (authenticated) {
         UsersEntity usersEntity = new UsersEntity();
-        usersEntity.setUserId(userId);
+        usersEntity.setId(userId);
         try {
             getUserDetailsRepository().delete(usersEntity);
             userRoleForm.setDeletedSuccessMsg(true);
@@ -375,27 +378,30 @@ public class UserRoleController {
         if (authenticated) {
         UserDetailsForm userDetailsForm = getUserAuthUtil().getUserDetails(request.getSession(false), RecapConstants.BARCODE_RESTRICTED_PRIVILEGE);
         getLogger().info("User - editUser clicked");
-        UsersEntity usersEntity = getUserDetailsRepository().findByUserId(userId);
-        UserRoleForm userRoleForm = new UserRoleForm();
-            getAndSetRolesAndInstitutions(userRoleForm, userDetailsForm);
-        userRoleForm.setEditNetworkLoginId(usersEntity.getLoginId());
-        userRoleForm.setEditUserDescription(usersEntity.getUserDescription());
-        userRoleForm.setEditUserId(userId);
-        userRoleForm.setUserId(userId);
-        userRoleForm.setEmailId(usersEntity.getEmailId());
-        userRoleForm.setEditEmailId(usersEntity.getEmailId());
-        List<RoleEntity> roleEntityList = usersEntity.getUserRole();
-        List<Integer> roleIds = new ArrayList<>();
-        if (roleEntityList != null) {
-            for (RoleEntity roleEntity : roleEntityList) {
-                roleIds.add(roleEntity.getRoleId());
+        Optional<UsersEntity> usersEntity = getUserDetailsRepository().findById(userId);
+            UserRoleForm userRoleForm = new UserRoleForm();
 
+            if(usersEntity != null) {
+            getAndSetRolesAndInstitutions(userRoleForm, userDetailsForm);
+            userRoleForm.setEditNetworkLoginId(usersEntity.get().getLoginId());
+            userRoleForm.setEditUserDescription(usersEntity.get().getUserDescription());
+            userRoleForm.setEditUserId(userId);
+            userRoleForm.setUserId(userId);
+            userRoleForm.setEmailId(usersEntity.get().getEmailId());
+            userRoleForm.setEditEmailId(usersEntity.get().getEmailId());
+            List<RoleEntity> roleEntityList = usersEntity.get().getUserRole();
+            List<Integer> roleIds = new ArrayList<>();
+            if (roleEntityList != null) {
+                for (RoleEntity roleEntity : roleEntityList) {
+                    roleIds.add(roleEntity.getId());
+
+                }
             }
+            userRoleForm.setEditSelectedForCreate(roleIds);
+            userRoleForm.setShowSelectedForCreate(userRoleForm.getEditSelectedForCreate());
+            userRoleForm.setEditInstitutionId(usersEntity.get().getInstitutionId());
+            userRoleForm.setShowUserSearchView(false);
         }
-        userRoleForm.setEditSelectedForCreate(roleIds);
-        userRoleForm.setShowSelectedForCreate(userRoleForm.getEditSelectedForCreate());
-        userRoleForm.setEditInstitutionId(usersEntity.getInstitutionId());
-        userRoleForm.setShowUserSearchView(false);
         return new ModelAndView(RecapConstants.USER_ROLES_SEARCH, RecapConstants.USER_ROLE_FORM, userRoleForm);
         } else {
             return new ModelAndView(RecapConstants.VIEW_LOGIN);
@@ -446,12 +452,12 @@ public class UserRoleController {
             List<Integer> roleIdss = new ArrayList<>();
             if (roleEntityList != null) {
                 for (RoleEntity roleEntity : roleEntityList) {
-                    roleIdss.add(roleEntity.getRoleId());
+                    roleIdss.add(roleEntity.getId());
                 }
             }
             userRoleForm.setEditSelectedForCreate(roleIdss);
             userRoleForm.setShowSelectedForCreate(userRoleForm.getEditSelectedForCreate());
-            userRoleForm.setEditInstitutionId(usersEntity.getInstitutionId());
+            userRoleForm.setEditInstitutionId(usersEntity.getId());
             userRoleForm.setEditEmailId(usersEntity.getEmailId());
         } else {
             userRoleForm.setShowEditError(true);
@@ -573,8 +579,8 @@ public class UserRoleController {
             if (addUsers) {
                     UserRoleForm userRoleDeatailsForm = new UserRoleForm();
                     StringBuilder rolesBuffer = new StringBuilder();
-                    userRoleDeatailsForm.setUserId(usersEntity.getUserId());
-                    userRoleDeatailsForm.setInstitutionId(institutionEntity.getInstitutionId());
+                    userRoleDeatailsForm.setUserId(usersEntity.getId());
+                    userRoleDeatailsForm.setInstitutionId(institutionEntity.getId());
                     userRoleDeatailsForm.setInstitutionName(institutionEntity.getInstitutionName());
                     userRoleDeatailsForm.setNetworkLoginId(usersEntity.getLoginId());
                     userRoleDeatailsForm.setUserDescription(usersEntity.getUserDescription());

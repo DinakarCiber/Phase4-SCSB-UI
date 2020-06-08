@@ -155,7 +155,7 @@ public class UserRoleControllerUT extends BaseTestCase {
         usersEntity.setUserDescription("test");
         usersEntity.setEmailId("hemalatha.s@htcindia.com");
         usersEntity.setUserRole(Arrays.asList(new RoleEntity()));
-        usersEntity.setInstitutionId(1);
+        usersEntity.setId(1);
         Integer userId = 3;
         List<Object> roles = new ArrayList<>();
         List<Object> institution = new ArrayList<>();
@@ -293,7 +293,7 @@ public class UserRoleControllerUT extends BaseTestCase {
         UserRoleForm userRoleForm = new UserRoleForm();
         userRoleForm.setNetworkLoginId("test");
         userRoleForm.setEmailId("test@gmail.com");
-        userRoleForm.setInstitutionId(2);
+        userRoleForm.setId(2);
         userRoleForm.setUserDescription("testdescription");
         List<Integer> role = new ArrayList<>();
         role.add(2);
@@ -330,9 +330,9 @@ public class UserRoleControllerUT extends BaseTestCase {
         usersEntity.setUserDescription("test");
         usersEntity.setEmailId("hemalatha.s@htcindia.com");
         RoleEntity roleEntity = new RoleEntity();
-        roleEntity.setRoleId(1);
+        roleEntity.setId(1);
         usersEntity.setUserRole(Arrays.asList(roleEntity));
-        usersEntity.setInstitutionId(1);
+        usersEntity.setId(1);
         ModelAndView modelAndView1 = new ModelAndView();
         modelAndView1.setViewName("userRolesSearch");
         List<Object> roles = new ArrayList<>();
@@ -365,13 +365,13 @@ public class UserRoleControllerUT extends BaseTestCase {
         usersEntity.setUserDescription("test");
         usersEntity.setEmailId("hemalatha.s@htcindia.com");
         RoleEntity roleEntity = new RoleEntity();
-        roleEntity.setRoleId(1);
+        roleEntity.setId(1);
         usersEntity.setUserRole(Arrays.asList(roleEntity));
-        usersEntity.setInstitutionId(1);
+        usersEntity.setId(1);
         UserRoleForm userRoleForm = new UserRoleForm();
         userRoleForm.setNetworkLoginId("test");
         userRoleForm.setEmailId("test@gmail.com");
-        userRoleForm.setInstitutionId(2);
+        userRoleForm.setId(2);
         userRoleForm.setUserDescription("testdescription");
         List<Integer> role = new ArrayList<>();
         role.add(2);
@@ -420,7 +420,7 @@ public class UserRoleControllerUT extends BaseTestCase {
         UserRoleForm userRoleForm = new UserRoleForm();
         userRoleForm.setNetworkLoginId("test");
         userRoleForm.setEmailId("test@gmail.com");
-        userRoleForm.setInstitutionId(2);
+        userRoleForm.setId(2);
         userRoleForm.setUserDescription("testdescription");
         List<Integer> role = new ArrayList<>();
         role.add(2);
@@ -472,14 +472,14 @@ public class UserRoleControllerUT extends BaseTestCase {
     public List<UsersEntity> getUsersEntity(){
         UsersEntity usersEntity = new UsersEntity();
         List<UsersEntity> usersEntityList = new ArrayList<>();
-        usersEntity.setUserId(2);
+        usersEntity.setId(2);
         usersEntity.setLoginId("1");
         usersEntity.setUserRole(Arrays.asList(new RoleEntity()));
         usersEntityList.add(usersEntity);
         InstitutionEntity institutionEntity = new InstitutionEntity();
         institutionEntity.setInstitutionName("PUL");
         institutionEntity.setInstitutionCode("PUL");
-        institutionEntity.setInstitutionId(1);
+        institutionEntity.setId(1);
         usersEntity.setInstitutionEntity(institutionEntity);
         RoleEntity roleEntity = new RoleEntity();
         roleEntity.setRoleName("1");

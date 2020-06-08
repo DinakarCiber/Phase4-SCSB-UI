@@ -8,12 +8,8 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "REPORT_DATA_T", schema = "RECAP", catalog = "")
-public class ReportDataEntity implements Serializable {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "REPORT_DATA_ID")
-    private Integer reportDataId;
+@AttributeOverride(name = "id", column = @Column(name = "REPORT_DATA_ID"))
+public class ReportDataEntity extends AbstractEntity<Integer> {
 
     @Column(name = "HEADER_NAME")
     private String headerName;
@@ -40,24 +36,6 @@ public class ReportDataEntity implements Serializable {
      */
     public void setRecordNum(String recordNum) {
         this.recordNum = recordNum;
-    }
-
-    /**
-     * Gets report data id.
-     *
-     * @return the report data id
-     */
-    public Integer getReportDataId() {
-        return reportDataId;
-    }
-
-    /**
-     * Sets report data id.
-     *
-     * @param reportDataId the report data id
-     */
-    public void setReportDataId(Integer reportDataId) {
-        this.reportDataId = reportDataId;
     }
 
     /**

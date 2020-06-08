@@ -14,6 +14,7 @@ import javax.persistence.PersistenceContext;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
@@ -49,7 +50,7 @@ public class UserDetailsRepositoryUT extends BaseTestCase {
     public void findByUserId(){
         UsersEntity usersEntity = saveUser("testUt", "desc", 1, Arrays.asList(1, 2), "testUt@mail.com");
         assertNotNull(usersEntity);
-        UsersEntity usersEntity1 = userDetailsRepository.findByUserId(usersEntity.getUserId());
+        UsersEntity usersEntity1 = userDetailsRepository.findByUserId(usersEntity.getId());
         assertNotNull(usersEntity1);
         checkUserEntityResults(usersEntity, usersEntity1);
 
@@ -68,7 +69,7 @@ public class UserDetailsRepositoryUT extends BaseTestCase {
         UsersEntity usersEntity = saveUser("testUt", "desc", 1, Arrays.asList(1, 2), "testUt@mail.com");
         assertNotNull(usersEntity);
         InstitutionEntity institutionEntity = new InstitutionEntity();
-        institutionEntity.setInstitutionId(1);
+        institutionEntity.setId(1);
         Page<UsersEntity> usersEntity1 = userDetailsRepository.findByInstitutionEntity(1 , PageRequest.of(1, 10));
         assertNotNull(usersEntity1);
     }
@@ -86,7 +87,7 @@ public class UserDetailsRepositoryUT extends BaseTestCase {
         UsersEntity usersEntity = saveUser("testUt", "desc", 1, Arrays.asList(1, 2), "testUt@mail.com");
         assertNotNull(usersEntity);
         InstitutionEntity institutionEntity = new InstitutionEntity();
-        institutionEntity.setInstitutionId(1);
+        institutionEntity.setId(1);
         Page<UsersEntity> usersEntity1 = userDetailsRepository.findByLoginIdAndInstitutionEntity(usersEntity.getLoginId(),1 ,PageRequest.of(1, 10));
         assertNotNull(usersEntity1);
     }
@@ -114,7 +115,7 @@ public class UserDetailsRepositoryUT extends BaseTestCase {
         UsersEntity usersEntity = saveUser("testUt", "desc", 1, Arrays.asList(1, 2), "testUt@mail.com");
         assertNotNull(usersEntity);
         InstitutionEntity institutionEntity = new InstitutionEntity();
-        institutionEntity.setInstitutionId(1);
+        institutionEntity.setId(1);
         Page<UsersEntity> usersEntity1 = userDetailsRepository.findByEmailIdAndInstitutionEntity(usersEntity.getEmailId(),institutionEntity, PageRequest.of(1, 10));
         assertNotNull(usersEntity1);
     }
@@ -132,7 +133,7 @@ public class UserDetailsRepositoryUT extends BaseTestCase {
         UsersEntity usersEntity = saveUser("testUt", "desc", 1, Arrays.asList(1, 2), "testUt@mail.com");
         assertNotNull(usersEntity);
         InstitutionEntity institutionEntity = new InstitutionEntity();
-        institutionEntity.setInstitutionId(1);
+        institutionEntity.setId(1);
         Page<UsersEntity> usersEntity1 = userDetailsRepository.findByLoginIdAndEmailIdAndInstitutionEntity(usersEntity.getLoginId(),usersEntity.getEmailId(),institutionEntity,PageRequest.of(1, 10));
         assertNotNull(usersEntity1);
         assertNotNull(usersEntity1);
@@ -144,17 +145,17 @@ public class UserDetailsRepositoryUT extends BaseTestCase {
         UsersEntity savedUsersEntity = null;
         usersEntity.setLoginId(networkLoginId);
         usersEntity.setUserDescription(userDescription);
-        usersEntity.setInstitutionId(institutionId);
+        usersEntity.setId(institutionId);
         usersEntity.setEmailId(userEmailId);
         usersEntity.setCreatedDate(new Date());
         usersEntity.setCreatedBy("admin");
         usersEntity.setLastUpdatedDate(new Date());
         usersEntity.setLastUpdatedBy("admin");
-        InstitutionEntity institutionEntity = institutionDetailsRepository.findByInstitutionId(usersEntity.getInstitutionId());
+        Optional<InstitutionEntity> institutionEntity = institutionDetailsRepository.findById(usersEntity.getInstitutionId());
         if (institutionEntity != null) {
-            usersEntity.setInstitutionEntity(institutionEntity);
+            usersEntity.setInstitutionEntity(institutionEntity.get());
         }
-        List<RoleEntity> roleEntityList = rolesDetailsRepositorty.findByRoleIdIn(roleIds);
+        List<RoleEntity> roleEntityList = rolesDetailsRepositorty.findByIdIn(roleIds);
         if (roleEntityList != null) {
             usersEntity.setUserRole(roleEntityList);
         }

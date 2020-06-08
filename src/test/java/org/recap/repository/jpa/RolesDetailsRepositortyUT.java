@@ -36,7 +36,7 @@ public class RolesDetailsRepositortyUT extends BaseTestCase {
     public void testByRoleName(){
         RoleEntity roleEntity = rolesDetailsRepositorty.findByRoleName("Search");
         assertNotNull(roleEntity);
-        Integer roleId = roleEntity.getRoleId();
+        Integer roleId = roleEntity.getId();
         assertNotNull(roleId);
     }
 
@@ -88,7 +88,7 @@ public class RolesDetailsRepositortyUT extends BaseTestCase {
         RoleEntity savedRoleEntity = rolesDetailsRepositorty.save(roleEntity);
 
         RoleEntity editRoleEntity = new RoleEntity();
-        editRoleEntity.setRoleId(savedRoleEntity.getRoleId());
+        editRoleEntity.setId(savedRoleEntity.getId());
         roleEntity.setRoleName("edit ut");
         editRoleEntity.setRoleDescription("edit ut");
 
@@ -125,7 +125,7 @@ public class RolesDetailsRepositortyUT extends BaseTestCase {
 
         RoleEntity savedRoleEntity = rolesDetailsRepositorty.save(roleEntity);
 
-        rolesDetailsRepositorty.deleteById(savedRoleEntity.getRoleId());
+        rolesDetailsRepositorty.deleteById(savedRoleEntity.getId());
 
     }
 

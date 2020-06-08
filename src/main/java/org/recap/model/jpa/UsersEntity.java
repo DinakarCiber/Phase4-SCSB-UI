@@ -10,11 +10,8 @@ import java.util.List;
  */
 @Entity
 @Table(name="user_t",schema="recap",catalog="")
-public class UsersEntity implements Serializable{
-    @Id
-    @Column(name="user_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer userId;
+@AttributeOverride(name = "id", column = @Column(name = "user_id"))
+public class UsersEntity extends AbstractEntity<Integer>{
 
     @Column(name="login_id")
     private String loginId;
@@ -54,25 +51,6 @@ public class UsersEntity implements Serializable{
     @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JoinColumn(name = "user_institution", insertable = false, updatable = false)
     private InstitutionEntity institutionEntity;
-
-
-    /**
-     * Gets user id.
-     *
-     * @return the user id
-     */
-    public Integer getUserId() {
-        return userId;
-    }
-
-    /**
-     * Sets user id.
-     *
-     * @param userId the user id
-     */
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
 
     /**
      * Gets login id.

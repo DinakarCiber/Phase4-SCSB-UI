@@ -9,12 +9,8 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "request_item_t", schema = "recap", catalog = "")
-public class RequestItemEntity implements Serializable {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "REQUEST_ID")
-    private Integer requestId;
+@AttributeOverride(name = "id", column = @Column(name = "REQUEST_ID"))
+public class RequestItemEntity extends AbstractEntity<Integer> {
 
     @Column(name = "ITEM_ID")
     private Integer itemId;
@@ -70,24 +66,6 @@ public class RequestItemEntity implements Serializable {
 
     @Column(name = "EMAIL_ID")
     private String emailId;
-
-    /**
-     * Gets request id.
-     *
-     * @return the request id
-     */
-    public Integer getRequestId() {
-        return requestId;
-    }
-
-    /**
-     * Sets request id.
-     *
-     * @param requestId the request id
-     */
-    public void setRequestId(Integer requestId) {
-        this.requestId = requestId;
-    }
 
     /**
      * Gets item id.

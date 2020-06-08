@@ -259,9 +259,9 @@ public class RequestService {
             map.put(Integer.valueOf(split[0]),Integer.valueOf(split[1]));
             requestIdList.add(Integer.valueOf(split[0]));
         }
-        List<RequestItemEntity> requestItemEntityList = getRequestItemDetailsRepository().findByRequestIdIn(requestIdList);
+        List<RequestItemEntity> requestItemEntityList = getRequestItemDetailsRepository().findByIdIn(requestIdList);
         for (RequestItemEntity requestItemEntity : requestItemEntityList) {
-            Integer rowUpdateNum = map.get(requestItemEntity.getRequestId());
+            Integer rowUpdateNum = map.get(requestItemEntity.getId());
             for(String requestStatusDescription : listOfRequestStatusDesc) {
                 if (requestStatusDescription.equals(requestItemEntity.getRequestStatusEntity().getRequestStatusDescription())) {
                     responseMap.put(String.valueOf(rowUpdateNum), requestItemEntity.getRequestStatusEntity().getRequestStatusDescription());
@@ -324,7 +324,7 @@ public class RequestService {
                                     if (null != itemEntity.getItemStatusEntity() && itemEntity.getItemStatusEntity().getStatusCode().equals(RecapConstants.NOT_AVAILABLE)) {
                                         notAvailableBarcodes.add(barcode);
                                     }
-                                    Integer institutionId = itemEntity.getInstitutionEntity().getInstitutionId();
+                                    Integer institutionId = itemEntity.getInstitutionEntity().getId();
                                     String institutionCode = itemEntity.getInstitutionEntity().getInstitutionCode();
                                     requestForm.setItemOwningInstitution(institutionCode);
                                     for (BibliographicEntity bibliographicEntity : itemEntity.getBibliographicEntities()) {
@@ -482,7 +482,7 @@ public class RequestService {
         Iterable<InstitutionEntity> institutionEntities = getInstitutionDetailsRepository().findAll();
         for (Iterator iterator = institutionEntities.iterator(); iterator.hasNext(); ) {
             InstitutionEntity institutionEntity = (InstitutionEntity) iterator.next();
-            if (userDetailsForm.getLoginInstitutionId() == institutionEntity.getInstitutionId() && (!userDetailsForm.isRecapUser()) && (!userDetailsForm.isSuperAdmin()) && (!RecapConstants.HTC.equals(institutionEntity.getInstitutionCode())) ) {
+            if (userDetailsForm.getLoginInstitutionId() == institutionEntity.getId() && (!userDetailsForm.isRecapUser()) && (!userDetailsForm.isSuperAdmin()) && (!RecapConstants.HTC.equals(institutionEntity.getInstitutionCode())) ) {
                 requestingInstitutions.add(institutionEntity.getInstitutionCode());
                 requestForm.setRequestingInstitutions(requestingInstitutions);
                 requestForm.setInstitutionList(requestingInstitutions);

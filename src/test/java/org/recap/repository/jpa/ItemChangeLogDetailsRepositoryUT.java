@@ -30,7 +30,7 @@ public class ItemChangeLogDetailsRepositoryUT extends BaseTestCase {
         ItemChangeLogEntity savedItemChangeLogEntity = itemChangeLogDetailsRepository.save(itemChangeLogEntity);
         entityManager.refresh(savedItemChangeLogEntity);
         assertNotNull(savedItemChangeLogEntity);
-        assertNotNull(savedItemChangeLogEntity.getChangeLogId());
+        assertNotNull(savedItemChangeLogEntity.getId());
     }
 
     @Test
@@ -38,7 +38,7 @@ public class ItemChangeLogDetailsRepositoryUT extends BaseTestCase {
         ItemChangeLogEntity itemChangeLogEntity = saveDeaccessionNotes();
         ItemChangeLogEntity byRecordId = itemChangeLogDetailsRepository.findByRecordIdAndOperationType(itemChangeLogEntity.getRecordId(),"Deaccession");
         assertNotNull(byRecordId);
-        assertNotNull(byRecordId.getChangeLogId());
+        assertNotNull(byRecordId.getId());
         assertNotNull(byRecordId.getNotes());
         assertNotNull(byRecordId.getUpdatedBy());
         assertNotNull(byRecordId.getUpdatedDate());

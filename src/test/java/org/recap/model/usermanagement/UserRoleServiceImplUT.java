@@ -102,7 +102,7 @@ public class UserRoleServiceImplUT extends BaseTestCase {
         String userDescription = "testeditdesc";
         Integer institutionId = 1;
         String userEmailId = "testedit@mail.com";
-        UsersEntity editedUserEntity = userRoleService.saveEditedUserToDB(usersEntity.getUserId(), networkLoginId, userDescription, institutionId, Arrays.asList(1), userEmailId,userRoleForm);
+        UsersEntity editedUserEntity = userRoleService.saveEditedUserToDB(usersEntity.getId(), networkLoginId, userDescription, institutionId, Arrays.asList(1), userEmailId,userRoleForm);
         assertNotNull(editedUserEntity);
         assertEquals(usersEntity.getLoginId(),editedUserEntity.getLoginId());
         assertEquals(usersEntity.getEmailId(),editedUserEntity.getEmailId());

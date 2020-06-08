@@ -78,9 +78,9 @@ public class BulkRequestService {
                 byte[] bytes = multipartFile.getBytes();
                 HttpSession session = request.getSession(false);
                 Integer userId = (Integer) session.getAttribute(RecapConstants.USER_ID);
-                UsersEntity usersEntity = userDetailsRepository.findByUserId(userId);
+                Optional<UsersEntity> usersEntity = userDetailsRepository.findById(userId);
                 BulkRequestItemEntity bulkRequestItemEntity = new BulkRequestItemEntity();
-                bulkRequestItemEntity.setCreatedBy(usersEntity != null ? usersEntity.getLoginId() : "");
+                bulkRequestItemEntity.setCreatedBy(usersEntity != null ? usersEntity.get().getLoginId() : "");
                 bulkRequestItemEntity.setCreatedDate(new Date());
                 bulkRequestItemEntity.setLastUpdatedDate(new Date());
                 bulkRequestItemEntity.setEmailId(getEncryptedPatronEmailId(bulkRequestForm.getPatronEmailAddress()));
@@ -89,14 +89,14 @@ public class BulkRequestService {
                 bulkRequestItemEntity.setBulkRequestFileData(bytes);
                 bulkRequestItemEntity.setPatronId(bulkRequestForm.getPatronBarcodeInRequest());
                 bulkRequestItemEntity.setStopCode(bulkRequestForm.getDeliveryLocationInRequest());
-                bulkRequestItemEntity.setRequestingInstitutionId(institutionEntity.getInstitutionId());
+                bulkRequestItemEntity.setRequestingInstitutionId(institutionEntity.getId());
                 bulkRequestItemEntity.setNotes(bulkRequestForm.getRequestNotes());
                 bulkRequestItemEntity.setBulkRequestStatus(RecapConstants.IN_PROCESS);
                 BulkRequestItemEntity savedBulkRequestItemEntity = bulkRequestDetailsRepository.save(bulkRequestItemEntity);
 
                 String bulkRequestItemUrl = scsbUrl + RecapConstants.BULK_REQUEST_ITEM_URL;
                 HttpEntity requestEntity = new HttpEntity<>(restHeaderService.getHttpHeaders());
-                UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(bulkRequestItemUrl).queryParam("bulkRequestId", savedBulkRequestItemEntity.getBulkRequestId());
+                UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(bulkRequestItemUrl).queryParam("bulkRequestId", savedBulkRequestItemEntity.getId());
                 new RestTemplate().exchange(builder.build().encode().toUri(), HttpMethod.POST, requestEntity, BulkRequestResponse.class);
 
                 bulkRequestForm.setSubmitted(true);
@@ -153,11 +153,11 @@ public class BulkRequestService {
         if (bulkRequestItemEntities.getTotalElements() > 0) {
             List<BulkRequestItemEntity> bulkRequestItemEntityList = bulkRequestItemEntities.getContent();
             List<BulkSearchResultRow> bulkSearchResultRows = new ArrayList<>();
-            Map<Integer, String> institutionMap = institutionDetailsRepository.getInstitutionCodeForSuperAdmin().stream().collect(Collectors.toMap(InstitutionEntity::getInstitutionId, InstitutionEntity::getInstitutionCode));
+            Map<Integer, String> institutionMap = institutionDetailsRepository.getInstitutionCodeForSuperAdmin().stream().collect(Collectors.toMap(InstitutionEntity::getId, InstitutionEntity::getInstitutionCode));
             for (BulkRequestItemEntity bulkRequestItemEntity : bulkRequestItemEntityList) {
                 try {
                     BulkSearchResultRow bulkSearchResultRow = new BulkSearchResultRow();
-                    bulkSearchResultRow.setBulkRequestId(bulkRequestItemEntity.getBulkRequestId());
+                    bulkSearchResultRow.setBulkRequestId(bulkRequestItemEntity.getId());
                     bulkSearchResultRow.setBulkRequestName(bulkRequestItemEntity.getBulkRequestName());
                     bulkSearchResultRow.setFileName(bulkRequestItemEntity.getBulkRequestFileName());
                     bulkSearchResultRow.setPatronBarcode(bulkRequestItemEntity.getPatronId());
@@ -196,7 +196,7 @@ public class BulkRequestService {
 
     public void processDeliveryLocations(BulkRequestForm bulkRequestForm) {
         InstitutionEntity institutionEntity = institutionDetailsRepository.findByInstitutionCode(bulkRequestForm.getRequestingInstitution());
-        bulkRequestForm.setDeliveryLocations(bulkCustomerCodeDetailsRepository.findByOwningInstitutionId(institutionEntity.getInstitutionId()));
+        bulkRequestForm.setDeliveryLocations(bulkCustomerCodeDetailsRepository.findByOwningInstitutionId(institutionEntity.getId()));
     }
 
     private String getEncryptedPatronEmailId(String patronEmailAddress) {
@@ -243,9 +243,9 @@ public class BulkRequestService {
 
     private void getCurrentRequestStatus(BulkRequestItemEntity bulkRequestItemEntity,Map<Integer, String> currentStatus,Map<Integer, String> exceptionNote) {
         for(RequestItemEntity requestItemEntity : bulkRequestItemEntity.getRequestItemEntities()){
-            currentStatus.put(requestItemEntity.getRequestId(),requestItemEntity.getRequestStatusEntity().getRequestStatusCode());
+            currentStatus.put(requestItemEntity.getId(),requestItemEntity.getRequestStatusEntity().getRequestStatusCode());
             if("EXCEPTION".equalsIgnoreCase(requestItemEntity.getRequestStatusEntity().getRequestStatusCode())){
-                exceptionNote.put(requestItemEntity.getRequestId(),StringUtils.substringAfter(requestItemEntity.getNotes(), "Exception :"));
+                exceptionNote.put(requestItemEntity.getId(),StringUtils.substringAfter(requestItemEntity.getNotes(), "Exception :"));
             }
         }
     }

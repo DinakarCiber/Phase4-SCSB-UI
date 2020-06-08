@@ -12,12 +12,8 @@ import java.util.List;
 @Cacheable(true)
 @Entity
 @Table(name="permissions_t",schema="recap",catalog="")
-public class PermissionEntity implements Serializable{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="permission_id")
-    private Integer permissionId;
-
+@AttributeOverride(name = "id", column = @Column(name = "permission_id"))
+public class PermissionEntity extends AbstractEntity<Integer>{
     @Column(name="permission_name")
     private String permissionName;
 
@@ -26,24 +22,6 @@ public class PermissionEntity implements Serializable{
 
     @ManyToMany(mappedBy ="permissions")
     private List<RoleEntity> roleEntityList;
-
-    /**
-     * Gets permission id.
-     *
-     * @return the permission id
-     */
-    public Integer getPermissionId() {
-        return permissionId;
-    }
-
-    /**
-     * Sets permission id.
-     *
-     * @param permissionId the permission id
-     */
-    public void setPermissionId(Integer permissionId) {
-        this.permissionId = permissionId;
-    }
 
     /**
      * Gets permission name.

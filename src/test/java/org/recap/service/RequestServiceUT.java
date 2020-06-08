@@ -176,7 +176,7 @@ public class RequestServiceUT extends BaseTestCase {
         RequestTypeEntity requestTypeEntity = new RequestTypeEntity();
         requestTypeEntity.setRequestTypeCode("RETRIEVAL");
         requestTypeEntity.setRequestTypeDesc("RETRIEVAL");
-        requestTypeEntity.setRequestTypeId(1);
+        requestTypeEntity.setId(1);
         requestTypeEntityList.add(requestTypeEntity);
         Mockito.doCallRealMethod().when(requestServiceMocked).populateItemForRequest(requestForm,request);
         String response = requestServiceMocked.populateItemForRequest(requestForm,request);
@@ -193,7 +193,7 @@ public class RequestServiceUT extends BaseTestCase {
         Mockito.when(requestServiceMocked.getRequestStatusDetailsRepository()).thenReturn(requestStatusDetailsRepository);
         Mockito.when(requestServiceMocked.getRequestItemDetailsRepository()).thenReturn(requestItemDetailsRepository);
         Mockito.when(requestServiceMocked.getRequestStatusDetailsRepository().findAllRequestStatusDescExceptProcessing()).thenReturn(Arrays.asList("RETRIEVAL ORDER PLACED","RECALL ORDER PLACED","EDD ORDER PLACED","REFILED","CANCELED","EXCEPTION","PENDING","INITIAL LOAD"));
-        Mockito.when(requestItemDetailsRepository.findByRequestIdIn(Arrays.asList(requestItemEntity.getRequestId()))).thenReturn(Arrays.asList(requestItemEntity));
+        Mockito.when(requestItemDetailsRepository.findByRequestIdIn(Arrays.asList(requestItemEntity.getId()))).thenReturn(Arrays.asList(requestItemEntity));
         Mockito.when(requestServiceMocked.getRefreshedStatus(mockedRequest)).thenCallRealMethod();
         String refreshedStatus = requestServiceMocked.getRefreshedStatus(mockedRequest);
         assertNotNull(refreshedStatus);
@@ -325,7 +325,7 @@ public class RequestServiceUT extends BaseTestCase {
         requestStatusEntity.setRequestStatusDescription("RECALL");
         RequestItemEntity requestItemEntity = new RequestItemEntity();
         requestItemEntity.setRequestStatusId(15);
-        requestItemEntity.setRequestId(16);
+        requestItemEntity.setId(16);
         requestItemEntity.setRequestStatusEntity(requestStatusEntity);
         return requestItemEntity;
     }
@@ -333,17 +333,17 @@ public class RequestServiceUT extends BaseTestCase {
     private List<RequestStatusEntity> getRequestStatusEntityList(){
         List<RequestStatusEntity> allExceptProcessing = new ArrayList<>();
         RequestStatusEntity requestStatusEntity =new RequestStatusEntity();
-        requestStatusEntity.setRequestStatusId(1);
+        requestStatusEntity.setId(1);
         requestStatusEntity.setRequestStatusCode("RETRIEVAL_ORDER_PLACED");
         requestStatusEntity.setRequestStatusDescription("RETRIEVAL ORDER PLACED");
         allExceptProcessing.add(requestStatusEntity);
         RequestStatusEntity requestStatusEntity1 =new RequestStatusEntity();
-        requestStatusEntity1.setRequestStatusId(2);
+        requestStatusEntity1.setId(2);
         requestStatusEntity1.setRequestStatusCode("RECALL_ORDER_PLACED");
         requestStatusEntity1.setRequestStatusDescription("RECALL ORDER PLACED");
         allExceptProcessing.add(requestStatusEntity1);
         RequestStatusEntity requestStatusEntity2 =new RequestStatusEntity();
-        requestStatusEntity2.setRequestStatusId(3);
+        requestStatusEntity2.setId(3);
         requestStatusEntity2.setRequestStatusCode("EDD_ORDER_PLACED");
         requestStatusEntity2.setRequestStatusDescription("EDD ORDER PLACED");
         allExceptProcessing.add(requestStatusEntity2);

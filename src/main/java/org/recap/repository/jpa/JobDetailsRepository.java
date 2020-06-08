@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 /**
  * Created by rajeshbabuk on 4/4/17.
  */
-public interface JobDetailsRepository extends JpaRepository<JobEntity, Integer> {
+public interface JobDetailsRepository extends BaseRepository<JobEntity> {
 
     /**
      * To get the job entity for the given job name.

@@ -9,10 +9,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Created by akulak on 22/9/17.
  */
 
-public interface BulkRequestDetailsRepository extends JpaRepository<BulkRequestItemEntity,Integer> {
-    Page<BulkRequestItemEntity> findByBulkRequestIdAndRequestingInstitutionId(Pageable pageable, Integer bulkRequestId, Integer requestingInstitutionId);
+public interface BulkRequestDetailsRepository extends BaseRepository<BulkRequestItemEntity> {
+    Page<BulkRequestItemEntity> findByIdAndRequestingInstitutionId(Pageable pageable, Integer id, Integer requestingInstitutionId);
 
-    Page<BulkRequestItemEntity> findByBulkRequestId(Pageable pageable, Integer bulkRequestId);
+    Page<BulkRequestItemEntity> findById(Pageable pageable, Integer id);
 
     Page<BulkRequestItemEntity> findByBulkRequestNameAndRequestingInstitutionId(Pageable pageable, String bulkRequestName, Integer requestingInstitutionId);
 
@@ -22,21 +22,21 @@ public interface BulkRequestDetailsRepository extends JpaRepository<BulkRequestI
 
     Page<BulkRequestItemEntity> findByPatronId(Pageable pageable, String patronId);
 
-    Page<BulkRequestItemEntity> findByBulkRequestIdAndBulkRequestNameAndRequestingInstitutionId(Pageable pageable, Integer bulkRequestId, String bulkRequestName, Integer requestingInstitutionId);
+    Page<BulkRequestItemEntity> findByIdAndBulkRequestNameAndRequestingInstitutionId(Pageable pageable, Integer id, String bulkRequestName, Integer requestingInstitutionId);
 
-    Page<BulkRequestItemEntity> findByBulkRequestIdAndBulkRequestName(Pageable pageable, Integer bulkRequestId, String bulkRequestName);
+    Page<BulkRequestItemEntity> findByIdAndBulkRequestName(Pageable pageable, Integer id, String bulkRequestName);
 
     Page<BulkRequestItemEntity> findByBulkRequestNameAndPatronIdAndRequestingInstitutionId(Pageable pageable, String bulkRequestName, String patronId, Integer requestingInstitutionId);
 
     Page<BulkRequestItemEntity> findByBulkRequestNameAndPatronId(Pageable pageable, String bulkRequestName, String patronId);
 
-    Page<BulkRequestItemEntity> findByBulkRequestIdAndPatronIdAndRequestingInstitutionId(Pageable pageable, Integer bulkRequestId, String patronId, Integer requestingInstitutionId);
+    Page<BulkRequestItemEntity> findByIdAndPatronIdAndRequestingInstitutionId(Pageable pageable, Integer id, String patronId, Integer requestingInstitutionId);
 
-    Page<BulkRequestItemEntity> findByBulkRequestIdAndPatronId(Pageable pageable, Integer bulkRequestId, String patronId);
+    Page<BulkRequestItemEntity> findByIdAndPatronId(Pageable pageable, Integer id, String patronId);
 
-    Page<BulkRequestItemEntity> findByBulkRequestIdAndBulkRequestNameAndPatronIdAndRequestingInstitutionId(Pageable pageable, Integer bulkRequestId, String bulkRequestName, String patronId, Integer requestingInstitutionId);
+    Page<BulkRequestItemEntity> findByIdAndBulkRequestNameAndPatronIdAndRequestingInstitutionId(Pageable pageable, Integer id, String bulkRequestName, String patronId, Integer requestingInstitutionId);
 
-    Page<BulkRequestItemEntity> findByBulkRequestIdAndBulkRequestNameAndPatronId(Pageable pageable, Integer bulkRequestId, String bulkRequestName, String patronId);
+    Page<BulkRequestItemEntity> findByIdAndBulkRequestNameAndPatronId(Pageable pageable, Integer id, String bulkRequestName, String patronId);
 
     Page<BulkRequestItemEntity> findByRequestingInstitutionId(Pageable pageable, Integer requestingInstitutionId);
 

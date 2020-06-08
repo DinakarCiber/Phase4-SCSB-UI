@@ -8,35 +8,14 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "request_item_status_t", schema = "recap", catalog = "")
-public class RequestStatusEntity implements Serializable{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "REQUEST_STATUS_ID")
-    private Integer requestStatusId;
+@AttributeOverride(name = "id", column = @Column(name = "REQUEST_STATUS_ID"))
+public class RequestStatusEntity extends AbstractEntity<Integer>{
 
     @Column(name = "REQUEST_STATUS_CODE")
     private String requestStatusCode;
 
     @Column(name = "REQUEST_STATUS_DESC")
     private String requestStatusDescription;
-
-    /**
-     * Gets request status id.
-     *
-     * @return the request status id
-     */
-    public Integer getRequestStatusId() {
-        return requestStatusId;
-    }
-
-    /**
-     * Sets request status id.
-     *
-     * @param requestStatusId the request status id
-     */
-    public void setRequestStatusId(Integer requestStatusId) {
-        this.requestStatusId = requestStatusId;
-    }
 
     /**
      * Gets request status code.

@@ -21,7 +21,7 @@ public class CollectionGroupEntityUT extends BaseTestCase{
         collectionGroupEntity.setLastUpdatedDate(new Date());
         CollectionGroupEntity entity = collectionGroupDetailRepository.save(collectionGroupEntity);
         assertNotNull(entity);
-        System.out.println("collection group id -->"+entity.getCollectionGroupId());
+        System.out.println("collection group id -->"+entity.getId());
         System.out.println("collection group created date-->"+entity.getCreatedDate());
         assertEquals(entity.getCollectionGroupCode(),"public");
         assertEquals(entity.getCollectionGroupDescription(),"public");

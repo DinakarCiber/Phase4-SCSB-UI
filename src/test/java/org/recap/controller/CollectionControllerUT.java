@@ -1,6 +1,5 @@
 package org.recap.controller;
 
-import org.apache.catalina.servlet4preview.http .HttpServletRequest;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,9 +54,6 @@ public class CollectionControllerUT extends BaseControllerUT {
 
     @Mock
     BindingResult bindingResult;
-
-    @Mock
-    HttpServletRequest httpServletRequest;
 
     @InjectMocks
     CollectionController collectionController;
@@ -209,17 +205,17 @@ public class CollectionControllerUT extends BaseControllerUT {
 
     private RequestItemEntity getMockRequestItemEntity() {
         InstitutionEntity institutionEntity1 = new InstitutionEntity();
-        institutionEntity1.setInstitutionId(1);
+        institutionEntity1.setId(1);
         institutionEntity1.setInstitutionCode("PUL");
         institutionEntity1.setInstitutionName("Princeton");
 
         RequestTypeEntity requestTypeEntity1 = new RequestTypeEntity();
-        requestTypeEntity1.setRequestTypeId(1);
+        requestTypeEntity1.setId(1);
         requestTypeEntity1.setRequestTypeCode("RETRIEVAL");
         requestTypeEntity1.setRequestTypeDesc("RETRIEVAL");
 
         RequestStatusEntity requestStatusEntity1 = new RequestStatusEntity();
-        requestStatusEntity1.setRequestStatusId(1);
+        requestStatusEntity1.setId(1);
         requestStatusEntity1.setRequestStatusCode("RETRIEVAL_ORDER_PLACED");
         requestStatusEntity1.setRequestStatusDescription("RETRIEVAL_ORDER_PLACED");
 
@@ -234,7 +230,7 @@ public class CollectionControllerUT extends BaseControllerUT {
         itemEntity1.setBibliographicEntities(Arrays.asList(bibliographicEntity1));
 
         RequestItemEntity requestItemEntity1 = new RequestItemEntity();
-        requestItemEntity1.setRequestId(1);
+        requestItemEntity1.setId(1);
         requestItemEntity1.setItemId(2);
         requestItemEntity1.setRequestTypeId(1);
         requestItemEntity1.setRequestingInstitutionId(1);
@@ -244,7 +240,7 @@ public class CollectionControllerUT extends BaseControllerUT {
         requestItemEntity1.setCreatedBy("Test");
         requestItemEntity1.setCreatedDate(new Date());
         requestItemEntity1.setStopCode("PA");
-        requestItemEntity1.setRequestStatusId(1);
+        requestItemEntity1.setId(1);
         requestItemEntity1.setNotes("Test Notes");
         requestItemEntity1.setInstitutionEntity(institutionEntity1);
         requestItemEntity1.setRequestTypeEntity(requestTypeEntity1);

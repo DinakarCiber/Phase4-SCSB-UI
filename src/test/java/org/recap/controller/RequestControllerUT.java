@@ -137,7 +137,7 @@ public class RequestControllerUT extends BaseControllerUT {
         Mockito.when(requestService.setDefaultsToCreateRequest(userDetailsForm,model)).thenCallRealMethod();
         InstitutionEntity institutionEntity = new InstitutionEntity();
         institutionEntity.setInstitutionCode("CUL");
-        institutionEntity.setInstitutionId(2);
+        institutionEntity.setId(2);
         List<InstitutionEntity> institutionEntityList = new ArrayList<>();
         institutionEntityList.add(institutionEntity);
         Mockito.when(requestService.getInstitutionDetailsRepository()).thenReturn(institutionDetailsRepository);
@@ -226,7 +226,7 @@ public class RequestControllerUT extends BaseControllerUT {
         Mockito.when(requestController.getUserAuthUtil().getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE)).thenReturn(userDetailsForm);
         InstitutionEntity institutionEntity = new InstitutionEntity();
         institutionEntity.setInstitutionCode("CUL");
-        institutionEntity.setInstitutionId(2);
+        institutionEntity.setId(2);
         List<InstitutionEntity> institutionEntityList = new ArrayList<>();
         institutionEntityList.add(institutionEntity);
         Mockito.when(requestService.setDefaultsToCreateRequest(userDetailsForm,model)).thenCallRealMethod();
@@ -256,7 +256,7 @@ public class RequestControllerUT extends BaseControllerUT {
         Mockito.when(requestController.getUserAuthUtil().getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE)).thenReturn(userDetailsForm);
         InstitutionEntity institutionEntity = new InstitutionEntity();
         institutionEntity.setInstitutionCode("CUL");
-        institutionEntity.setInstitutionId(2);
+        institutionEntity.setId(2);
         List<InstitutionEntity> institutionEntityList = new ArrayList<>();
         institutionEntityList.add(institutionEntity);
         Mockito.when(requestService.setDefaultsToCreateRequest(userDetailsForm,model)).thenCallRealMethod();
@@ -325,7 +325,7 @@ public class RequestControllerUT extends BaseControllerUT {
         RequestTypeEntity requestTypeEntity = new RequestTypeEntity();
         requestTypeEntity.setRequestTypeCode("RETRIEVAL");
         requestTypeEntity.setRequestTypeDesc("RETRIEVAL");
-        requestTypeEntity.setRequestTypeId(1);
+        requestTypeEntity.setId(1);
         requestTypeEntityList.add(requestTypeEntity);
         Mockito.when(requestService.getRequestTypeDetailsRepository().findAllExceptBorrowDirect()).thenReturn(Arrays.asList(requestTypeEntity));
         Mockito.when(requestService.getRequestTypeDetailsRepository().findAllExceptEDDAndBorrowDirect()).thenReturn(Arrays.asList(requestTypeEntity));
@@ -453,7 +453,7 @@ public class RequestControllerUT extends BaseControllerUT {
         RequestItemEntity requestItemEntity=getRequestItemEntity();
         Mockito.when(requestService.getRequestStatusDetailsRepository()).thenReturn(requestStatusDetailsRepository);
         Mockito.when(requestService.getRequestItemDetailsRepository()).thenReturn(requestItemDetailsRepository);
-        Mockito.when(requestItemDetailsRepository.findByRequestIdIn(Arrays.asList(requestItemEntity.getRequestId()))).thenReturn(Arrays.asList(requestItemEntity));
+        Mockito.when(requestItemDetailsRepository.findByRequestIdIn(Arrays.asList(requestItemEntity.getId()))).thenReturn(Arrays.asList(requestItemEntity));
         Mockito.when(requestService.getRequestStatusDetailsRepository().findAllRequestStatusDescExceptProcessing()).thenReturn(Arrays.asList("RETRIEVAL ORDER PLACED","RECALL ORDER PLACED","EDD ORDER PLACED","REFILED","CANCELED","EXCEPTION","PENDING","INITIAL LOAD"));
         Mockito.doCallRealMethod().when(requestService).getRefreshedStatus(mockedRequest);
         String refreshedStatus = requestService.getRefreshedStatus(mockedRequest);
@@ -465,7 +465,7 @@ public class RequestControllerUT extends BaseControllerUT {
         requestStatusEntity.setRequestStatusDescription("RECALL");
         RequestItemEntity requestItemEntity = new RequestItemEntity();
         requestItemEntity.setRequestStatusId(15);
-        requestItemEntity.setRequestId(16);
+        requestItemEntity.setId(16);
         requestItemEntity.setRequestStatusEntity(requestStatusEntity);
         return requestItemEntity;
     }
@@ -590,12 +590,12 @@ public class RequestControllerUT extends BaseControllerUT {
         RequestStatusEntity requestStatusEntity=new RequestStatusEntity();
         requestStatusEntity.setRequestStatusCode("RETRIEVAL_ORDER_PLACED");
         requestStatusEntity.setRequestStatusDescription("RETRIEVAL ORDER PLACED");
-        requestStatusEntity.setRequestStatusId(1);
+        requestStatusEntity.setId(1);
         requestStatusEntityList.add(requestStatusEntity.getRequestStatusCode());
         RequestStatusEntity requestStatusEntity1=new RequestStatusEntity();
         requestStatusEntity1.setRequestStatusCode("RECALL_ORDER_PLACED");
         requestStatusEntity1.setRequestStatusDescription("RECALL_ORDER_PLACED");
-        requestStatusEntity1.setRequestStatusId(2);
+        requestStatusEntity1.setId(2);
         requestStatusEntityList.add(requestStatusEntity1.getRequestStatusCode());
         return requestStatusEntityList;
     }

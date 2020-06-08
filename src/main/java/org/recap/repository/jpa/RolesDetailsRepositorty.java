@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by dharmendrag on 13/12/16.
  */
-public interface RolesDetailsRepositorty extends JpaRepository<RoleEntity, Integer> {
+public interface RolesDetailsRepositorty extends BaseRepository<RoleEntity> {
 
     /**
      * To get pageable role entities for the given role name.
@@ -59,7 +59,7 @@ public interface RolesDetailsRepositorty extends JpaRepository<RoleEntity, Integ
      * @return the role i dfor permission name
      */
     @Query(value = "select distinct(ROLE_ID) from role_permission_t where PERMISSION_ID = :permissionID",nativeQuery = true)
-    List<Integer> getRoleIDforPermissionName(@Param("permissionID") Integer permissionID);
+    List<Integer> getIdforPermissionName(@Param("permissionID") Integer permissionID);
 
     /**
      *To get the pageable role entity for the given list of role ids.
@@ -68,7 +68,7 @@ public interface RolesDetailsRepositorty extends JpaRepository<RoleEntity, Integ
      * @param roleID   the role id
      * @return the page
      */
-    @Query(value="select roles from RoleEntity roles where roles.roleId In(:roleID) and roles.roleName not in ('Super Admin')")
+    @Query(value="select roles from RoleEntity roles where roles.id In(:roleID) and roles.roleName not in ('Super Admin')")
     Page<RoleEntity> findByRoleIDs(Pageable pageable, @Param("roleID") List<Integer> roleID);
 
     /**
@@ -77,15 +77,8 @@ public interface RolesDetailsRepositorty extends JpaRepository<RoleEntity, Integ
      * @param roleIds the role ids
      * @return the list
      */
-    List<RoleEntity> findByRoleIdIn(List<Integer> roleIds);
+    List<RoleEntity> findByIdIn(List<Integer> roleIds);
 
-    /**
-     * To get the role entity for the given role id.
-     *
-     * @param roleId the role id
-     * @return the role entity
-     */
-    RoleEntity findByRoleId(Integer roleId);
 
     /**
      * Get all roles except 'ReSubmit Request'.

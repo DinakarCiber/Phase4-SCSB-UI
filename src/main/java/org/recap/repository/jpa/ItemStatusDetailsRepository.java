@@ -9,7 +9,7 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
  * Created by hemalathas on 22/6/16.
  */
 @RepositoryRestResource(collectionResourceRel = "itemStatus", path = "itemStatus")
-public interface ItemStatusDetailsRepository extends PagingAndSortingRepository<ItemStatusEntity, Integer> {
+public interface ItemStatusDetailsRepository extends BaseRepository<ItemStatusEntity> {
 
     /**
      * To get the item status entity for the given status code.
@@ -18,12 +18,4 @@ public interface ItemStatusDetailsRepository extends PagingAndSortingRepository<
      * @return the item status entity
      */
     ItemStatusEntity findByStatusCode(String statusCode);
-
-    /**
-     * To get the item status entity for the given item status id.
-     *
-     * @param itemStatusId the item status id
-     * @return the item status entity
-     */
-    ItemStatusEntity findByItemStatusId(@Param("itemStatusId") Integer itemStatusId);
 }

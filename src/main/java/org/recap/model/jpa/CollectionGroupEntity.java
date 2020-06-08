@@ -9,11 +9,8 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "collection_group_t", schema = "recap", catalog = "")
-public class CollectionGroupEntity implements Serializable{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "COLLECTION_GROUP_ID")
-    private Integer collectionGroupId;
+@AttributeOverride(name = "id", column = @Column(name = "COLLECTION_GROUP_ID"))
+public class CollectionGroupEntity extends AbstractEntity<Integer>{
 
     @Column(name = "COLLECTION_GROUP_CODE")
     private String collectionGroupCode;
@@ -28,24 +25,6 @@ public class CollectionGroupEntity implements Serializable{
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "LAST_UPDATED_DATE")
     private Date lastUpdatedDate;
-
-    /**
-     * Gets collection group id.
-     *
-     * @return the collection group id
-     */
-    public Integer getCollectionGroupId() {
-        return collectionGroupId;
-    }
-
-    /**
-     * Sets collection group id.
-     *
-     * @param collectionGroupId the collection group id
-     */
-    public void setCollectionGroupId(Integer collectionGroupId) {
-        this.collectionGroupId = collectionGroupId;
-    }
 
     /**
      * Gets collection group code.

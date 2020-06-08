@@ -9,12 +9,8 @@ import java.util.List;
  */
 @Entity
 @Table(name = "bulk_request_item_t", schema = "recap", catalog = "")
-public class BulkRequestItemEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "BULK_REQUEST_ID")
-    private Integer bulkRequestId;
+@AttributeOverride(name = "id", column = @Column(name = "BULK_REQUEST_ID"))
+public class BulkRequestItemEntity extends AbstractEntity<Integer>{
 
     @Column(name = "BULK_REQUEST_NAME")
     private String bulkRequestName;
@@ -60,14 +56,6 @@ public class BulkRequestItemEntity {
             joinColumns = @JoinColumn(name = "BULK_REQUEST_ID"),
             inverseJoinColumns = @JoinColumn(name = "REQUEST_ID"))
     private List<RequestItemEntity> requestItemEntities;
-
-    public Integer getBulkRequestId() {
-        return bulkRequestId;
-    }
-
-    public void setBulkRequestId(Integer bulkRequestId) {
-        this.bulkRequestId = bulkRequestId;
-    }
 
     public String getBulkRequestName() {
         return bulkRequestName;

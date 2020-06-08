@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
  * Created by dharmendrag on 29/11/16.
  */
 @Repository
-public interface UserDetailsRepository extends JpaRepository<UsersEntity,Integer>,JpaSpecificationExecutor {
+public interface UserDetailsRepository extends BaseRepository<UsersEntity>,JpaSpecificationExecutor {
 
 
     /**
@@ -34,14 +34,6 @@ public interface UserDetailsRepository extends JpaRepository<UsersEntity,Integer
      * @return the users entity
      */
     UsersEntity findByLoginIdAndInstitutionEntity(String loginId, InstitutionEntity institutionId);
-
-    /**
-     * To get the user entity for the given user id.
-     *
-     * @param userId the user id
-     * @return the users entity
-     */
-    UsersEntity findByUserId(Integer userId);
 
     /**
      *To get pageable users entities.
