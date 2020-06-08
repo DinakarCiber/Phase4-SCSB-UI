@@ -14,6 +14,7 @@ import javax.persistence.PersistenceContext;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
@@ -150,11 +151,11 @@ public class UserDetailsRepositoryUT extends BaseTestCase {
         usersEntity.setCreatedBy("admin");
         usersEntity.setLastUpdatedDate(new Date());
         usersEntity.setLastUpdatedBy("admin");
-        InstitutionEntity institutionEntity = institutionDetailsRepository.findByInstitutionId(usersEntity.getInstitutionId());
+        Optional<InstitutionEntity> institutionEntity = institutionDetailsRepository.findById(usersEntity.getInstitutionId());
         if (institutionEntity != null) {
-            usersEntity.setInstitutionEntity(institutionEntity);
+            usersEntity.setInstitutionEntity(institutionEntity.get());
         }
-        List<RoleEntity> roleEntityList = rolesDetailsRepositorty.findByRoleIdIn(roleIds);
+        List<RoleEntity> roleEntityList = rolesDetailsRepositorty.findByIdIn(roleIds);
         if (roleEntityList != null) {
             usersEntity.setUserRole(roleEntityList);
         }
