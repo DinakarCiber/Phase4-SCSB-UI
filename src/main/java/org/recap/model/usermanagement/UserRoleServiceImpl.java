@@ -96,7 +96,7 @@ public class UserRoleServiceImpl implements UserRoleService {
         usersEntity.setLastUpdatedBy(userRoleForm.getCreatedBy());
         Optional<InstitutionEntity> institutionEntity = institutionDetailsRepository.findById(userRoleForm.getInstitutionId());
         if (institutionEntity != null) {
-            usersEntity.setId(institutionEntity.get().getId());
+            usersEntity.setInstitutionId(institutionEntity.get().getId());
             usersEntity.setInstitutionEntity(institutionEntity.get());
         }
         List<RoleEntity> roleEntityList = rolesDetailsRepositorty.findByIdIn(userRoleForm.getSelectedForCreate());
@@ -126,7 +126,7 @@ public class UserRoleServiceImpl implements UserRoleService {
             usersEntity.setId(userId);
             usersEntity.setLoginId(networkLoginId);
             usersEntity.setUserDescription(userDescription);
-            usersEntity.setId(institutionId);
+            usersEntity.setInstitutionId(institutionId);
             usersEntity.setEmailId(userEmailId);
             usersEntity.setCreatedDate(checkUserId.get().getCreatedDate());
             usersEntity.setCreatedBy(checkUserId.get().getCreatedBy());
@@ -146,7 +146,7 @@ public class UserRoleServiceImpl implements UserRoleService {
             }
             Optional<UsersEntity> byUserIdUserEntity = userDetailsRepository.findById(userId);
             if(byUserIdUserEntity != null) {
-                if (byUserIdUserEntity.get().getId().equals(institutionId)) {
+                if (byUserIdUserEntity.get().getInstitutionId().equals(institutionId)) {
                     savedUsersEntity = userDetailsRepository.saveAndFlush(usersEntity);
                     userRoleForm.setMessage(networkLoginId + RecapConstants.EDITED_SUCCESSFULLY);
                 } else {

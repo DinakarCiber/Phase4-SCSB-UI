@@ -95,7 +95,7 @@ public class UserDetailsRepositoryUT extends BaseTestCase {
     public void findByLoginIdAndInstitutionId(){
         UsersEntity usersEntity = saveUser("testUt", "desc", 1, Arrays.asList(1, 2), "testUt@mail.com");
         assertNotNull(usersEntity);
-        UsersEntity usersEntity1 = userDetailsRepository.findByLoginIdAndInstitutionId(usersEntity.getLoginId(),usersEntity.getId());
+        UsersEntity usersEntity1 = userDetailsRepository.findByLoginIdAndInstitutionId(usersEntity.getLoginId(),usersEntity.getInstitutionId());
         assertNotNull(usersEntity1);
         checkUserEntityResults(usersEntity, usersEntity1);
 
@@ -150,7 +150,7 @@ public class UserDetailsRepositoryUT extends BaseTestCase {
         usersEntity.setCreatedBy("admin");
         usersEntity.setLastUpdatedDate(new Date());
         usersEntity.setLastUpdatedBy("admin");
-        InstitutionEntity institutionEntity = institutionDetailsRepository.findByInstitutionId(usersEntity.getId());
+        InstitutionEntity institutionEntity = institutionDetailsRepository.findByInstitutionId(usersEntity.getInstitutionId());
         if (institutionEntity != null) {
             usersEntity.setInstitutionEntity(institutionEntity);
         }
@@ -166,7 +166,7 @@ public class UserDetailsRepositoryUT extends BaseTestCase {
     private void checkUserEntityResults(UsersEntity usersEntity, UsersEntity usersEntity1) {
         assertEquals(usersEntity.getLoginId(),usersEntity1.getLoginId());
         assertEquals(usersEntity.getUserDescription(),usersEntity1.getUserDescription());
-        assertEquals(usersEntity.getId(),usersEntity1.getId());
+        assertEquals(usersEntity.getInstitutionId(),usersEntity1.getInstitutionId());
         assertEquals(usersEntity.getUserRole(),usersEntity1.getUserRole());
         assertEquals(usersEntity.getEmailId(),usersEntity1.getEmailId());
         assertNotNull(usersEntity1.getCreatedBy());

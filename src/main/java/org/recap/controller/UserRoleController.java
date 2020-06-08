@@ -399,7 +399,7 @@ public class UserRoleController {
             }
             userRoleForm.setEditSelectedForCreate(roleIds);
             userRoleForm.setShowSelectedForCreate(userRoleForm.getEditSelectedForCreate());
-            userRoleForm.setEditInstitutionId(usersEntity.get().getId());
+            userRoleForm.setEditInstitutionId(usersEntity.get().getInstitutionId());
             userRoleForm.setShowUserSearchView(false);
         }
         return new ModelAndView(RecapConstants.USER_ROLES_SEARCH, RecapConstants.USER_ROLE_FORM, userRoleForm);
