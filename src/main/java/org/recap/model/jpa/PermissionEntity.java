@@ -2,6 +2,9 @@ package org.recap.model.jpa;
 
 
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
@@ -13,6 +16,8 @@ import java.util.List;
 @Entity
 @Table(name="permissions_t",schema="recap",catalog="")
 @AttributeOverride(name = "id", column = @Column(name = "permission_id"))
+@Getter
+@Setter
 public class PermissionEntity extends AbstractEntity<Integer>{
     @Column(name="permission_name")
     private String permissionName;
@@ -22,42 +27,6 @@ public class PermissionEntity extends AbstractEntity<Integer>{
 
     @ManyToMany(mappedBy ="permissions")
     private List<RoleEntity> roleEntityList;
-
-    /**
-     * Gets permission name.
-     *
-     * @return the permission name
-     */
-    public String getPermissionName() {
-        return permissionName;
-    }
-
-    /**
-     * Sets permission name.
-     *
-     * @param permissionName the permission name
-     */
-    public void setPermissionName(String permissionName) {
-        this.permissionName = permissionName;
-    }
-
-    /**
-     * Gets permission desc.
-     *
-     * @return the permission desc
-     */
-    public String getPermissionDesc() {
-        return permissionDesc;
-    }
-
-    /**
-     * Sets permission desc.
-     *
-     * @param permissionDesc the permission desc
-     */
-    public void setPermissionDesc(String permissionDesc) {
-        this.permissionDesc = permissionDesc;
-    }
 
     /**
      * Gets role entity list.
