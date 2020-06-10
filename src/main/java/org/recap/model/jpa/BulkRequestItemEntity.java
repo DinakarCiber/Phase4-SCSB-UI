@@ -1,5 +1,8 @@
 package org.recap.model.jpa;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
@@ -10,6 +13,8 @@ import java.util.List;
 @Entity
 @Table(name = "bulk_request_item_t", schema = "recap", catalog = "")
 @AttributeOverride(name = "id", column = @Column(name = "BULK_REQUEST_ID"))
+@Getter
+@Setter
 public class BulkRequestItemEntity extends AbstractEntity<Integer>{
 
     @Column(name = "BULK_REQUEST_NAME")
@@ -56,108 +61,4 @@ public class BulkRequestItemEntity extends AbstractEntity<Integer>{
             joinColumns = @JoinColumn(name = "BULK_REQUEST_ID"),
             inverseJoinColumns = @JoinColumn(name = "REQUEST_ID"))
     private List<RequestItemEntity> requestItemEntities;
-
-    public String getBulkRequestName() {
-        return bulkRequestName;
-    }
-
-    public void setBulkRequestName(String bulkRequestName) {
-        this.bulkRequestName = bulkRequestName;
-    }
-
-    public String getBulkRequestFileName() {
-        return bulkRequestFileName;
-    }
-
-    public void setBulkRequestFileName(String bulkRequestFileName) {
-        this.bulkRequestFileName = bulkRequestFileName;
-    }
-
-    public byte[] getBulkRequestFileData() {
-        return bulkRequestFileData;
-    }
-
-    public void setBulkRequestFileData(byte[] bulkRequestFileData) {
-        this.bulkRequestFileData = bulkRequestFileData;
-    }
-
-    public Integer getRequestingInstitutionId() {
-        return requestingInstitutionId;
-    }
-
-    public void setRequestingInstitutionId(Integer requestingInstitutionId) {
-        this.requestingInstitutionId = requestingInstitutionId;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public Date getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public Date getLastUpdatedDate() {
-        return lastUpdatedDate;
-    }
-
-    public void setLastUpdatedDate(Date lastUpdatedDate) {
-        this.lastUpdatedDate = lastUpdatedDate;
-    }
-
-    public String getStopCode() {
-        return stopCode;
-    }
-
-    public void setStopCode(String stopCode) {
-        this.stopCode = stopCode;
-    }
-
-    public String getNotes() {
-        return notes;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
-
-    public String getPatronId() {
-        return patronId;
-    }
-
-    public void setPatronId(String patronId) {
-        this.patronId = patronId;
-    }
-
-    public String getEmailId() {
-        return emailId;
-    }
-
-    public void setEmailId(String emailId) {
-        this.emailId = emailId;
-    }
-
-    public String getBulkRequestStatus() {
-        return bulkRequestStatus;
-    }
-
-    public void setBulkRequestStatus(String bulkRequestStatus) {
-        this.bulkRequestStatus = bulkRequestStatus;
-    }
-
-    public List<RequestItemEntity> getRequestItemEntities() {
-        return requestItemEntities;
-    }
-
-    public void setRequestItemEntities(List<RequestItemEntity> requestItemEntities) {
-        this.requestItemEntities = requestItemEntities;
-    }
 }

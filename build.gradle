@@ -39,6 +39,12 @@ repositories {
 
 
 dependencies {
+	/*implementation('org.recap:phase4-scsb-common:1.0') {
+		version  {
+			branch = 'development'
+		}
+	}*/
+	compile fileTree(dir: 'lib', include: '*.jar')
 	implementation('commons-beanutils:commons-beanutils:1.9.4')
 	implementation('org.springframework.boot:spring-boot-starter-data-jpa')
 	implementation("org.springframework.boot:spring-boot-starter-data-rest")
