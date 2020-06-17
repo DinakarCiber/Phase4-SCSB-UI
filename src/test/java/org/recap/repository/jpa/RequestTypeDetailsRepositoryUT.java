@@ -28,7 +28,7 @@ public class RequestTypeDetailsRepositoryUT extends BaseTestCase {
         RequestTypeEntity savedRequestType=requestTypeDetailsRepository.saveAndFlush(requestTypeEntity);
         entityManager.refresh(savedRequestType);
 
-        assertNotNull(savedRequestType.getRequestTypeId());
+        assertNotNull(savedRequestType.getId());
         assertEquals(requestTypeEntity.getRequestTypeCode(),savedRequestType.getRequestTypeCode());
         assertEquals(requestTypeEntity.getRequestTypeDesc(),savedRequestType.getRequestTypeDesc());
 

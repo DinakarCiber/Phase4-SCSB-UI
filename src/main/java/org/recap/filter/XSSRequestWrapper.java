@@ -1,8 +1,8 @@
 package org.recap.filter;
 
-import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
+import java.util.regex.Pattern;
 
 /**
  * Created by angelind on 27/9/17.

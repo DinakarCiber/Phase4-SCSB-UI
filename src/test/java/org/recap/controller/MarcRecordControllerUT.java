@@ -7,7 +7,6 @@ import org.mockito.MockitoAnnotations;
 import org.recap.RecapConstants;
 import org.recap.model.jpa.BibliographicEntity;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.ui.Model;
 
 import javax.persistence.EntityManager;
@@ -15,7 +14,8 @@ import javax.persistence.PersistenceContext;
 import java.util.Date;
 import java.util.Random;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Created by hemalathas on 1/8/16.

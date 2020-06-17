@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import static org.recap.spring.SwaggerAPIProvider.*;
 
 /**
  * Created by rajeshbabuk on 13/1/17.

@@ -2,11 +2,11 @@ package org.recap.security;
 
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.recap.RecapConstants;
-import org.slf4j.Logger;
-import org.recap.repository.jpa.RolesDetailsRepositorty;
 import org.recap.model.jpa.RoleEntity;
-import org.springframework.stereotype.Service;
+import org.recap.repository.jpa.RolesDetailsRepositorty;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
 

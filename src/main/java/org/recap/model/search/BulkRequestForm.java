@@ -3,10 +3,8 @@ package org.recap.model.search;
 import lombok.Getter;
 import lombok.Setter;
 import org.recap.model.jpa.BulkCustomerCodeEntity;
-import org.recap.model.jpa.CustomerCodeEntity;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 

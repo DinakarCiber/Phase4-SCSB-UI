@@ -3,7 +3,6 @@ package org.recap.repository.jpa;
 import org.recap.model.jpa.BulkRequestItemEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  * Created by akulak on 22/9/17.

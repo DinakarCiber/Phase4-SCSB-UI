@@ -1,11 +1,9 @@
 package org.recap.model.search;
 
-import io.swagger.annotations.ApiModelProperty;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
@@ -47,7 +45,7 @@ public class SearchResultRowUT {
         assertNotNull(searchResultRow.getPatronEmailId());
         assertNotNull(searchResultRow.getCreatedDate());
         assertNotNull(searchResultRow.getStatus());
-        assertNotNull(searchResultRow.getId());
+        assertNotNull(searchResultRow.getRequestId());
         assertNotNull(searchResultRow.isShowAllItems());
 
     }
@@ -72,7 +70,7 @@ public class SearchResultRowUT {
         searchResultRow.setItemId(1);
         searchResultRow.setSearchItemResultRows(new ArrayList<>());
         searchResultRow.setShowAllItems(false);
-        searchResultRow.setId(1);
+        searchResultRow.setRequestId(1);
         searchResultRow.setPatronBarcode("452356654");
         searchResultRow.setRequestingInstitution("PUL");
         searchResultRow.setDeliveryLocation("PB");

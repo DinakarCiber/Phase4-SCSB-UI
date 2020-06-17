@@ -1,6 +1,5 @@
 package org.recap.model.search;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -7,8 +7,6 @@ import org.mockito.Mockito;
 import org.recap.BaseTestCase;
 import org.recap.RecapConstants;
 import org.recap.model.usermanagement.UserForm;
-import org.recap.security.UserManagementService;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashMap;
 import java.util.Map;

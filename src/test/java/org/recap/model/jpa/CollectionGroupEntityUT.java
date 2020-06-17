@@ -5,7 +5,8 @@ import org.recap.BaseTestCase;
 
 import java.util.Date;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by hemalathas on 22/6/16.
