@@ -1,7 +1,6 @@
 package org.recap.repository.jpa;
 
 import org.recap.model.jpa.BulkCustomerCodeEntity;
-import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 

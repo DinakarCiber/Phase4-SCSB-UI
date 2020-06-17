@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.recap.BaseTestCase;
 
-
 import java.util.HashSet;
 import java.util.Set;
 

@@ -1,9 +1,6 @@
 package org.recap.security;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.shiro.authc.UsernamePasswordToken;
 import org.recap.RecapConstants;
-import org.recap.spring.PropertyValueProvider;
 import org.recap.util.HelperUtil;
 import org.recap.util.UserAuthUtil;
 import org.springframework.security.core.Authentication;
@@ -13,7 +10,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;

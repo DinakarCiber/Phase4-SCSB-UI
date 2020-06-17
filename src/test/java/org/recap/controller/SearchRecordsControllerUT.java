@@ -14,7 +14,6 @@ import org.recap.model.search.SearchRecordsResponse;
 import org.recap.model.search.SearchResultRow;
 import org.recap.model.usermanagement.UserDetailsForm;
 import org.recap.repository.jpa.InstitutionDetailsRepository;
-import org.recap.security.UserManagementService;
 import org.recap.util.CsvUtil;
 import org.recap.util.SearchUtil;
 import org.recap.util.UserAuthUtil;
@@ -34,8 +33,8 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotEquals;
 import static org.mockito.Mockito.when;
 
 /**

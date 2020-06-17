@@ -1,13 +1,11 @@
 package org.recap.model.schedule;
 
-import com.fasterxml.jackson.databind.deser.Deserializers;
 import org.junit.Test;
 import org.recap.BaseTestCase;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Created by hemalathas on 17/7/17.

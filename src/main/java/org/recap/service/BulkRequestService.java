@@ -8,7 +8,7 @@ import org.recap.model.jpa.InstitutionEntity;
 import org.recap.model.jpa.RequestItemEntity;
 import org.recap.model.jpa.UsersEntity;
 import org.recap.model.search.BulkRequestForm;
-import org.recap.model.search.BulkRequestInformation;
+import org.recap.model.BulkRequestInformation;
 import org.recap.model.search.BulkRequestResponse;
 import org.recap.model.search.BulkSearchResultRow;
 import org.recap.repository.jpa.BulkCustomerCodeDetailsRepository;
@@ -34,8 +34,14 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.util.*;
+
 import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by akulak on 22/9/17.

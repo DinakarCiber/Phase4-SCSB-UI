@@ -50,7 +50,7 @@ public class UserDetailsRepositoryUT extends BaseTestCase {
     public void findByUserId(){
         UsersEntity usersEntity = saveUser("testUt", "desc", 1, Arrays.asList(1, 2), "testUt@mail.com");
         assertNotNull(usersEntity);
-        UsersEntity usersEntity1 = userDetailsRepository.findByUserId(usersEntity.getId());
+        UsersEntity usersEntity1 = userDetailsRepository.findById(usersEntity.getId()).orElse(null);
         assertNotNull(usersEntity1);
         checkUserEntityResults(usersEntity, usersEntity1);
 
