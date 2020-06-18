@@ -3,7 +3,6 @@ package org.recap.repository.jpa;
 import org.junit.Test;
 import org.recap.BaseTestCase;
 import org.recap.model.jpa.InstitutionEntity;
-import org.recap.repository.jpa.InstitutionDetailsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.junit.Assert.assertEquals;

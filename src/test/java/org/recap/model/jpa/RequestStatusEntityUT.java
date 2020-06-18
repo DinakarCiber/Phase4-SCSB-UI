@@ -5,7 +5,7 @@ import org.recap.BaseTestCase;
 import org.recap.repository.jpa.RequestStatusDetailsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Created by hemalathas on 20/2/17.

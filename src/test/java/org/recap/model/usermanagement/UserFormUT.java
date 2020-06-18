@@ -6,7 +6,7 @@ import org.recap.BaseTestCase;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Created by hemalathas on 30/3/17.

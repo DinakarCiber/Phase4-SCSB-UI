@@ -7,7 +7,7 @@ import org.recap.model.jpa.CustomerCodeEntity;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Created by hemalathas on 29/3/17.

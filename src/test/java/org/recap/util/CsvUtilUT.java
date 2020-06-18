@@ -7,7 +7,6 @@ import org.recap.model.search.SearchItemResultRow;
 import org.recap.model.search.SearchRecordsRequest;
 import org.recap.model.search.SearchResultRow;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
 import java.io.FileReader;

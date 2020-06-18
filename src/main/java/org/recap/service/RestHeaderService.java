@@ -2,7 +2,6 @@ package org.recap.service;
 
 import org.recap.RecapConstants;
 import org.recap.spring.SwaggerAPIProvider;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;

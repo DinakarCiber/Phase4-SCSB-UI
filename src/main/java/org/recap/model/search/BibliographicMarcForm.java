@@ -3,6 +3,7 @@ package org.recap.model.search;
 import lombok.Getter;
 import lombok.Setter;
 import org.recap.model.jpa.CustomerCodeEntity;
+
 import java.util.ArrayList;
 import java.util.List;
 

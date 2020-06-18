@@ -3,10 +3,7 @@ package org.recap.model.usermanagement;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.recap.BaseTestCase;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.Errors;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by hemalathas on 21/2/17.

@@ -1,11 +1,9 @@
 package org.recap.repository.jpa;
 
 import org.recap.model.jpa.InstitutionEntity;
-import org.recap.model.jpa.RoleEntity;
 import org.recap.model.jpa.UsersEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -34,6 +32,7 @@ public interface UserDetailsRepository extends BaseRepository<UsersEntity>,JpaSp
      * @return the users entity
      */
     UsersEntity findByLoginIdAndInstitutionEntity(String loginId, InstitutionEntity institutionId);
+
 
     /**
      *To get pageable users entities.

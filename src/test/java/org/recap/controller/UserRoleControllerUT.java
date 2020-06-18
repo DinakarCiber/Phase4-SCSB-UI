@@ -30,10 +30,16 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.function.Function;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotEquals;
 import static org.mockito.Mockito.when;
 
 /**
@@ -166,7 +172,7 @@ public class UserRoleControllerUT extends BaseTestCase {
         Mockito.when(mockedUserRoleController.getLogger()).thenReturn(logger);
         Mockito.when(mockedUserRoleController.getUserDetailsRepository()).thenReturn(userDetailsRepository);
         Mockito.when(mockedUserRoleController.getUserAuthUtil().authorizedUser(RecapConstants.SCSB_SHIRO_USER_ROLE_URL, (UsernamePasswordToken) session.getAttribute(RecapConstants.USER_TOKEN))).thenReturn(true);
-        Mockito.when(mockedUserRoleController.getUserDetailsRepository().findByUserId(userId)).thenReturn(usersEntity);
+        Mockito.when(mockedUserRoleController.getUserDetailsRepository().findById(userId)).thenReturn(usersEntity);
         Mockito.when(mockedUserRoleController.getUserRoleService().getRoles(Mockito.any(), userDetailsForm.isSuperAdmin())).thenReturn(roles);
         Mockito.when(mockedUserRoleController.getUserRoleService().getInstitutions(userDetailsForm.isSuperAdmin(), userDetailsForm.getLoginInstitutionId())).thenReturn(institution);
         Mockito.when(mockedUserRoleController.getUserAuthUtil().getUserDetails(request.getSession(), RecapConstants.BARCODE_RESTRICTED_PRIVILEGE)).thenReturn(userDetailsForm);
@@ -293,7 +299,7 @@ public class UserRoleControllerUT extends BaseTestCase {
         UserRoleForm userRoleForm = new UserRoleForm();
         userRoleForm.setNetworkLoginId("test");
         userRoleForm.setEmailId("test@gmail.com");
-        userRoleForm.setId(2);
+        userRoleForm.setUserId(2);
         userRoleForm.setUserDescription("testdescription");
         List<Integer> role = new ArrayList<>();
         role.add(2);
@@ -348,7 +354,7 @@ public class UserRoleControllerUT extends BaseTestCase {
         Mockito.when(mockedUserRoleController.getLogger()).thenReturn(logger);
         Mockito.when(mockedUserRoleController.getUserAuthUtil().getUserDetails(session, RecapConstants.BARCODE_RESTRICTED_PRIVILEGE)).thenReturn(userDetailsForm);
         Mockito.when(mockedUserRoleController.getUserAuthUtil().authorizedUser(RecapConstants.SCSB_SHIRO_USER_ROLE_URL, (UsernamePasswordToken) session.getAttribute(RecapConstants.USER_TOKEN))).thenReturn(true);
-        Mockito.when(mockedUserRoleController.getUserDetailsRepository().findByUserId(userId)).thenReturn(usersEntity);
+        Mockito.when(mockedUserRoleController.getUserDetailsRepository().findById(userId)).thenReturn(usersEntity);
         Mockito.when(mockedUserRoleController.editUser(userId, "smith", request)).thenCallRealMethod();
         ModelAndView modelAndView = mockedUserRoleController.editUser(userId, "smith", request);
         assertNotNull(modelAndView);
@@ -371,7 +377,7 @@ public class UserRoleControllerUT extends BaseTestCase {
         UserRoleForm userRoleForm = new UserRoleForm();
         userRoleForm.setNetworkLoginId("test");
         userRoleForm.setEmailId("test@gmail.com");
-        userRoleForm.setId(2);
+        userRoleForm.setUserId(2);
         userRoleForm.setUserDescription("testdescription");
         List<Integer> role = new ArrayList<>();
         role.add(2);
@@ -420,7 +426,7 @@ public class UserRoleControllerUT extends BaseTestCase {
         UserRoleForm userRoleForm = new UserRoleForm();
         userRoleForm.setNetworkLoginId("test");
         userRoleForm.setEmailId("test@gmail.com");
-        userRoleForm.setId(2);
+        userRoleForm.setUserId(2);
         userRoleForm.setUserDescription("testdescription");
         List<Integer> role = new ArrayList<>();
         role.add(2);
