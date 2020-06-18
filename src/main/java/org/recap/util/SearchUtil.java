@@ -42,7 +42,6 @@ public class SearchUtil {
 
             logger.info("Headers : {}", httpEntity.getHeaders());
             logger.info("Body : {}", httpEntity.hasBody());
-            logger.info("SCSB Url : {}", scsbUrl);
 
             ResponseEntity<SearchRecordsResponse> responseEntity = restTemplate.exchange(scsbUrl + RecapConstants.SCSB_SEARCH_SERVICE_URL, HttpMethod.POST, httpEntity, SearchRecordsResponse.class);
             searchRecordsResponse = responseEntity.getBody();
