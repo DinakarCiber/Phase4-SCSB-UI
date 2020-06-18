@@ -1,6 +1,7 @@
 package org.recap.util;
 
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.recap.RecapCommonConstants;
 import org.recap.RecapConstants;
 import org.recap.model.usermanagement.UserDetailsForm;
 import org.recap.service.RestHeaderService;
@@ -63,7 +64,7 @@ public class UserAuthUtil {
             HttpEntity<UsernamePasswordToken> requestEntity = new HttpEntity<>(token,getRestHeaderService().getHttpHeaders());
             statusResponse = restTemplate.postForObject(scsbShiro + serviceURL, requestEntity, Boolean.class);
         } catch (Exception e) {
-            logger.error(RecapConstants.LOG_ERROR,e);
+            logger.error(RecapCommonConstants.LOG_ERROR,e);
         }
         return statusResponse;
     }

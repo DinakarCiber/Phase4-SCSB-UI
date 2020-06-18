@@ -2,6 +2,7 @@ package org.recap.controller;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.recap.RecapCommonConstants;
 import org.recap.RecapConstants;
 import org.recap.model.usermanagement.LoginValidator;
 import org.recap.model.usermanagement.UserForm;
@@ -100,7 +101,7 @@ public class LoginController {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             String username = auth.getName();
             String institutionFromRequest = userForm.getInstitution();
-            if (StringUtils.equals(institutionFromRequest, RecapConstants.NYPL)) {
+            if (StringUtils.equals(institutionFromRequest, RecapCommonConstants.NYPL)) {
                 OAuth2Authentication oauth = (OAuth2Authentication) auth;
                 String tokenString = ((OAuth2AuthenticationDetails) oauth.getDetails()).getTokenValue();
                 OAuth2AccessToken accessToken = tokenStore.readAccessToken(tokenString);
@@ -119,7 +120,7 @@ public class LoginController {
                 String errorMessage = (String) resultMap.get(RecapConstants.USER_AUTH_ERRORMSG);
                 userForm.setErrorMessage(errorMessage);
                 error.rejectValue(RecapConstants.ERROR_MESSAGE, RecapConstants.ERROR_CODE_ERROR_MESSAGE, errorMessage);
-                logger.error(RecapConstants.LOG_ERROR + errorMessage);
+                logger.error(RecapCommonConstants.LOG_ERROR + errorMessage);
                 return RecapConstants.VIEW_LOGIN;
             }
 
@@ -127,7 +128,7 @@ public class LoginController {
             session.setAttribute(RecapConstants.USER_AUTH, resultMap);
             setValuesInSession(session, resultMap);
         } catch (Exception exception) {
-            logger.error(RecapConstants.LOG_ERROR, exception);
+            logger.error(RecapCommonConstants.LOG_ERROR, exception);
             logger.error("Exception occurred in authentication : " + exception.getLocalizedMessage());
             error.rejectValue(RecapConstants.ERROR_MESSAGE, RecapConstants.ERROR_CODE_ERROR_MESSAGE, exception.getMessage());
             return RecapConstants.VIEW_LOGIN;
@@ -188,7 +189,7 @@ public class LoginController {
         }
         catch(ConnectException|ResourceAccessException e)
         {
-            logger.error(RecapConstants.LOG_ERROR,e);
+            logger.error(RecapCommonConstants.LOG_ERROR,e);
             error.rejectValue("wrongCredentials","error.invalid.credentials","Connection Error.Please contact our staff");
             logger.error("Exception occured in connection : "+e.getLocalizedMessage());
             return loginScreen;
@@ -196,7 +197,7 @@ public class LoginController {
         catch(Exception e)
         {
 
-            logger.error(RecapConstants.LOG_ERROR,e);
+            logger.error(RecapCommonConstants.LOG_ERROR,e);
             error.rejectValue("wrongCredentials","error.invalid.credentials","Invalid Credentials");
             if(resultmap!=null) {
                 logger.debug("Exception occured in authentication Process : {} ", resultmap.get(RecapConstants.USER_AUTH_ERRORMSG));
@@ -245,8 +246,8 @@ public class LoginController {
         session.setAttribute(RecapConstants.REQUEST_ITEM_PRIVILEGE,(Boolean)authMap.get(RecapConstants.REQUEST_ITEM_PRIVILEGE));
         session.setAttribute(RecapConstants.BARCODE_RESTRICTED_PRIVILEGE,(Boolean)authMap.get(RecapConstants.BARCODE_RESTRICTED_PRIVILEGE));
         session.setAttribute(RecapConstants.DEACCESSION_PRIVILEGE,(Boolean)authMap.get(RecapConstants.DEACCESSION_PRIVILEGE));
-        session.setAttribute(RecapConstants.BULK_REQUEST_PRIVILEGE,(Boolean)authMap.get(RecapConstants.BULK_REQUEST_PRIVILEGE));
-        session.setAttribute(RecapConstants.RESUBMIT_REQUEST_PRIVILEGE,(Boolean)authMap.get(RecapConstants.RESUBMIT_REQUEST_PRIVILEGE));
+        session.setAttribute(RecapCommonConstants.BULK_REQUEST_PRIVILEGE,(Boolean)authMap.get(RecapCommonConstants.BULK_REQUEST_PRIVILEGE));
+        session.setAttribute(RecapCommonConstants.RESUBMIT_REQUEST_PRIVILEGE,(Boolean)authMap.get(RecapCommonConstants.RESUBMIT_REQUEST_PRIVILEGE));
         Object isSuperAdmin = session.getAttribute(RecapConstants.SUPER_ADMIN_USER);
         if((boolean)isSuperAdmin){
             session.setAttribute(RecapConstants.ROLE_FOR_SUPER_ADMIN,true);

@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.recap.RecapCommonConstants;
 import org.recap.RecapConstants;
 import org.recap.model.jpa.BibliographicEntity;
 import org.recap.model.jpa.HoldingsEntity;
@@ -16,7 +17,7 @@ import org.recap.model.jpa.RequestItemEntity;
 import org.recap.model.jpa.RequestTypeEntity;
 import org.recap.model.jpa.CustomerCodeEntity;
 import org.recap.model.jpa.RequestStatusEntity;
-import org.recap.model.request.CancelRequestResponse;
+import org.recap.model.CancelRequestResponse;
 import org.recap.model.request.ItemRequestInformation;
 import org.recap.model.request.ItemResponseInformation;
 import org.recap.model.search.RequestForm;
@@ -387,7 +388,7 @@ public class RequestControllerUT extends BaseControllerUT {
     @Test
     public void testCreateRequest() throws Exception {
         RequestForm requestForm = getRequestForm();
-        ResponseEntity responseEntity = new ResponseEntity(RecapConstants.VALID_REQUEST,HttpStatus.OK);
+        ResponseEntity responseEntity = new ResponseEntity(RecapCommonConstants.VALID_REQUEST,HttpStatus.OK);
         ResponseEntity responseEntity1 = new ResponseEntity<ItemResponseInformation>(getItemResponseInformation(),HttpStatus.OK);
         when(request.getSession()).thenReturn(session);
         ItemRequestInformation itemRequestInformation = getItemRequestInformation();
@@ -415,7 +416,7 @@ public class RequestControllerUT extends BaseControllerUT {
     public void testCancelRequest() throws Exception {
         RequestForm requestForm = getRequestForm();
         HttpEntity requestEntity = new HttpEntity<>(restHeaderService.getHttpHeaders());
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(scsbUrl + RecapConstants.URL_REQUEST_CANCEL).queryParam(RecapConstants.REQUEST_ID, requestForm.getRequestId());
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(scsbUrl + RecapConstants.URL_REQUEST_CANCEL).queryParam(RecapCommonConstants.REQUEST_ID, requestForm.getRequestId());
         CancelRequestResponse cancelRequestResponse = new CancelRequestResponse();
         cancelRequestResponse.setSuccess(true);
         cancelRequestResponse.setScreenMessage("Request cancelled.");

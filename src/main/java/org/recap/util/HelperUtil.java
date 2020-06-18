@@ -2,6 +2,7 @@ package org.recap.util;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.recap.RecapCommonConstants;
 import org.recap.RecapConstants;
 import org.recap.spring.ApplicationContextProvider;
 import org.recap.spring.PropertyValueProvider;
@@ -63,7 +64,7 @@ public class HelperUtil {
      */
     public static String getLogoutUrl(String institutionCode) {
         String casLogoutUrl;
-        if (StringUtils.equals(institutionCode, RecapConstants.NYPL)) {
+        if (StringUtils.equals(institutionCode, RecapCommonConstants.NYPL)) {
             casLogoutUrl = RecapConstants.VIEW_HOME; // Todo : Need to get the corresponding logout url from NYPL
         } else {
             String urlProperty = RecapConstants.CAS + institutionCode + RecapConstants.SERVICE_LOGOUT;

@@ -2,6 +2,7 @@ package org.recap.controller;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.recap.RecapCommonConstants;
 import org.recap.RecapConstants;
 import org.recap.model.jpa.InstitutionEntity;
 import org.recap.model.jpa.RoleEntity;
@@ -124,7 +125,7 @@ public class UserRoleController {
             getAndSetRolesAndInstitutions(userRoleForm, userDetailsForm);
             userRoleForm.setAllowCreateEdit(true);
             model.addAttribute(RecapConstants.USER_ROLE_FORM, userRoleForm);
-            model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.USER_ROLES_SEARCH);
+            model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.USER_ROLES_SEARCH);
             return RecapConstants.VIEW_SEARCH_RECORDS;
         } else {
             return UserManagementService.unAuthorizedUser(session,"Users",logger);
@@ -158,9 +159,9 @@ public class UserRoleController {
         try {
             priorSearch(userRoleForm, request);
             userRoleForm.setShowPagination(true);
-            model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.USER_ROLES_SEARCH);
+            model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.USER_ROLES_SEARCH);
         } catch (Exception e) {
-            logger.error(RecapConstants.LOG_ERROR,e);
+            logger.error(RecapCommonConstants.LOG_ERROR,e);
         }
         return new ModelAndView(RecapConstants.VIEW_REQUEST_RESULT_TABLE, RecapConstants.USER_ROLE_FORM, userRoleForm);
         } else {
@@ -252,9 +253,9 @@ public class UserRoleController {
             userRoleForm.setAfterDelPageSize(pageSize);
             userRoleForm.setShowPagination(true);
             userRoleForm.setShowResults(true);
-            model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.USER_ROLES_SEARCH);
+            model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.USER_ROLES_SEARCH);
         } catch (Exception e) {
-            logger.error(RecapConstants.LOG_ERROR,e);
+            logger.error(RecapCommonConstants.LOG_ERROR,e);
         }
         userRoleForm.setShowUserSearchView(true);
         return new ModelAndView(RecapConstants.USER_ROLES_SEARCH, RecapConstants.USER_ROLE_FORM, userRoleForm);
@@ -280,7 +281,7 @@ public class UserRoleController {
         if (authenticated) {
         userRoleForm.resetPageNumber();
         priorSearch(userRoleForm, request);
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.USER_ROLES_SEARCH);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.USER_ROLES_SEARCH);
         return new ModelAndView(RecapConstants.VIEW_REQUEST_RESULT_TABLE, RecapConstants.USER_ROLE_FORM, userRoleForm);
         } else {
             return new ModelAndView(RecapConstants.VIEW_LOGIN);
@@ -603,7 +604,7 @@ public class UserRoleController {
         boolean authenticated = getUserAuthUtil().authorizedUser(RecapConstants.SCSB_SHIRO_USER_ROLE_URL, (UsernamePasswordToken) session.getAttribute(RecapConstants.USER_TOKEN));
         if (authenticated) {
             priorSearch(userRoleForm, request);
-            model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.USER_ROLES_SEARCH);
+            model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.USER_ROLES_SEARCH);
             return new ModelAndView(RecapConstants.VIEW_REQUEST_RESULT_TABLE, RecapConstants.USER_ROLE_FORM, userRoleForm);
         } else {
             return new ModelAndView(RecapConstants.VIEW_LOGIN);

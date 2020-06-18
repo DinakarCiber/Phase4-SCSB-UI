@@ -1,6 +1,7 @@
 package org.recap.controller;
 
 import org.apache.commons.lang3.StringUtils;
+import org.recap.RecapCommonConstants;
 import org.recap.RecapConstants;
 import org.recap.model.jpa.JobEntity;
 import org.recap.model.schedule.ScheduleJobRequest;
@@ -100,10 +101,10 @@ public class ScheduleJobsController {
             List<JobEntity> jobEntities = jobDetailsRepository.findAll();
             scheduleJobsForm.setJobEntities(jobEntities);
         } else {
-            return UserManagementService.unAuthorizedUser(session, RecapConstants.SEARCH, logger);
+            return UserManagementService.unAuthorizedUser(session, RecapCommonConstants.SEARCH, logger);
         }
         model.addAttribute(RecapConstants.SCHEDULE_JOBS_FORM, scheduleJobsForm);
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.SCHEDULE_JOBS);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.SCHEDULE_JOBS);
         return RecapConstants.VIEW_SEARCH_RECORDS;
     }
 
@@ -130,10 +131,10 @@ public class ScheduleJobsController {
             scheduleJobRequest.setScheduleType(scheduleJobsForm.getScheduleType());
             HttpEntity<ScheduleJobRequest> httpEntity = new HttpEntity<>(scheduleJobRequest, getRestHeaderService().getHttpHeaders());
 
-            ResponseEntity<ScheduleJobResponse> responseEntity = getRestTemplate().exchange(scsbUrl + RecapConstants.URL_SCHEDULE_JOBS, HttpMethod.POST, httpEntity, ScheduleJobResponse.class);
+            ResponseEntity<ScheduleJobResponse> responseEntity = getRestTemplate().exchange(scsbUrl + RecapCommonConstants.URL_SCHEDULE_JOBS, HttpMethod.POST, httpEntity, ScheduleJobResponse.class);
             scheduleJobResponse = responseEntity.getBody();
             String message = scheduleJobResponse.getMessage();
-            if (StringUtils.containsIgnoreCase(message, RecapConstants.SUCCESS)) {
+            if (StringUtils.containsIgnoreCase(message, RecapCommonConstants.SUCCESS)) {
                 JobEntity jobEntity = jobDetailsRepository.findByJobName(scheduleJobsForm.getJobName());
                 if (null != jobEntity) {
                     if (RecapConstants.UNSCHEDULE.equals(scheduleJobsForm.getScheduleType())) {
@@ -151,11 +152,11 @@ public class ScheduleJobsController {
                 scheduleJobsForm.setErrorMessage(scheduleJobResponse.getMessage());
             }
         } catch (Exception e) {
-            logger.error(RecapConstants.LOG_ERROR, e);
+            logger.error(RecapCommonConstants.LOG_ERROR, e);
             scheduleJobsForm.setErrorMessage(e.getMessage());
         }
 
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.SCHEDULE_JOBS);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.SCHEDULE_JOBS);
         return new ModelAndView(RecapConstants.VIEW_SCHEDULE_JOB_SECTION, RecapConstants.SCHEDULE_JOBS_FORM, scheduleJobsForm);
     }
 }

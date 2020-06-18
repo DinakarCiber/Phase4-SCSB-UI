@@ -3,6 +3,7 @@ package org.recap.util;
 import org.apache.commons.lang3.StringUtils;
 import org.marc4j.marc.Leader;
 import org.marc4j.marc.Record;
+import org.recap.RecapCommonConstants;
 import org.recap.RecapConstants;
 import org.springframework.util.CollectionUtils;
 
@@ -144,11 +145,11 @@ public class BibJSONUtil extends MarcUtil {
         if ((leaderFieldValue!=null) && StringUtils.isNotBlank(leaderFieldValue) && leaderFieldValue.length() > 7) {
             char materialTypeChar = leaderFieldValue.charAt(7);
             if ('m' == materialTypeChar) {
-                leaderMaterialType = RecapConstants.MONOGRAPH;
+                leaderMaterialType = RecapCommonConstants.MONOGRAPH;
             } else if ('s' == materialTypeChar) {
-                leaderMaterialType = RecapConstants.SERIAL;
+                leaderMaterialType = RecapCommonConstants.SERIAL;
             } else {
-                leaderMaterialType = RecapConstants.OTHER;
+                leaderMaterialType = RecapCommonConstants.OTHER;
             }
         }
         return leaderMaterialType;

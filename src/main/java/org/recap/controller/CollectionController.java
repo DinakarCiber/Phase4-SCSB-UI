@@ -3,6 +3,7 @@ package org.recap.controller;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.recap.RecapCommonConstants;
 import org.recap.RecapConstants;
 import org.recap.model.jpa.RequestItemEntity;
 import org.recap.model.search.BibliographicMarcForm;
@@ -124,7 +125,7 @@ public class CollectionController {
         {
             CollectionForm collectionForm = new CollectionForm();
             model.addAttribute(RecapConstants.COLLECTION_FORM, collectionForm);
-            model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.COLLECTION);
+            model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.COLLECTION);
             return RecapConstants.VIEW_SEARCH_RECORDS;
         }else{
             return UserManagementService.unAuthorizedUser(session,"Collection",logger);
@@ -146,7 +147,7 @@ public class CollectionController {
                                        BindingResult result,
                                        Model model) throws Exception {
         searchAndSetResults(collectionForm);
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.COLLECTION);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.COLLECTION);
         return new ModelAndView(RecapConstants.VIEW_SEARCH_RECORDS, RecapConstants.COLLECTION_FORM, collectionForm);
     }
 
@@ -169,7 +170,7 @@ public class CollectionController {
         UserDetailsForm userDetailsForm=getUserAuthUtil().getUserDetails(request.getSession(false),RecapConstants.BARCODE_RESTRICTED_PRIVILEGE);
         BibliographicMarcForm bibliographicMarcForm = getMarcRecordViewUtil().buildBibliographicMarcForm(collectionForm.getBibId(), collectionForm.getItemId(),userDetailsForm);
         populateCollectionForm(collectionForm, bibliographicMarcForm);
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.COLLECTION);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.COLLECTION);
         return new ModelAndView("collection :: #collectionUpdateModal", RecapConstants.COLLECTION_FORM, collectionForm);
     }
 
@@ -191,9 +192,9 @@ public class CollectionController {
         HttpSession session = request.getSession(false);
         String username = (String) session.getAttribute(RecapConstants.USER_NAME);
         collectionForm.setUsername(username);
-        if (RecapConstants.UPDATE_CGD.equalsIgnoreCase(collectionForm.getCollectionAction())) {
+        if (RecapCommonConstants.UPDATE_CGD.equalsIgnoreCase(collectionForm.getCollectionAction())) {
             getCollectionServiceUtil().updateCGDForItem(collectionForm);
-        } else if (RecapConstants.DEACCESSION.equalsIgnoreCase(collectionForm.getCollectionAction())) {
+        } else if (RecapCommonConstants.DEACCESSION.equalsIgnoreCase(collectionForm.getCollectionAction())) {
             getCollectionServiceUtil().deAccessionItem(collectionForm);
         }
         collectionForm.setAllowEdit(true);
@@ -216,8 +217,8 @@ public class CollectionController {
                                        Model model) throws Exception {
         String itemBarcode = collectionForm.getBarcode();
         String warningMessage = null;
-        RequestItemEntity activeRetrievalRequest = getRequestItemDetailsRepository().findByItemBarcodeAndRequestStaCode(itemBarcode, RecapConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED);
-        RequestItemEntity activeRecallRequest = getRequestItemDetailsRepository().findByItemBarcodeAndRequestStaCode(itemBarcode, RecapConstants.REQUEST_STATUS_RECALLED);
+        RequestItemEntity activeRetrievalRequest = getRequestItemDetailsRepository().findByItemBarcodeAndRequestStaCode(itemBarcode, RecapCommonConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED);
+        RequestItemEntity activeRecallRequest = getRequestItemDetailsRepository().findByItemBarcodeAndRequestStaCode(itemBarcode, RecapCommonConstants.REQUEST_STATUS_RECALLED);
         if (null != activeRetrievalRequest && null != activeRecallRequest) {
             warningMessage = RecapConstants.WARNING_MESSAGE_REQUEST_BORROWED_ITEM;
         } else if (null != activeRetrievalRequest && null == activeRecallRequest) {
@@ -239,9 +240,9 @@ public class CollectionController {
         }
 
         if (StringUtils.isNotBlank(warningMessage)) {
-            if (RecapConstants.UPDATE_CGD.equalsIgnoreCase(collectionForm.getCollectionAction())) {
+            if (RecapCommonConstants.UPDATE_CGD.equalsIgnoreCase(collectionForm.getCollectionAction())) {
                 collectionForm.setWarningMessage(warningMessage);
-            } else if (RecapConstants.DEACCESSION.equalsIgnoreCase(collectionForm.getCollectionAction())) {
+            } else if (RecapCommonConstants.DEACCESSION.equalsIgnoreCase(collectionForm.getCollectionAction())) {
                 collectionForm.setWarningMessage(warningMessage + " " + RecapConstants.WARNING_MESSAGE_DEACCESSION_REQUEST_BORROWED_ITEM);
             }
         }
@@ -256,9 +257,9 @@ public class CollectionController {
 
     private String limitedBarcodes(CollectionForm collectionForm) {
         String[] barcodeArray = collectionForm.getItemBarcodes().split(",");
-        if (barcodeArray.length > RecapConstants.BARCODE_LIMIT) {
-            String[] limitBarcodeArray = Arrays.copyOfRange(barcodeArray, 0, RecapConstants.BARCODE_LIMIT);
-            collectionForm.setIgnoredBarcodesErrorMessage(RecapConstants.BARCODE_LIMIT_ERROR + " - " + StringUtils.join(Arrays.copyOfRange(barcodeArray, RecapConstants.BARCODE_LIMIT, barcodeArray.length), ","));
+        if (barcodeArray.length > RecapCommonConstants.BARCODE_LIMIT) {
+            String[] limitBarcodeArray = Arrays.copyOfRange(barcodeArray, 0, RecapCommonConstants.BARCODE_LIMIT);
+            collectionForm.setIgnoredBarcodesErrorMessage(RecapConstants.BARCODE_LIMIT_ERROR + " - " + StringUtils.join(Arrays.copyOfRange(barcodeArray, RecapCommonConstants.BARCODE_LIMIT, barcodeArray.length), ","));
             return StringUtils.join(limitBarcodeArray, ",");
         }
         return StringUtils.join(barcodeArray, ",");
@@ -279,7 +280,7 @@ public class CollectionController {
     private void buildResultRows(CollectionForm collectionForm) throws Exception {
         if (StringUtils.isNotBlank(collectionForm.getItemBarcodes())) {
             SearchRecordsRequest searchRecordsRequest = new SearchRecordsRequest();
-            searchRecordsRequest.setFieldName(RecapConstants.BARCODE);
+            searchRecordsRequest.setFieldName(RecapCommonConstants.BARCODE);
             searchRecordsRequest.setFieldValue(limitedBarcodes(collectionForm));
 
             SearchRecordsResponse searchRecordsResponse = searchUtil.requestSearchResults(searchRecordsRequest);
@@ -290,7 +291,7 @@ public class CollectionController {
                 collectionForm.setSelectAll(false);
             }
         } else {
-            collectionForm.setErrorMessage(RecapConstants.NO_RESULTS_FOUND);
+            collectionForm.setErrorMessage(RecapCommonConstants.NO_RESULTS_FOUND);
         }
         collectionForm.setShowResults(true);
     }
@@ -298,15 +299,15 @@ public class CollectionController {
     private void buildMissingBarcodes(CollectionForm collectionForm) {
         Set<String> missingBarcodes = getMissingBarcodes(collectionForm);
         if (CollectionUtils.isNotEmpty(missingBarcodes)) {
-            collectionForm.setBarcodesNotFoundErrorMessage(RecapConstants.BARCODES_NOT_FOUND + " - " + StringUtils.join(missingBarcodes, ","));
+            collectionForm.setBarcodesNotFoundErrorMessage(RecapCommonConstants.BARCODES_NOT_FOUND + " - " + StringUtils.join(missingBarcodes, ","));
         }
     }
 
     private Set<String> getMissingBarcodes(CollectionForm collectionForm) {
         if (StringUtils.isNotBlank(collectionForm.getItemBarcodes())) {
             String[] barcodeArray = collectionForm.getItemBarcodes().split(",");
-            if (barcodeArray.length > RecapConstants.BARCODE_LIMIT) {
-                barcodeArray = Arrays.copyOfRange(barcodeArray, 0, RecapConstants.BARCODE_LIMIT);
+            if (barcodeArray.length > RecapCommonConstants.BARCODE_LIMIT) {
+                barcodeArray = Arrays.copyOfRange(barcodeArray, 0, RecapCommonConstants.BARCODE_LIMIT);
             }
             Set<String> missingBarcodes = new HashSet<>(Arrays.asList(barcodeArray));
             for (SearchResultRow searchResultRow : collectionForm.getSearchResultRows()) {
