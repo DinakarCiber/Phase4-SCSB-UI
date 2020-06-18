@@ -40,9 +40,6 @@ public class SearchUtil {
             headers.set(RecapConstants.API_KEY, SwaggerAPIProvider.getInstance().getSwaggerApiKey());
             HttpEntity<SearchRecordsRequest> httpEntity = new HttpEntity<>(searchRecordsRequest, headers);
 
-            logger.info("Headers : {}", httpEntity.getHeaders());
-            logger.info("Body : {}", httpEntity.hasBody());
-
             ResponseEntity<SearchRecordsResponse> responseEntity = restTemplate.exchange(scsbUrl + RecapConstants.SCSB_SEARCH_SERVICE_URL, HttpMethod.POST, httpEntity, SearchRecordsResponse.class);
             searchRecordsResponse = responseEntity.getBody();
             return searchRecordsResponse;
