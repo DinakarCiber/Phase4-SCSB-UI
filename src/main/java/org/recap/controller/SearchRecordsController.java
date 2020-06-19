@@ -4,6 +4,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.recap.RecapCommonConstants;
 import org.recap.RecapConstants;
 import org.recap.model.jpa.InstitutionEntity;
 import org.recap.model.search.SearchItemResultRow;
@@ -125,7 +126,7 @@ public class SearchRecordsController {
         {
             SearchRecordsRequest searchRecordsRequest = new SearchRecordsRequest();
             model.addAttribute(RecapConstants.VIEW_SEARCH_RECORDS_REQUEST, searchRecordsRequest);
-            model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.SEARCH);
+            model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.SEARCH);
             return RecapConstants.VIEW_SEARCH_RECORDS;
         }else{
             return UserManagementService.unAuthorizedUser(session,"Search",logger);
@@ -148,7 +149,7 @@ public class SearchRecordsController {
                                   Model model) {
         searchRecordsRequest.resetPageNumber();
         searchAndSetResults(searchRecordsRequest);
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.SEARCH);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.SEARCH);
         return new ModelAndView(RecapConstants.VIEW_SEARCH_RECORDS, RecapConstants.VIEW_SEARCH_RECORDS_REQUEST, searchRecordsRequest);
     }
 
@@ -166,7 +167,7 @@ public class SearchRecordsController {
                                BindingResult result,
                                Model model) {
         searchAndSetResults(searchRecordsRequest);
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.SEARCH);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.SEARCH);
         return new ModelAndView(RecapConstants.VIEW_SEARCH_RECORDS, RecapConstants.VIEW_SEARCH_RECORDS_REQUEST, searchRecordsRequest);
     }
 
@@ -184,7 +185,7 @@ public class SearchRecordsController {
                                    BindingResult result,
                                    Model model) {
         searchAndSetResults(searchRecordsRequest);
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.SEARCH);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.SEARCH);
         return new ModelAndView(RecapConstants.VIEW_SEARCH_RECORDS, RecapConstants.VIEW_SEARCH_RECORDS_REQUEST, searchRecordsRequest);
     }
 
@@ -203,7 +204,7 @@ public class SearchRecordsController {
                                        Model model) {
         searchRecordsRequest.resetPageNumber();
         searchAndSetResults(searchRecordsRequest);
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.SEARCH);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.SEARCH);
         return new ModelAndView(RecapConstants.VIEW_SEARCH_RECORDS, RecapConstants.VIEW_SEARCH_RECORDS_REQUEST, searchRecordsRequest);
     }
 
@@ -222,7 +223,7 @@ public class SearchRecordsController {
                                        Model model) {
         searchRecordsRequest.setPageNumber(searchRecordsRequest.getTotalPageCount() - 1);
         searchAndSetResults(searchRecordsRequest);
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.SEARCH);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.SEARCH);
         return new ModelAndView(RecapConstants.VIEW_SEARCH_RECORDS, RecapConstants.VIEW_SEARCH_RECORDS_REQUEST, searchRecordsRequest);
     }
 
@@ -239,7 +240,7 @@ public class SearchRecordsController {
         searchRecordsRequest.setMaterialTypes(new ArrayList<>());
         searchRecordsRequest.setUseRestrictions(new ArrayList<>());
         searchRecordsRequest.setShowResults(false);
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.SEARCH);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.SEARCH);
         return new ModelAndView(RecapConstants.VIEW_SEARCH_RECORDS);
     }
 
@@ -254,7 +255,7 @@ public class SearchRecordsController {
     public ModelAndView newSearch(Model model) {
         SearchRecordsRequest searchRecordsRequest = new SearchRecordsRequest();
         model.addAttribute(RecapConstants.VIEW_SEARCH_RECORDS_REQUEST, searchRecordsRequest);
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.SEARCH);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.SEARCH);
         return new ModelAndView(RecapConstants.VIEW_SEARCH_RECORDS);
     }
 
@@ -280,10 +281,10 @@ public class SearchRecordsController {
         if (StringUtils.isNotBlank(searchRecordsRequest.getErrorMessage())) {
             searchRecordsRequest.setShowResults(true);
             model.addAttribute("searchRecordsRequest", searchRecordsRequest);
-            model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.SEARCH);
+            model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.SEARCH);
             return new ModelAndView("searchRecords");
         }
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.REQUEST);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.REQUEST);
         return new ModelAndView(new RedirectView("/request",true));
     }
 
@@ -309,7 +310,7 @@ public class SearchRecordsController {
         byte[] fileContent = IOUtils.toByteArray(new FileInputStream(csvFile));
         response.setHeader("Content-Disposition", "attachment; filename=\"" + fileNameWithExtension + "\"");
         response.setContentLength(fileContent.length);
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.SEARCH);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.SEARCH);
         return fileContent;
     }
 
@@ -329,7 +330,7 @@ public class SearchRecordsController {
                                          Model model) throws Exception {
         searchRecordsRequest.setPageNumber(getPageNumberOnPageSizeChange(searchRecordsRequest));
         searchAndSetResults(searchRecordsRequest);
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.SEARCH);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.SEARCH);
         return new ModelAndView(RecapConstants.VIEW_SEARCH_RECORDS, RecapConstants.VIEW_SEARCH_RECORDS_REQUEST, searchRecordsRequest);
     }
 
@@ -369,7 +370,7 @@ public class SearchRecordsController {
 
     private boolean isItemField(SearchRecordsRequest searchRecordsRequest) {
         if (StringUtils.isNotBlank(searchRecordsRequest.getFieldName())
-                && (searchRecordsRequest.getFieldName().equalsIgnoreCase(RecapConstants.BARCODE) || searchRecordsRequest.getFieldName().equalsIgnoreCase(RecapConstants.CALL_NUMBER))) {
+                && (searchRecordsRequest.getFieldName().equalsIgnoreCase(RecapCommonConstants.BARCODE) || searchRecordsRequest.getFieldName().equalsIgnoreCase(RecapCommonConstants.CALL_NUMBER))) {
             return true;
         }
         return false;
@@ -395,7 +396,7 @@ public class SearchRecordsController {
             searchRecordsRequest.setTotalBibRecordsCount(String.valueOf(0));
             searchRecordsRequest.setTotalItemRecordsCount(String.valueOf(0));
             if (searchRecordsRequest.getErrorMessage() == null) {
-                searchRecordsRequest.setErrorMessage(RecapConstants.SEARCH_RESULT_ERROR_NO_RECORDS_FOUND);
+                searchRecordsRequest.setErrorMessage(RecapCommonConstants.SEARCH_RESULT_ERROR_NO_RECORDS_FOUND);
             }
         }
 
@@ -414,7 +415,7 @@ public class SearchRecordsController {
         Set<String> itemAvailabilty = new HashSet<>();
         for (SearchResultRow searchResultRow : searchResultRows) {
             if (searchResultRow.isSelected()) {
-                if (RecapConstants.PRIVATE.equals(searchResultRow.getCollectionGroupDesignation()) && !userDetailsForm.isSuperAdmin() && !userDetailsForm.isRecapUser() && StringUtils.isNotBlank(userInstitution) && !userInstitution.equals(searchResultRow.getOwningInstitution())) {
+                if (RecapCommonConstants.PRIVATE.equals(searchResultRow.getCollectionGroupDesignation()) && !userDetailsForm.isSuperAdmin() && !userDetailsForm.isRecapUser() && StringUtils.isNotBlank(userInstitution) && !userInstitution.equals(searchResultRow.getOwningInstitution())) {
                     searchRecordsRequest.setErrorMessage(RecapConstants.REQUEST_PRIVATE_ERROR_USER_NOT_PERMITTED);
                     return;
                 } else if (!userDetailsForm.isRecapPermissionAllowed()) {
@@ -426,7 +427,7 @@ public class SearchRecordsController {
             } else if (!CollectionUtils.isEmpty(searchResultRow.getSearchItemResultRows())) {
                 for (SearchItemResultRow searchItemResultRow : searchResultRow.getSearchItemResultRows()) {
                     if (searchItemResultRow.isSelectedItem()) {
-                        if (RecapConstants.PRIVATE.equals(searchItemResultRow.getCollectionGroupDesignation()) && !userDetailsForm.isSuperAdmin() && !userDetailsForm.isRecapUser() && StringUtils.isNotBlank(userInstitution) && !userInstitution.equals(searchResultRow.getOwningInstitution())) {
+                        if (RecapCommonConstants.PRIVATE.equals(searchItemResultRow.getCollectionGroupDesignation()) && !userDetailsForm.isSuperAdmin() && !userDetailsForm.isRecapUser() && StringUtils.isNotBlank(userInstitution) && !userInstitution.equals(searchResultRow.getOwningInstitution())) {
                             searchRecordsRequest.setErrorMessage(RecapConstants.REQUEST_PRIVATE_ERROR_USER_NOT_PERMITTED);
                             return;
                         } else if (!userDetailsForm.isRecapPermissionAllowed()) {

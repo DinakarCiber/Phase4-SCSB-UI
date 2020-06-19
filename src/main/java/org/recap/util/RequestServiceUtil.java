@@ -1,6 +1,7 @@
 package org.recap.util;
 
 import org.apache.commons.lang3.StringUtils;
+import org.recap.RecapCommonConstants;
 import org.recap.RecapConstants;
 import org.recap.model.jpa.InstitutionEntity;
 import org.recap.model.jpa.RequestItemEntity;
@@ -45,7 +46,7 @@ public class RequestServiceUtil {
             institutionEntity=new InstitutionEntity();
             institutionEntity.setId(0);
         }
-        Pageable pageable = PageRequest.of(requestForm.getPageNumber(), requestForm.getPageSize(), Sort.Direction.DESC, RecapConstants.REQUEST_ID);
+        Pageable pageable = PageRequest.of(requestForm.getPageNumber(), requestForm.getPageSize(), Sort.Direction.DESC, RecapCommonConstants.REQUEST_ID);
 
         Page<RequestItemEntity> requestItemEntities;
         if (StringUtils.isNotBlank(patronBarcode) && StringUtils.isNotBlank(itemBarcode) && StringUtils.isNotBlank(status) && StringUtils.isNotBlank(institution)) {

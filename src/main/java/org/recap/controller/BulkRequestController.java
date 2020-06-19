@@ -2,6 +2,7 @@ package org.recap.controller;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.recap.RecapCommonConstants;
 import org.recap.RecapConstants;
 import org.recap.model.jpa.BulkRequestItemEntity;
 import org.recap.model.jpa.InstitutionEntity;
@@ -65,7 +66,7 @@ public class BulkRequestController {
             BulkRequestForm bulkRequestForm = new BulkRequestForm();
             loadCreateRequestPage(bulkRequestForm);
             model.addAttribute(RecapConstants.BULK_REQUEST_FORM, bulkRequestForm);
-            model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.BULK_REQUEST);
+            model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.BULK_REQUEST);
             return RecapConstants.VIEW_SEARCH_RECORDS;
         } else {
             return UserManagementService.unAuthorizedUser(session, "BulkRequest", logger);
@@ -76,14 +77,14 @@ public class BulkRequestController {
     public ModelAndView loadSearchRequest(Model model) {
         BulkRequestForm bulkRequestForm = new BulkRequestForm();
         loadSearchRequestPage(bulkRequestForm);
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.BULK_REQUEST);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.BULK_REQUEST);
         return new ModelAndView(RecapConstants.BULK_REQUEST, RecapConstants.BULK_REQUEST_FORM, bulkRequestForm);
     }
 
     @PostMapping("/bulkRequest/loadCreateRequest")
     public ModelAndView loadCreateRequest(@Valid @ModelAttribute("bulkRequestForm") BulkRequestForm bulkRequestForm, Model model) {
         loadCreateRequestPage(bulkRequestForm);
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.BULK_REQUEST);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.BULK_REQUEST);
         return new ModelAndView(RecapConstants.BULK_REQUEST, RecapConstants.BULK_REQUEST_FORM, bulkRequestForm);
     }
 
@@ -92,14 +93,14 @@ public class BulkRequestController {
         loadCreateRequestPage(bulkRequestForm);
         bulkRequestService.processCreateBulkRequest(bulkRequestForm, request);
         bulkRequestService.processDeliveryLocations(bulkRequestForm);
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.BULK_REQUEST);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.BULK_REQUEST);
         return new ModelAndView(RecapConstants.BULK_REQUEST, RecapConstants.BULK_REQUEST_FORM, bulkRequestForm);
     }
 
     @PostMapping("/bulkRequest/searchRequest")
     public ModelAndView searchRequest(@Valid @ModelAttribute("bulkRequestForm") BulkRequestForm bulkRequestForm, Model model) {
         bulkRequestService.processSearchRequest(bulkRequestForm);
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.BULK_REQUEST);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.BULK_REQUEST);
         return new ModelAndView(RecapConstants.BULK_SEARCH_REQUEST_SECTION, RecapConstants.BULK_REQUEST_FORM, bulkRequestForm);
     }
 
@@ -107,7 +108,7 @@ public class BulkRequestController {
     @PostMapping("/bulkRequest/onPageSizeChange")
     public ModelAndView onPageSizeChange(@Valid @ModelAttribute("bulkRequestForm") BulkRequestForm bulkRequestForm, Model model) {
         bulkRequestService.processOnPageSizeChange(bulkRequestForm);
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.BULK_REQUEST);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.BULK_REQUEST);
         return new ModelAndView(RecapConstants.BULK_SEARCH_REQUEST_SECTION, RecapConstants.BULK_REQUEST_FORM, bulkRequestForm);
     }
 
@@ -115,7 +116,7 @@ public class BulkRequestController {
     public ModelAndView searchFirst(@Valid @ModelAttribute("bulkRequestForm") BulkRequestForm bulkRequestForm, Model model) {
         bulkRequestForm.setPageNumber(0);
         bulkRequestService.getPaginatedSearchResults(bulkRequestForm);
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.BULK_REQUEST);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.BULK_REQUEST);
         return new ModelAndView(RecapConstants.BULK_SEARCH_REQUEST_SECTION, RecapConstants.BULK_REQUEST_FORM, bulkRequestForm);
     }
 
@@ -123,7 +124,7 @@ public class BulkRequestController {
     public ModelAndView searchPrevious(@Valid @ModelAttribute("bulkRequestForm") BulkRequestForm bulkRequestForm, Model model) {
         bulkRequestForm.setPageNumber(bulkRequestForm.getPageNumber() -1);
         bulkRequestService.getPaginatedSearchResults(bulkRequestForm);
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.BULK_REQUEST);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.BULK_REQUEST);
         return new ModelAndView(RecapConstants.BULK_SEARCH_REQUEST_SECTION, RecapConstants.BULK_REQUEST_FORM, bulkRequestForm);
     }
 
@@ -131,7 +132,7 @@ public class BulkRequestController {
     public ModelAndView searchNext(@Valid @ModelAttribute("bulkRequestForm") BulkRequestForm bulkRequestForm, Model model) {
         bulkRequestForm.setPageNumber(bulkRequestForm.getPageNumber() + 1);
         bulkRequestService.getPaginatedSearchResults(bulkRequestForm);
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.BULK_REQUEST);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.BULK_REQUEST);
         return new ModelAndView(RecapConstants.BULK_SEARCH_REQUEST_SECTION, RecapConstants.BULK_REQUEST_FORM, bulkRequestForm);
     }
 
@@ -139,7 +140,7 @@ public class BulkRequestController {
     public ModelAndView searchLast(@Valid @ModelAttribute("bulkRequestForm") BulkRequestForm bulkRequestForm, Model model) {
         bulkRequestForm.setPageNumber(bulkRequestForm.getTotalPageCount() -1);
         bulkRequestService.getPaginatedSearchResults(bulkRequestForm);
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.BULK_REQUEST);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.BULK_REQUEST);
         return new ModelAndView(RecapConstants.BULK_SEARCH_REQUEST_SECTION, RecapConstants.BULK_REQUEST_FORM, bulkRequestForm);
     }
 
@@ -149,7 +150,7 @@ public class BulkRequestController {
         bulkRequestForm.setPatronBarcodeSearch(patronBarcodeInRequest);
         bulkRequestService.processSearchRequest(bulkRequestForm);
         loadSearchRequestPage(bulkRequestForm);
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.BULK_REQUEST);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.BULK_REQUEST);
         return new ModelAndView(RecapConstants.BULK_REQUEST, RecapConstants.BULK_REQUEST_FORM, bulkRequestForm);
     }
 
@@ -159,14 +160,14 @@ public class BulkRequestController {
         bulkRequestForm.setSubmitted(false);
         bulkRequestForm.setRequestingInstitution(bulkRequestForm.getRequestingInstituionHidden());
         bulkRequestService.processDeliveryLocations(bulkRequestForm);
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.BULK_REQUEST);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.BULK_REQUEST);
         return new ModelAndView(RecapConstants.BULK_REQUEST, RecapConstants.BULK_REQUEST_FORM, bulkRequestForm);
     }
 
     @PostMapping("/bulkRequest/populateDeliveryLocations")
     public ModelAndView populateDeliveryLocations(@Valid @ModelAttribute("bulkRequestForm") BulkRequestForm bulkRequestForm,Model model){
         bulkRequestService.processDeliveryLocations(bulkRequestForm);
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.BULK_REQUEST);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.BULK_REQUEST);
         return new ModelAndView("bulkRequest::#deliveryLocation", RecapConstants.BULK_REQUEST_FORM, bulkRequestForm);
     }
 
@@ -178,7 +179,7 @@ public class BulkRequestController {
         response.setHeader("Content-Disposition", "attachment; filename=\"" + fileNameWithExtension + "\"");
         response.setContentLength(bulkRequestItemEntity.getBulkRequestFileData().length);
         FileCopyUtils.copy(bulkRequestItemEntity.getBulkRequestFileData(), response.getOutputStream());
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.BULK_REQUEST);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.BULK_REQUEST);
     }
     
     private void loadCreateRequestPage(BulkRequestForm bulkRequestForm) {

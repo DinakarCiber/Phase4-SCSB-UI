@@ -1,6 +1,7 @@
 package org.recap.controller;
 
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.recap.RecapCommonConstants;
 import org.recap.RecapConstants;
 import org.recap.model.jpa.PermissionEntity;
 import org.recap.model.jpa.RoleEntity;
@@ -73,7 +74,7 @@ public class RolesController {
         {
             RolesForm rolesForm = new RolesForm();
             model.addAttribute(RecapConstants.ROLES_FORM, rolesForm);
-            model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.ROLES);
+            model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.ROLES);
             return RecapConstants.VIEW_SEARCH_RECORDS;
         }else{
             return UserManagementService.unAuthorizedUser(session,"Roles",logger);
@@ -92,7 +93,7 @@ public class RolesController {
     public ModelAndView search(@Valid @ModelAttribute("rolesForm") RolesForm rolesForm,
                                Model model) {
         rolesForm.setShowResults(true);
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.ROLES);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.ROLES);
         setRolesFormSearchResults(rolesForm);
         return new ModelAndView(RecapConstants.VIEW_SEARCH_RECORDS, RecapConstants.ROLES_FORM, rolesForm);
     }
@@ -108,7 +109,7 @@ public class RolesController {
     public ModelAndView populatePermissionNames(Model model) {
         RolesForm rolesForm = getAllPermissionNames();
         model.addAttribute(RecapConstants.ROLES_FORM, rolesForm);
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.ROLES);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.ROLES);
         return new ModelAndView(RecapConstants.ROLES, RecapConstants.ROLES_FORM, rolesForm);
     }
 
@@ -268,14 +269,14 @@ public class RolesController {
                 setRolesFormSearchResults(rolesForm);
                 rolesForm.setMessage(rolesForm.getRoleNameForDelete() + RecapConstants.DELETED_SUCCESSFULLY);
             } catch (Exception e) {
-                logger.error(RecapConstants.LOG_ERROR, "Role is Null");
+                logger.error(RecapCommonConstants.LOG_ERROR, "Role is Null");
             }
          }
         else {
-            logger.error(RecapConstants.LOG_ERROR, "e");
+            logger.error(RecapCommonConstants.LOG_ERROR, "e");
         }
         rolesForm.setShowResults(true);
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.ROLES);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.ROLES);
         return new ModelAndView(RecapConstants.ROLES, RecapConstants.ROLES_FORM, rolesForm);
     }
 
@@ -292,7 +293,7 @@ public class RolesController {
                                        Model model) {
         rolesForm.setShowResults(true);
         findByPagination(rolesForm);
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.ROLES);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.ROLES);
         return new ModelAndView(RecapConstants.VIEW_SEARCH_RECORDS, RecapConstants.ROLES_FORM, rolesForm);
     }
 
@@ -309,7 +310,7 @@ public class RolesController {
                                    Model model) {
         rolesForm.setShowResults(true);
         findByPagination(rolesForm);
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.ROLES);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.ROLES);
         return new ModelAndView(RecapConstants.VIEW_SEARCH_RECORDS, RecapConstants.ROLES_FORM, rolesForm);
     }
 
@@ -327,7 +328,7 @@ public class RolesController {
         rolesForm.setShowResults(true);
         rolesForm.resetPageNumber();
         findByPagination(rolesForm);
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.ROLES);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.ROLES);
         return new ModelAndView(RecapConstants.VIEW_SEARCH_RECORDS, RecapConstants.ROLES_FORM, rolesForm);
     }
 
@@ -345,7 +346,7 @@ public class RolesController {
         rolesForm.setShowResults(true);
         rolesForm.setPageNumber(rolesForm.getTotalPageCount() - 1);
         findByPagination(rolesForm);
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.ROLES);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.ROLES);
         return new ModelAndView(RecapConstants.VIEW_SEARCH_RECORDS, RecapConstants.ROLES_FORM, rolesForm);
     }
 
@@ -364,7 +365,7 @@ public class RolesController {
         rolesForm.setShowResults(true);
         rolesForm.setPageNumber(0);
         findByPagination(rolesForm);
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.ROLES);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.ROLES);
         return new ModelAndView(RecapConstants.VIEW_SEARCH_RECORDS, RecapConstants.ROLES_FORM, rolesForm);
     }
 
@@ -614,7 +615,7 @@ public class RolesController {
             roleEntity1.setPermissions(rolesSet);
             roleEntity = rolesDetailsRepositorty.save(roleEntity1);
         } catch (Exception e) {
-            logger.error(RecapConstants.LOG_ERROR,e);
+            logger.error(RecapCommonConstants.LOG_ERROR,e);
         }
         return roleEntity;
     }

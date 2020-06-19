@@ -2,6 +2,7 @@ package org.recap.repository.jpa;
 
 import org.junit.Test;
 import org.recap.BaseTestCase;
+import org.recap.RecapCommonConstants;
 import org.recap.RecapConstants;
 import org.recap.model.jpa.JobEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +32,9 @@ public class JobDetailsRepositoryUT extends BaseTestCase {
 
     @Test
     public void testFindJob() throws Exception {
-        JobEntity byJobName = jobDetailsRepository.findByJobName(RecapConstants.PURGE_EXCEPTION_REQUESTS);
+        JobEntity byJobName = jobDetailsRepository.findByJobName(RecapCommonConstants.PURGE_EXCEPTION_REQUESTS);
         assertNotNull(byJobName);
         assertNotNull(byJobName.getJobName());
-        assertEquals(byJobName.getJobName(), RecapConstants.PURGE_EXCEPTION_REQUESTS);
+        assertEquals(byJobName.getJobName(), RecapCommonConstants.PURGE_EXCEPTION_REQUESTS);
     }
 }

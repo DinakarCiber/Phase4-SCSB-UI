@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.recap.RecapCommonConstants;
 import org.recap.RecapConstants;
 import org.recap.model.jpa.BibliographicEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -136,7 +137,7 @@ public class MarcRecordControllerUT extends BaseControllerUT {
         bibliographicEntity.setLastUpdatedBy("tst");
         bibliographicEntity.setOwningInstitutionBibId(String.valueOf(random));
         bibliographicEntity.setOwningInstitutionId(3);
-        bibliographicEntity.setCatalogingStatus(RecapConstants.COMPLETE_STATUS);
+        bibliographicEntity.setCatalogingStatus(RecapCommonConstants.COMPLETE_STATUS);
         BibliographicEntity savedBibliographicEntity = bibliographicDetailsRepository.saveAndFlush(bibliographicEntity);
         entityManager.refresh(savedBibliographicEntity);
         assertNotNull(savedBibliographicEntity);

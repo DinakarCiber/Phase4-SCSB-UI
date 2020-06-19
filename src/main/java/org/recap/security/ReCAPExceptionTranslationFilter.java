@@ -1,6 +1,7 @@
 package org.recap.security;
 
 import org.apache.commons.lang3.StringUtils;
+import org.recap.RecapCommonConstants;
 import org.recap.RecapConstants;
 import org.recap.spring.PropertyValueProvider;
 import org.recap.util.HelperUtil;
@@ -198,7 +199,7 @@ public class ReCAPExceptionTranslationFilter extends GenericFilterBean {
         logger.debug("Calling Authentication entry point.");
         String institution = HelperUtil.getInstitutionFromRequest(request);
         if (StringUtils.isNotBlank(institution)) {
-            if(StringUtils.equals(institution, RecapConstants.NYPL)) {
+            if(StringUtils.equals(institution, RecapCommonConstants.NYPL)) {
                 this.authenticationEntryPoint.commence(request,response,reason);
             } else {
                 String urlProperty = RecapConstants.CAS + institution + RecapConstants.SERVICE_LOGIN;

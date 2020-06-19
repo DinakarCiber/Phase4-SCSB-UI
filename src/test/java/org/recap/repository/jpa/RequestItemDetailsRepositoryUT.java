@@ -2,7 +2,7 @@ package org.recap.repository.jpa;
 
 import org.junit.Test;
 import org.recap.BaseTestCase;
-import org.recap.RecapConstants;
+import org.recap.RecapCommonConstants;
 import org.recap.model.jpa.BibliographicEntity;
 import org.recap.model.jpa.HoldingsEntity;
 import org.recap.model.jpa.ItemEntity;
@@ -41,12 +41,12 @@ public class RequestItemDetailsRepositoryUT extends BaseTestCase {
         Date toDate = simpleDateFormat.parse("2020-12-31 23:59:59");
         Integer[] cgdId = {3};
         List<Integer> cgdIdList = new ArrayList<>(Arrays.asList(cgdId));
-        long countBefore = requestItemDetailsRepository.getPhysicalAndEDDCounts(fromDate,toDate,Arrays.asList(1),cgdIdList,Arrays.asList(2,3),Arrays.asList(RecapConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED,RecapConstants.REQUEST_STATUS_REFILED,RecapConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapConstants.REQUEST_TYPE_RETRIEVAL));
+        long countBefore = requestItemDetailsRepository.getPhysicalAndEDDCounts(fromDate,toDate,Arrays.asList(1),cgdIdList,Arrays.asList(2,3),Arrays.asList(RecapCommonConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED, RecapCommonConstants.REQUEST_STATUS_REFILED,RecapCommonConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapCommonConstants.REQUEST_TYPE_RETRIEVAL));
         assertNotNull(countBefore);
         BibliographicEntity bibliographicEntity = saveBibHoldingItemEntity(50000, 1, 3, "PUL");
         ItemEntity itemEntity = bibliographicEntity.getItemEntities().get(0);
         saveRequestEntity(itemEntity.getItemId(),1,1,String.valueOf(new Random().nextInt()));
-        long countAfter = requestItemDetailsRepository.getPhysicalAndEDDCounts(fromDate,toDate,Arrays.asList(1),cgdIdList,Arrays.asList(2,3),Arrays.asList(RecapConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED,RecapConstants.REQUEST_STATUS_REFILED,RecapConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapConstants.REQUEST_TYPE_RETRIEVAL));
+        long countAfter = requestItemDetailsRepository.getPhysicalAndEDDCounts(fromDate,toDate,Arrays.asList(1),cgdIdList,Arrays.asList(2,3),Arrays.asList(RecapCommonConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED,RecapCommonConstants.REQUEST_STATUS_REFILED,RecapCommonConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapCommonConstants.REQUEST_TYPE_RETRIEVAL));
         assertNotNull(countAfter);
         assertEquals(countBefore+1,countAfter);
     }
@@ -58,12 +58,12 @@ public class RequestItemDetailsRepositoryUT extends BaseTestCase {
         Date toDate = simpleDateFormat.parse("2020-12-31 23:59:59");
         Integer[] cgdId = {1,2};
         List<Integer> cgdIdList = new ArrayList<>(Arrays.asList(cgdId));
-        long countBefore = requestItemDetailsRepository.getPhysicalAndEDDCounts(fromDate,toDate,Arrays.asList(1),cgdIdList,Arrays.asList(2,3),Arrays.asList(RecapConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED,RecapConstants.REQUEST_STATUS_REFILED,RecapConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapConstants.REQUEST_TYPE_RETRIEVAL));
+        long countBefore = requestItemDetailsRepository.getPhysicalAndEDDCounts(fromDate,toDate,Arrays.asList(1),cgdIdList,Arrays.asList(2,3),Arrays.asList(RecapCommonConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED,RecapCommonConstants.REQUEST_STATUS_REFILED,RecapCommonConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapCommonConstants.REQUEST_TYPE_RETRIEVAL));
         assertNotNull(countBefore);
         BibliographicEntity bibliographicEntity = saveBibHoldingItemEntity(50000, 1, 1, "PUL");
         ItemEntity itemEntity = bibliographicEntity.getItemEntities().get(0);
         saveRequestEntity(itemEntity.getItemId(),1,1,String.valueOf(new Random().nextInt()));
-        long countAfter = requestItemDetailsRepository.getPhysicalAndEDDCounts(fromDate,toDate,Arrays.asList(1),cgdIdList,Arrays.asList(2,3),Arrays.asList(RecapConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED,RecapConstants.REQUEST_STATUS_REFILED,RecapConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapConstants.REQUEST_TYPE_RETRIEVAL));
+        long countAfter = requestItemDetailsRepository.getPhysicalAndEDDCounts(fromDate,toDate,Arrays.asList(1),cgdIdList,Arrays.asList(2,3),Arrays.asList(RecapCommonConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED,RecapCommonConstants.REQUEST_STATUS_REFILED,RecapCommonConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapCommonConstants.REQUEST_TYPE_RETRIEVAL));
         assertNotNull(countAfter);
         assertEquals(countBefore+1,countAfter);
     }
@@ -78,7 +78,7 @@ public class RequestItemDetailsRepositoryUT extends BaseTestCase {
         Date toDate = simpleDateFormat.parse("2020-12-31 23:59:59");
         Integer[] cgdId = {3};
         List<Integer> cgdIdList = new ArrayList<>(Arrays.asList(cgdId));
-        long count = requestItemDetailsRepository.getPhysicalAndEDDCounts(fromDate,toDate,Arrays.asList(2),cgdIdList,Arrays.asList(1,3),Arrays.asList(RecapConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED,RecapConstants.REQUEST_STATUS_REFILED,RecapConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapConstants.REQUEST_TYPE_RETRIEVAL));
+        long count = requestItemDetailsRepository.getPhysicalAndEDDCounts(fromDate,toDate,Arrays.asList(2),cgdIdList,Arrays.asList(1,3),Arrays.asList(RecapCommonConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED,RecapCommonConstants.REQUEST_STATUS_REFILED,RecapCommonConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapCommonConstants.REQUEST_TYPE_RETRIEVAL));
         assertNotNull(count);
         assertEquals(1,count);
     }
@@ -94,7 +94,7 @@ public class RequestItemDetailsRepositoryUT extends BaseTestCase {
         Date toDate = simpleDateFormat.parse("2020-12-31 23:59:59");
         Integer[] cgdId = {1,2};
         List<Integer> cgdIdList = new ArrayList<>(Arrays.asList(cgdId));
-        long count = requestItemDetailsRepository.getPhysicalAndEDDCounts(fromDate,toDate,Arrays.asList(2),cgdIdList,Arrays.asList(1,3),Arrays.asList(RecapConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED,RecapConstants.REQUEST_STATUS_REFILED,RecapConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapConstants.REQUEST_TYPE_RETRIEVAL));
+        long count = requestItemDetailsRepository.getPhysicalAndEDDCounts(fromDate,toDate,Arrays.asList(2),cgdIdList,Arrays.asList(1,3),Arrays.asList(RecapCommonConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED,RecapCommonConstants.REQUEST_STATUS_REFILED,RecapCommonConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapCommonConstants.REQUEST_TYPE_RETRIEVAL));
         assertNotNull(count);
         assertEquals(1,count);
     }
@@ -109,7 +109,7 @@ public class RequestItemDetailsRepositoryUT extends BaseTestCase {
         Date toDate = simpleDateFormat.parse("2020-12-31 23:59:59");
         Integer[] cgdId = {3};
         List<Integer> cgdIdList = new ArrayList<>(Arrays.asList(cgdId));
-        long count = requestItemDetailsRepository.getPhysicalAndEDDCounts(fromDate,toDate,Arrays.asList(3),cgdIdList,Arrays.asList(1,2),Arrays.asList(RecapConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED,RecapConstants.REQUEST_STATUS_REFILED,RecapConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapConstants.REQUEST_TYPE_RETRIEVAL));
+        long count = requestItemDetailsRepository.getPhysicalAndEDDCounts(fromDate,toDate,Arrays.asList(3),cgdIdList,Arrays.asList(1,2),Arrays.asList(RecapCommonConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED,RecapCommonConstants.REQUEST_STATUS_REFILED,RecapCommonConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapCommonConstants.REQUEST_TYPE_RETRIEVAL));
         assertNotNull(count);
         assertEquals(1,count);
     }
@@ -121,12 +121,12 @@ public class RequestItemDetailsRepositoryUT extends BaseTestCase {
         Date toDate = simpleDateFormat.parse("2020-12-31 23:59:59");
         Integer[] cgdId = {1,2};
         List<Integer> cgdIdList = new ArrayList<>(Arrays.asList(cgdId));
-        long countBefore = requestItemDetailsRepository.getPhysicalAndEDDCounts(fromDate,toDate,Arrays.asList(3),cgdIdList,Arrays.asList(1,2),Arrays.asList(RecapConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED,RecapConstants.REQUEST_STATUS_REFILED,RecapConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapConstants.REQUEST_TYPE_RETRIEVAL));
+        long countBefore = requestItemDetailsRepository.getPhysicalAndEDDCounts(fromDate,toDate,Arrays.asList(3),cgdIdList,Arrays.asList(1,2),Arrays.asList(RecapCommonConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED,RecapCommonConstants.REQUEST_STATUS_REFILED,RecapCommonConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapCommonConstants.REQUEST_TYPE_RETRIEVAL));
         assertNotNull(countBefore);
         BibliographicEntity bibliographicEntity = saveBibHoldingItemEntity(50000, 3, 1, "NYPL");
         ItemEntity itemEntity = bibliographicEntity.getItemEntities().get(0);
         saveRequestEntity(itemEntity.getItemId(),1,3,String.valueOf(new Random().nextInt()));
-        long countAfter = requestItemDetailsRepository.getPhysicalAndEDDCounts(fromDate,toDate,Arrays.asList(3),cgdIdList,Arrays.asList(1,2),Arrays.asList(RecapConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED,RecapConstants.REQUEST_STATUS_REFILED,RecapConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapConstants.REQUEST_TYPE_RETRIEVAL));
+        long countAfter = requestItemDetailsRepository.getPhysicalAndEDDCounts(fromDate,toDate,Arrays.asList(3),cgdIdList,Arrays.asList(1,2),Arrays.asList(RecapCommonConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED,RecapCommonConstants.REQUEST_STATUS_REFILED,RecapCommonConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapCommonConstants.REQUEST_TYPE_RETRIEVAL));
         assertNotNull(countAfter);
         assertEquals(countBefore+1,countAfter);
     }
@@ -139,12 +139,12 @@ public class RequestItemDetailsRepositoryUT extends BaseTestCase {
         Date toDate = simpleDateFormat.parse("2020-12-31 23:59:59");
         Integer[] cgdId = {3};
         List<Integer> cgdIdList = new ArrayList<>(Arrays.asList(cgdId));
-        long countBefore = requestItemDetailsRepository.getPhysicalAndEDDCounts(fromDate,toDate,Arrays.asList(1),cgdIdList,Arrays.asList(2,3),Arrays.asList(RecapConstants.REQUEST_STATUS_EDD,RecapConstants.REQUEST_STATUS_REFILED,RecapConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapConstants.EDD));
+        long countBefore = requestItemDetailsRepository.getPhysicalAndEDDCounts(fromDate,toDate,Arrays.asList(1),cgdIdList,Arrays.asList(2,3),Arrays.asList(RecapCommonConstants.REQUEST_STATUS_EDD,RecapCommonConstants.REQUEST_STATUS_REFILED,RecapCommonConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapCommonConstants.EDD));
         assertNotNull(countBefore);
         BibliographicEntity bibliographicEntity = saveBibHoldingItemEntity(50000, 1, 3, "PUL");
         ItemEntity itemEntity = bibliographicEntity.getItemEntities().get(0);
         saveRequestEntity(itemEntity.getItemId(),3,1,String.valueOf(new Random().nextInt()));
-        long countAfter = requestItemDetailsRepository.getPhysicalAndEDDCounts(fromDate,toDate,Arrays.asList(1),cgdIdList,Arrays.asList(2,3),Arrays.asList(RecapConstants.REQUEST_STATUS_EDD,RecapConstants.REQUEST_STATUS_REFILED,RecapConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapConstants.EDD));
+        long countAfter = requestItemDetailsRepository.getPhysicalAndEDDCounts(fromDate,toDate,Arrays.asList(1),cgdIdList,Arrays.asList(2,3),Arrays.asList(RecapCommonConstants.REQUEST_STATUS_EDD,RecapCommonConstants.REQUEST_STATUS_REFILED,RecapCommonConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapCommonConstants.EDD));
         assertNotNull(countAfter);
         assertEquals(countBefore+1,countAfter);
     }
@@ -159,7 +159,7 @@ public class RequestItemDetailsRepositoryUT extends BaseTestCase {
         Date toDate = simpleDateFormat.parse("2020-12-31 23:59:59");
         Integer[] cgdId = {1,2};
         List<Integer> cgdIdList = new ArrayList<>(Arrays.asList(cgdId));
-        long count = requestItemDetailsRepository.getPhysicalAndEDDCounts(fromDate,toDate,Arrays.asList(1),cgdIdList,Arrays.asList(2,3),Arrays.asList(RecapConstants.REQUEST_STATUS_EDD,RecapConstants.REQUEST_STATUS_REFILED,RecapConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapConstants.EDD));
+        long count = requestItemDetailsRepository.getPhysicalAndEDDCounts(fromDate,toDate,Arrays.asList(1),cgdIdList,Arrays.asList(2,3),Arrays.asList(RecapCommonConstants.REQUEST_STATUS_EDD,RecapCommonConstants.REQUEST_STATUS_REFILED,RecapCommonConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapCommonConstants.EDD));
         assertNotNull(count);
         assertEquals(1,count);
     }
@@ -174,7 +174,7 @@ public class RequestItemDetailsRepositoryUT extends BaseTestCase {
         Date toDate = simpleDateFormat.parse("2020-12-31 23:59:59");
         Integer[] cgdId = {3};
         List<Integer> cgdIdList = new ArrayList<>(Arrays.asList(cgdId));
-        long count = requestItemDetailsRepository.getPhysicalAndEDDCounts(fromDate,toDate,Arrays.asList(2),cgdIdList,Arrays.asList(1,3),Arrays.asList(RecapConstants.REQUEST_STATUS_EDD,RecapConstants.REQUEST_STATUS_REFILED,RecapConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapConstants.EDD));
+        long count = requestItemDetailsRepository.getPhysicalAndEDDCounts(fromDate,toDate,Arrays.asList(2),cgdIdList,Arrays.asList(1,3),Arrays.asList(RecapCommonConstants.REQUEST_STATUS_EDD,RecapCommonConstants.REQUEST_STATUS_REFILED,RecapCommonConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapCommonConstants.EDD));
         assertNotNull(count);
         assertEquals(1,count);
     }
@@ -189,7 +189,7 @@ public class RequestItemDetailsRepositoryUT extends BaseTestCase {
         Date toDate = simpleDateFormat.parse("2020-12-31 23:59:59");
         Integer[] cgdId = {1,2};
         List<Integer> cgdIdList = new ArrayList<>(Arrays.asList(cgdId));
-        long count = requestItemDetailsRepository.getPhysicalAndEDDCounts(fromDate,toDate,Arrays.asList(2),cgdIdList,Arrays.asList(1,3),Arrays.asList(RecapConstants.REQUEST_STATUS_EDD,RecapConstants.REQUEST_STATUS_REFILED,RecapConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapConstants.EDD));
+        long count = requestItemDetailsRepository.getPhysicalAndEDDCounts(fromDate,toDate,Arrays.asList(2),cgdIdList,Arrays.asList(1,3),Arrays.asList(RecapCommonConstants.REQUEST_STATUS_EDD,RecapCommonConstants.REQUEST_STATUS_REFILED,RecapCommonConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapCommonConstants.EDD));
         assertNotNull(count);
         assertEquals(1,count);
     }
@@ -204,7 +204,7 @@ public class RequestItemDetailsRepositoryUT extends BaseTestCase {
         Date toDate = simpleDateFormat.parse("2020-12-31 23:59:59");
         Integer[] cgdId = {3};
         List<Integer> cgdIdList = new ArrayList<>(Arrays.asList(cgdId));
-        long count = requestItemDetailsRepository.getPhysicalAndEDDCounts(fromDate,toDate,Arrays.asList(3),cgdIdList,Arrays.asList(2,1),Arrays.asList(RecapConstants.REQUEST_STATUS_EDD,RecapConstants.REQUEST_STATUS_REFILED,RecapConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapConstants.EDD));
+        long count = requestItemDetailsRepository.getPhysicalAndEDDCounts(fromDate,toDate,Arrays.asList(3),cgdIdList,Arrays.asList(2,1),Arrays.asList(RecapCommonConstants.REQUEST_STATUS_EDD,RecapCommonConstants.REQUEST_STATUS_REFILED,RecapCommonConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapCommonConstants.EDD));
         assertNotNull(count);
         assertEquals(1,count);
     }
@@ -216,12 +216,12 @@ public class RequestItemDetailsRepositoryUT extends BaseTestCase {
         Date toDate = simpleDateFormat.parse("2020-12-31 23:59:59");
         Integer[] cgdId = {1,2};
         List<Integer> cgdIdList = new ArrayList<>(Arrays.asList(cgdId));
-        long countBefore = requestItemDetailsRepository.getPhysicalAndEDDCounts(fromDate,toDate,Arrays.asList(3),cgdIdList,Arrays.asList(2,1),Arrays.asList(RecapConstants.REQUEST_STATUS_EDD,RecapConstants.REQUEST_STATUS_REFILED,RecapConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapConstants.EDD));
+        long countBefore = requestItemDetailsRepository.getPhysicalAndEDDCounts(fromDate,toDate,Arrays.asList(3),cgdIdList,Arrays.asList(2,1),Arrays.asList(RecapCommonConstants.REQUEST_STATUS_EDD,RecapCommonConstants.REQUEST_STATUS_REFILED,RecapCommonConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapCommonConstants.EDD));
         assertNotNull(countBefore);
         BibliographicEntity bibliographicEntity = saveBibHoldingItemEntity(50000, 3, 1, "NYPL");
         ItemEntity itemEntity = bibliographicEntity.getItemEntities().get(0);
         saveRequestEntity(itemEntity.getItemId(),3,3,String.valueOf(new Random().nextInt()));
-        long countAfter = requestItemDetailsRepository.getPhysicalAndEDDCounts(fromDate,toDate,Arrays.asList(3),cgdIdList,Arrays.asList(2,1),Arrays.asList(RecapConstants.REQUEST_STATUS_EDD,RecapConstants.REQUEST_STATUS_REFILED,RecapConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapConstants.EDD));
+        long countAfter = requestItemDetailsRepository.getPhysicalAndEDDCounts(fromDate,toDate,Arrays.asList(3),cgdIdList,Arrays.asList(2,1),Arrays.asList(RecapCommonConstants.REQUEST_STATUS_EDD,RecapCommonConstants.REQUEST_STATUS_REFILED,RecapCommonConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapCommonConstants.EDD));
         assertNotNull(countAfter);
         assertEquals(countBefore+1,countAfter);
     }
@@ -233,12 +233,12 @@ public class RequestItemDetailsRepositoryUT extends BaseTestCase {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date fromDate = simpleDateFormat.parse("2016-12-30 00:00:00");
         Date toDate = simpleDateFormat.parse("2020-12-31 23:59:59");
-        long countBefore = requestItemDetailsRepository.getEDDRecallRetrievalRequestCounts(fromDate,toDate,1,Arrays.asList(RecapConstants.REQUEST_STATUS_RECALLED,RecapConstants.REQUEST_STATUS_REFILED,RecapConstants.REQUEST_STATUS_CANCELED,RecapConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED),Arrays.asList(RecapConstants.REQUEST_TYPE_RECALL));
+        long countBefore = requestItemDetailsRepository.getEDDRecallRetrievalRequestCounts(fromDate,toDate,1,Arrays.asList(RecapCommonConstants.REQUEST_STATUS_RECALLED,RecapCommonConstants.REQUEST_STATUS_REFILED,RecapCommonConstants.REQUEST_STATUS_CANCELED,RecapCommonConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED),Arrays.asList(RecapCommonConstants.REQUEST_TYPE_RECALL));
         assertNotNull(countBefore);
         BibliographicEntity bibliographicEntity = saveBibHoldingItemEntity(50000, 1, 1, "PUL");
         ItemEntity itemEntity = bibliographicEntity.getItemEntities().get(0);
         saveRequestEntity(itemEntity.getItemId(),2,2,String.valueOf(new Random().nextInt()));
-        long countAfter = requestItemDetailsRepository.getEDDRecallRetrievalRequestCounts(fromDate,toDate,1, Arrays.asList(RecapConstants.REQUEST_STATUS_RECALLED,RecapConstants.REQUEST_STATUS_REFILED,RecapConstants.REQUEST_STATUS_CANCELED,RecapConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED),Arrays.asList(RecapConstants.REQUEST_TYPE_RECALL));
+        long countAfter = requestItemDetailsRepository.getEDDRecallRetrievalRequestCounts(fromDate,toDate,1, Arrays.asList(RecapCommonConstants.REQUEST_STATUS_RECALLED,RecapCommonConstants.REQUEST_STATUS_REFILED,RecapCommonConstants.REQUEST_STATUS_CANCELED,RecapCommonConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED),Arrays.asList(RecapCommonConstants.REQUEST_TYPE_RECALL));
         assertNotNull(countAfter);
         assertEquals(countBefore+1,countAfter);
     }
@@ -251,7 +251,7 @@ public class RequestItemDetailsRepositoryUT extends BaseTestCase {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date fromDate = simpleDateFormat.parse("2016-12-30 00:00:00");
         Date toDate = simpleDateFormat.parse("2020-12-31 23:59:59");
-        long count = requestItemDetailsRepository.getEDDRecallRetrievalRequestCounts(fromDate,toDate,2,Arrays.asList(RecapConstants.REQUEST_STATUS_RECALLED,RecapConstants.REQUEST_STATUS_REFILED,RecapConstants.REQUEST_STATUS_CANCELED,RecapConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED),Arrays.asList(RecapConstants.REQUEST_TYPE_RECALL));
+        long count = requestItemDetailsRepository.getEDDRecallRetrievalRequestCounts(fromDate,toDate,2,Arrays.asList(RecapCommonConstants.REQUEST_STATUS_RECALLED,RecapCommonConstants.REQUEST_STATUS_REFILED,RecapCommonConstants.REQUEST_STATUS_CANCELED,RecapCommonConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED),Arrays.asList(RecapCommonConstants.REQUEST_TYPE_RECALL));
         assertNotNull(count);
         assertEquals(1,count);
     }
@@ -261,12 +261,12 @@ public class RequestItemDetailsRepositoryUT extends BaseTestCase {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date fromDate = simpleDateFormat.parse("2016-12-30 00:00:00");
         Date toDate = simpleDateFormat.parse("2020-12-31 23:59:59");
-        long countBefore = requestItemDetailsRepository.getEDDRecallRetrievalRequestCounts(fromDate,toDate,3, Arrays.asList(RecapConstants.REQUEST_STATUS_RECALLED,RecapConstants.REQUEST_STATUS_REFILED,RecapConstants.REQUEST_STATUS_CANCELED,RecapConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED),Arrays.asList(RecapConstants.REQUEST_TYPE_RECALL));
+        long countBefore = requestItemDetailsRepository.getEDDRecallRetrievalRequestCounts(fromDate,toDate,3, Arrays.asList(RecapCommonConstants.REQUEST_STATUS_RECALLED,RecapCommonConstants.REQUEST_STATUS_REFILED,RecapCommonConstants.REQUEST_STATUS_CANCELED,RecapCommonConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED),Arrays.asList(RecapCommonConstants.REQUEST_TYPE_RECALL));
         assertNotNull(countBefore);
         BibliographicEntity bibliographicEntity = saveBibHoldingItemEntity(50000, 3, 1, "NYPL");
         ItemEntity itemEntity = bibliographicEntity.getItemEntities().get(0);
         saveRequestEntity(itemEntity.getItemId(),2,2,String.valueOf(new Random().nextInt()));
-        long countAfter = requestItemDetailsRepository.getEDDRecallRetrievalRequestCounts(fromDate,toDate,3, Arrays.asList(RecapConstants.REQUEST_STATUS_RECALLED,RecapConstants.REQUEST_STATUS_REFILED,RecapConstants.REQUEST_STATUS_CANCELED,RecapConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED),Arrays.asList(RecapConstants.REQUEST_TYPE_RECALL));
+        long countAfter = requestItemDetailsRepository.getEDDRecallRetrievalRequestCounts(fromDate,toDate,3, Arrays.asList(RecapCommonConstants.REQUEST_STATUS_RECALLED,RecapCommonConstants.REQUEST_STATUS_REFILED,RecapCommonConstants.REQUEST_STATUS_CANCELED,RecapCommonConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED),Arrays.asList(RecapCommonConstants.REQUEST_TYPE_RECALL));
         assertNotNull(countAfter);
         assertEquals(countBefore+1,countAfter);
     }
@@ -277,12 +277,12 @@ public class RequestItemDetailsRepositoryUT extends BaseTestCase {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date fromDate = simpleDateFormat.parse("2016-12-30 00:00:00");
         Date toDate = simpleDateFormat.parse("2020-12-31 23:59:59");
-        long countBefore = requestItemDetailsRepository.getEDDRecallRetrievalRequestCounts(fromDate,toDate,1, Arrays.asList(RecapConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED,RecapConstants.REQUEST_STATUS_INITIAL_LOAD,RecapConstants.REQUEST_STATUS_REFILED,RecapConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapConstants.REQUEST_TYPE_RETRIEVAL));
+        long countBefore = requestItemDetailsRepository.getEDDRecallRetrievalRequestCounts(fromDate,toDate,1, Arrays.asList(RecapCommonConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED,RecapCommonConstants.REQUEST_STATUS_INITIAL_LOAD,RecapCommonConstants.REQUEST_STATUS_REFILED,RecapCommonConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapCommonConstants.REQUEST_TYPE_RETRIEVAL));
         assertNotNull(countBefore);
         BibliographicEntity bibliographicEntity = saveBibHoldingItemEntity(50000, 1, 1, "PUL");
         ItemEntity itemEntity = bibliographicEntity.getItemEntities().get(0);
         saveRequestEntity(itemEntity.getItemId(),1,2,String.valueOf(new Random().nextInt()));
-        long countAfter = requestItemDetailsRepository.getEDDRecallRetrievalRequestCounts(fromDate,toDate,1, Arrays.asList(RecapConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED,RecapConstants.REQUEST_STATUS_INITIAL_LOAD,RecapConstants.REQUEST_STATUS_REFILED,RecapConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapConstants.REQUEST_TYPE_RETRIEVAL));
+        long countAfter = requestItemDetailsRepository.getEDDRecallRetrievalRequestCounts(fromDate,toDate,1, Arrays.asList(RecapCommonConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED,RecapCommonConstants.REQUEST_STATUS_INITIAL_LOAD,RecapCommonConstants.REQUEST_STATUS_REFILED,RecapCommonConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapCommonConstants.REQUEST_TYPE_RETRIEVAL));
         assertNotNull(countAfter);
         assertEquals(countBefore+1,countAfter);
     }
@@ -292,12 +292,12 @@ public class RequestItemDetailsRepositoryUT extends BaseTestCase {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date fromDate = simpleDateFormat.parse("2016-12-30 00:00:00");
         Date toDate = simpleDateFormat.parse("2020-12-31 23:59:59");
-        long countBefore = requestItemDetailsRepository.getEDDRecallRetrievalRequestCounts(fromDate,toDate,2, Arrays.asList(RecapConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED,RecapConstants.REQUEST_STATUS_INITIAL_LOAD,RecapConstants.REQUEST_STATUS_REFILED,RecapConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapConstants.REQUEST_TYPE_RETRIEVAL));
+        long countBefore = requestItemDetailsRepository.getEDDRecallRetrievalRequestCounts(fromDate,toDate,2, Arrays.asList(RecapCommonConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED,RecapCommonConstants.REQUEST_STATUS_INITIAL_LOAD,RecapCommonConstants.REQUEST_STATUS_REFILED,RecapCommonConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapCommonConstants.REQUEST_TYPE_RETRIEVAL));
         assertNotNull(countBefore);
         BibliographicEntity bibliographicEntity = saveBibHoldingItemEntity(50000, 2, 1, "CUL");
         ItemEntity itemEntity = bibliographicEntity.getItemEntities().get(0);
         saveRequestEntity(itemEntity.getItemId(),1,1,String.valueOf(new Random().nextInt()));
-        long countAfter = requestItemDetailsRepository.getEDDRecallRetrievalRequestCounts(fromDate,toDate,2, Arrays.asList(RecapConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED,RecapConstants.REQUEST_STATUS_INITIAL_LOAD,RecapConstants.REQUEST_STATUS_REFILED,RecapConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapConstants.REQUEST_TYPE_RETRIEVAL));
+        long countAfter = requestItemDetailsRepository.getEDDRecallRetrievalRequestCounts(fromDate,toDate,2, Arrays.asList(RecapCommonConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED,RecapCommonConstants.REQUEST_STATUS_INITIAL_LOAD,RecapCommonConstants.REQUEST_STATUS_REFILED,RecapCommonConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapCommonConstants.REQUEST_TYPE_RETRIEVAL));
         assertNotNull(countAfter);
         assertEquals(countBefore+1,countAfter);
     }
@@ -307,12 +307,12 @@ public class RequestItemDetailsRepositoryUT extends BaseTestCase {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date fromDate = simpleDateFormat.parse("2016-12-30 00:00:00");
         Date toDate = simpleDateFormat.parse("2020-12-31 23:59:59");
-        long countBefore = requestItemDetailsRepository.getEDDRecallRetrievalRequestCounts(fromDate,toDate,3, Arrays.asList(RecapConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED,RecapConstants.REQUEST_STATUS_INITIAL_LOAD,RecapConstants.REQUEST_STATUS_REFILED,RecapConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapConstants.REQUEST_TYPE_RETRIEVAL));
+        long countBefore = requestItemDetailsRepository.getEDDRecallRetrievalRequestCounts(fromDate,toDate,3, Arrays.asList(RecapCommonConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED,RecapCommonConstants.REQUEST_STATUS_INITIAL_LOAD,RecapCommonConstants.REQUEST_STATUS_REFILED,RecapCommonConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapCommonConstants.REQUEST_TYPE_RETRIEVAL));
         assertNotNull(countBefore);
         BibliographicEntity bibliographicEntity = saveBibHoldingItemEntity(50000, 3, 1, "NYPL");
         ItemEntity itemEntity = bibliographicEntity.getItemEntities().get(0);
         saveRequestEntity(itemEntity.getItemId(),1,2,String.valueOf(new Random().nextInt()));
-        long countAfter = requestItemDetailsRepository.getEDDRecallRetrievalRequestCounts(fromDate,toDate,3, Arrays.asList(RecapConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED,RecapConstants.REQUEST_STATUS_INITIAL_LOAD,RecapConstants.REQUEST_STATUS_REFILED,RecapConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapConstants.REQUEST_TYPE_RETRIEVAL));
+        long countAfter = requestItemDetailsRepository.getEDDRecallRetrievalRequestCounts(fromDate,toDate,3, Arrays.asList(RecapCommonConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED,RecapCommonConstants.REQUEST_STATUS_INITIAL_LOAD,RecapCommonConstants.REQUEST_STATUS_REFILED,RecapCommonConstants.REQUEST_STATUS_CANCELED),Arrays.asList(RecapCommonConstants.REQUEST_TYPE_RETRIEVAL));
         assertNotNull(countAfter);
         assertEquals(countBefore+1,countAfter);
     }

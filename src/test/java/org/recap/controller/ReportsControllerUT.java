@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.recap.RecapCommonConstants;
 import org.recap.RecapConstants;
 import org.recap.model.search.DeaccessionItemResultsRow;
 import org.recap.model.search.IncompleteReportResultsRow;
@@ -95,12 +96,12 @@ public class ReportsControllerUT extends BaseControllerUT {
     @Test
     public void partnersRequest() throws Exception {
         ReportsForm reportsForm = new ReportsForm();
-        reportsForm.setRequestType(RecapConstants.REPORTS_REQUEST);
+        reportsForm.setRequestType(RecapCommonConstants.REPORTS_REQUEST);
         reportsForm.setRequestFromDate("11/01/2016");
         reportsForm.setRequestToDate("12/01/2016");
-        reportsForm.setShowBy(RecapConstants.REPORTS_PARTNERS);
+        reportsForm.setShowBy(RecapCommonConstants.REPORTS_PARTNERS);
         ModelAndView modelAndView = reportsControllerWired.reportCounts(reportsForm,model);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(RecapConstants.SIMPLE_DATE_FORMAT_REPORTS);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(RecapCommonConstants.SIMPLE_DATE_FORMAT_REPORTS);
         String fromDate = reportsForm.getRequestFromDate();
         String toDate = reportsForm.getRequestToDate();
         Date requestFromDate = new Date();
@@ -113,12 +114,12 @@ public class ReportsControllerUT extends BaseControllerUT {
     @Test
     public void requestType() throws Exception {
         ReportsForm reportsForm = new ReportsForm();
-        reportsForm.setRequestType(RecapConstants.REPORTS_REQUEST);
+        reportsForm.setRequestType(RecapCommonConstants.REPORTS_REQUEST);
         reportsForm.setRequestFromDate("11/01/2016");
         reportsForm.setRequestToDate("12/01/2016");
-        reportsForm.setShowBy(RecapConstants.REPORTS_REQUEST_TYPE);
+        reportsForm.setShowBy(RecapCommonConstants.REPORTS_REQUEST_TYPE);
         ModelAndView modelAndView = reportsControllerWired.reportCounts(reportsForm,model);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(RecapConstants.SIMPLE_DATE_FORMAT_REPORTS);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(RecapCommonConstants.SIMPLE_DATE_FORMAT_REPORTS);
         String fromDate = reportsForm.getRequestFromDate();
         String toDate = reportsForm.getRequestToDate();
         Date requestFromDate = new Date();
@@ -131,10 +132,10 @@ public class ReportsControllerUT extends BaseControllerUT {
     @Test
     public void accessionDeaccessionReports() throws Exception {
         ReportsForm reportsForm = new ReportsForm();
-        reportsForm.setRequestType(RecapConstants.REPORTS_REQUEST);
+        reportsForm.setRequestType(RecapCommonConstants.REPORTS_REQUEST);
         reportsForm.setRequestFromDate("11/01/2016");
         reportsForm.setRequestToDate("12/01/2016");
-        reportsForm.setShowBy(RecapConstants.REPORTS_ACCESSION_DEACCESSION);
+        reportsForm.setShowBy(RecapCommonConstants.REPORTS_ACCESSION_DEACCESSION);
         reportsForm.setShowNoteILBD(true);
         reportsForm.setShowNotePartners(true);
         reportsForm.setReportRequestType(new ArrayList<>());
