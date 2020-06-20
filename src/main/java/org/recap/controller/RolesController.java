@@ -190,7 +190,7 @@ public class RolesController {
         String[] editPermissionNames = request.getParameterValues("permissionNames[]");
         rolesForm.setEditPermissionName(Arrays.asList(editPermissionNames));
         Optional<RoleEntity> roleEntityByRoleId = rolesDetailsRepositorty.findById(roleId);
-        if(roleEntityByRoleId != null) {
+        if(roleEntityByRoleId.isPresent()) {
             roleEntityByRoleId.get().setId(roleId);
             roleEntityByRoleId.get().setRoleName(roleName);
             roleEntityByRoleId.get().setRoleDescription(roleDescription);
@@ -254,7 +254,7 @@ public class RolesController {
     public ModelAndView delete(@Valid @ModelAttribute("rolesForm") RolesForm rolesForm,
                                Model model) {
         Optional<RoleEntity> roleEntity = rolesDetailsRepositorty.findById(rolesForm.getRoleId());
-        if (roleEntity != null) {
+        if (roleEntity.isPresent()) {
             try {
                 rolesDetailsRepositorty.delete(roleEntity.get());
                 rolesForm.setShowResults(true);

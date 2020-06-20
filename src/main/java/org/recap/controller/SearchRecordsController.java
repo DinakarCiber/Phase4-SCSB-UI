@@ -114,7 +114,7 @@ public class SearchRecordsController {
      * @param request the request
      * @return the string
      */
-    @PostMapping("/search")
+    @GetMapping("/search")
     public String searchRecords(Model model, HttpServletRequest request) {
         HttpSession session=request.getSession(false);
         boolean authenticated=getUserAuthUtil().authorizedUser(RecapConstants.SCSB_SHIRO_SEARCH_URL,(UsernamePasswordToken)session.getAttribute(RecapConstants.USER_TOKEN));
@@ -401,7 +401,7 @@ public class SearchRecordsController {
     private void processRequest(SearchRecordsRequest searchRecordsRequest, UserDetailsForm userDetailsForm, RedirectAttributes redirectAttributes) {
         String userInstitution = null;
         Optional<InstitutionEntity> institutionEntity = getInstitutionDetailsRepository().findById(userDetailsForm.getLoginInstitutionId());
-        if (null != institutionEntity) {
+        if (institutionEntity.isPresent()) {
             userInstitution = institutionEntity.get().getInstitutionCode();
         }
         List<SearchResultRow> searchResultRows = searchRecordsRequest.getSearchResultRows();

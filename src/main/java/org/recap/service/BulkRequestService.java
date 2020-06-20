@@ -87,7 +87,7 @@ public class BulkRequestService {
                 Integer userId = (Integer) session.getAttribute(RecapConstants.USER_ID);
                 Optional<UsersEntity> usersEntity = userDetailsRepository.findById(userId);
                 BulkRequestItemEntity bulkRequestItemEntity = new BulkRequestItemEntity();
-                bulkRequestItemEntity.setCreatedBy(usersEntity != null ? usersEntity.get().getLoginId() : "");
+                bulkRequestItemEntity.setCreatedBy(usersEntity.isPresent() ? usersEntity.get().getLoginId() : "");
                 bulkRequestItemEntity.setCreatedDate(new Date());
                 bulkRequestItemEntity.setLastUpdatedDate(new Date());
                 bulkRequestItemEntity.setEmailId(getEncryptedPatronEmailId(bulkRequestForm.getPatronEmailAddress()));
@@ -216,7 +216,7 @@ public class BulkRequestService {
 
     public BulkRequestItemEntity saveUpadatedRequestStatus(Integer bulkRequestId) throws Exception {
         Optional<BulkRequestItemEntity> bulkRequestItemEntity = bulkRequestDetailsRepository.findById(bulkRequestId);
-        if(bulkRequestItemEntity !=null){
+        if(bulkRequestItemEntity.isPresent()){
             if("PROCESSED".equalsIgnoreCase(bulkRequestItemEntity.get().getBulkRequestStatus())){
                 StringBuilder csvRowBuilder = new StringBuilder();
                 Map<Integer, String> currentStatus = new HashMap<>();

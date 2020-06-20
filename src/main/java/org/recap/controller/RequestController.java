@@ -622,7 +622,7 @@ public class RequestController {
             jsonObject.put(RecapCommonConstants.MESSAGE, cancelRequestResponse.getScreenMessage());
             jsonObject.put(RecapCommonConstants.STATUS, cancelRequestResponse.isSuccess());
             Optional<RequestItemEntity> requestItemEntity = getRequestItemDetailsRepository().findById(requestForm.getRequestId());
-            if (null != requestItemEntity) {
+            if (requestItemEntity.isPresent()) {
                 requestStatus = requestItemEntity.get().getRequestStatusEntity().getRequestStatusDescription();
                 requestNotes = requestItemEntity.get().getNotes();
             }
@@ -802,12 +802,12 @@ public class RequestController {
 
     private void setFormValuesToDisableSearchInstitution(@Valid @ModelAttribute("requestForm") RequestForm requestForm, UserDetailsForm userDetails, List<String> institutionList) {
         Optional<InstitutionEntity> institutionEntity = getInstitutionDetailsRepository().findById(userDetails.getLoginInstitutionId());
-        if(userDetails.isSuperAdmin() || userDetails.isRecapUser() || institutionEntity.get().getInstitutionCode().equalsIgnoreCase("HTC")){
+        if(userDetails.isSuperAdmin() || userDetails.isRecapUser() || ( (institutionEntity.isPresent()) && (institutionEntity.get().getInstitutionCode().equalsIgnoreCase("HTC")))){
             getRequestService().getInstitutionForSuperAdmin(institutionList);
             requestForm.setInstitutionList(institutionList);
         }else {
             requestForm.setDisableSearchInstitution(true);
-            if(institutionEntity != null) {
+            if(institutionEntity.isPresent()) {
                 requestForm.setInstitutionList(Arrays.asList(institutionEntity.get().getInstitutionCode()));
                 requestForm.setInstitution(institutionEntity.get().getInstitutionCode());
                 requestForm.setSearchInstitutionHdn(institutionEntity.get().getInstitutionCode());
