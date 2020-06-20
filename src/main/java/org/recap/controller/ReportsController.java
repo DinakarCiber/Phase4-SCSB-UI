@@ -17,10 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -87,7 +84,7 @@ public class ReportsController {
      * @param request the request
      * @return the string
      */
-    @RequestMapping("/reports")
+     @PostMapping(path = "/reports")
     public String reports(Model model, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         boolean authenticated = getUserAuthUtil().authorizedUser(RecapConstants.SCSB_SHIRO_REPORT_URL, (UsernamePasswordToken) session.getAttribute(RecapConstants.USER_TOKEN));
@@ -111,7 +108,7 @@ public class ReportsController {
      * @throws Exception the exception
      */
     @ResponseBody
-    @RequestMapping(value = "/reports/submit", method = RequestMethod.POST)
+    @PostMapping(value = "/reports/submit")
     public ModelAndView reportCounts(@Valid @ModelAttribute("reportsForm") ReportsForm reportsForm,
                                      Model model) throws Exception {
         if (reportsForm.getRequestType().equalsIgnoreCase(RecapCommonConstants.REPORTS_REQUEST)) {
@@ -144,7 +141,7 @@ public class ReportsController {
      * @throws Exception the exception
      */
     @ResponseBody
-    @RequestMapping(value = "/reports/collectionGroupDesignation", method = RequestMethod.GET)
+    @GetMapping(value = "/reports/collectionGroupDesignation")
     public ModelAndView cgdCounts(@Valid @ModelAttribute("reportsForm") ReportsForm reportsForm,
                                   Model model) throws Exception {
         reportsUtil.populateCGDItemCounts(reportsForm);
@@ -162,7 +159,7 @@ public class ReportsController {
      * @throws Exception the exception
      */
     @ResponseBody
-    @RequestMapping(value = "/reports/deaccessionInformation", method = RequestMethod.GET)
+    @GetMapping(value ="/reports/deaccessionInformation")
     public ModelAndView deaccessionInformation(ReportsForm reportsForm,
                                                Model model) throws Exception {
         List<DeaccessionItemResultsRow> deaccessionItemResultsRowList = getReportsUtil().deaccessionReportFieldsInformation(reportsForm);
@@ -182,7 +179,7 @@ public class ReportsController {
      * @throws Exception the exception
      */
     @ResponseBody
-    @RequestMapping(value = "/reports/first", method = RequestMethod.POST)
+    @PostMapping(value = "/reports/first")
     public ModelAndView searchFirst(@Valid ReportsForm reportsForm,
                                     Model model) throws Exception {
         if ((RecapConstants.REPORTS_INCOMPLETE_RECORDS).equals(reportsForm.getRequestType())) {
@@ -206,7 +203,7 @@ public class ReportsController {
      * @throws Exception the exception
      */
     @ResponseBody
-    @RequestMapping(value = "/reports/previous", method = RequestMethod.POST)
+    @PostMapping(value = "/reports/previous")
     public ModelAndView searchPrevious(@Valid ReportsForm reportsForm,
                                        Model model) throws Exception {
         if ((RecapConstants.REPORTS_INCOMPLETE_RECORDS).equals(reportsForm.getRequestType())) {
@@ -229,7 +226,7 @@ public class ReportsController {
      * @throws Exception the exception
      */
     @ResponseBody
-    @RequestMapping(value = "/reports/next", method = RequestMethod.POST)
+    @PostMapping(value = "/reports/next")
     public ModelAndView searchNext(@Valid ReportsForm reportsForm,
                                    Model model) throws Exception {
         if ((RecapConstants.REPORTS_INCOMPLETE_RECORDS).equals(reportsForm.getRequestType())) {
@@ -252,7 +249,7 @@ public class ReportsController {
      * @throws Exception the exception
      */
     @ResponseBody
-    @RequestMapping(value = "/reports/last", method = RequestMethod.POST)
+    @PostMapping(value = "/reports/last")
     public ModelAndView searchLast(@Valid ReportsForm reportsForm,
                                    Model model) throws Exception {
         if ((RecapConstants.REPORTS_INCOMPLETE_RECORDS).equals(reportsForm.getRequestType())) {
@@ -276,7 +273,7 @@ public class ReportsController {
      * @throws Exception the exception
      */
     @ResponseBody
-    @RequestMapping(value = "/reports/incompleteRecords", method = RequestMethod.POST)
+    @PostMapping(value = "/reports/incompleteRecords")
     public ModelAndView incompleteRecordsReport(ReportsForm reportsForm,
                                                 Model model) throws Exception {
         reportsForm.setIncompletePageNumber(0);
@@ -291,7 +288,7 @@ public class ReportsController {
      * @param reportsForm the reports form
      * @return the institution for incompletereport
      */
-    @RequestMapping(value = "/reports/getInstitutions", method = RequestMethod.GET)
+    @GetMapping(value = "/reports/getInstitutions")
     public ModelAndView getInstitutionForIncompletereport(HttpServletRequest request, ReportsForm reportsForm) {
             List<String> instList = new ArrayList<>();
             List<InstitutionEntity> institutionCodeForSuperAdmin = institutionDetailsRepository.getInstitutionCodeForSuperAdmin();
@@ -313,7 +310,7 @@ public class ReportsController {
      * @throws Exception the exception
      */
     @ResponseBody
-    @RequestMapping(value = "/reports/export", method = RequestMethod.POST)
+    @PostMapping(value = "/reports/export")
     public byte[] exportIncompleteRecords(ReportsForm reportsForm, HttpServletResponse response, Model model) throws Exception {
         DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
         String fileNameWithExtension = RecapConstants.REPORTS_INCOMPLETE_EXPORT_FILE_NAME + reportsForm.getIncompleteRequestingInstitution()+"_"+dateFormat.format(new Date()) + ".csv";
@@ -336,7 +333,7 @@ public class ReportsController {
      * @throws Exception the exception
      */
     @ResponseBody
-    @RequestMapping(value = "/reports/incompleteReportPageSizeChange", method = RequestMethod.POST)
+    @PostMapping(value = "/reports/incompleteReportPageSizeChange")
     public ModelAndView incompleteReportPageSizeChange(ReportsForm reportsForm,
                                                        Model model) throws Exception {
         reportsForm.setIncompletePageNumber(0);

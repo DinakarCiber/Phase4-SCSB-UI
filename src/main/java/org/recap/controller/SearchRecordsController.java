@@ -25,11 +25,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
@@ -118,7 +114,7 @@ public class SearchRecordsController {
      * @param request the request
      * @return the string
      */
-    @RequestMapping("/search")
+    @PostMapping("/search")
     public String searchRecords(Model model, HttpServletRequest request) {
         HttpSession session=request.getSession(false);
         boolean authenticated=getUserAuthUtil().authorizedUser(RecapConstants.SCSB_SHIRO_SEARCH_URL,(UsernamePasswordToken)session.getAttribute(RecapConstants.USER_TOKEN));
@@ -143,7 +139,7 @@ public class SearchRecordsController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/search", method = RequestMethod.POST, params = "action=search")
+    @PostMapping(value = "/search", params = "action=search")
     public ModelAndView search(@Valid @ModelAttribute("searchRecordsRequest") SearchRecordsRequest searchRecordsRequest,
                                   BindingResult result,
                                   Model model) {
@@ -162,7 +158,7 @@ public class SearchRecordsController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/search", method = RequestMethod.POST, params = "action=previous")
+    @PostMapping(value = "/search", params = "action=previous")
     public ModelAndView searchPrevious(@Valid @ModelAttribute("searchRecordsRequest") SearchRecordsRequest searchRecordsRequest,
                                BindingResult result,
                                Model model) {
@@ -180,7 +176,7 @@ public class SearchRecordsController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/search", method = RequestMethod.POST, params = "action=next")
+    @PostMapping(value = "/search", params = "action=next")
     public ModelAndView searchNext(@Valid @ModelAttribute("searchRecordsRequest") SearchRecordsRequest searchRecordsRequest,
                                    BindingResult result,
                                    Model model) {
@@ -198,7 +194,7 @@ public class SearchRecordsController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/search", method = RequestMethod.POST, params = "action=first")
+    @PostMapping(value = "/search", params = "action=first")
     public ModelAndView searchFirst(@Valid @ModelAttribute("searchRecordsRequest") SearchRecordsRequest searchRecordsRequest,
                                        BindingResult result,
                                        Model model) {
@@ -217,7 +213,7 @@ public class SearchRecordsController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/search", method = RequestMethod.POST, params = "action=last")
+    @PostMapping(value = "/search", params = "action=last")
     public ModelAndView searchLast(@Valid @ModelAttribute("searchRecordsRequest") SearchRecordsRequest searchRecordsRequest,
                                        BindingResult result,
                                        Model model) {
@@ -228,7 +224,7 @@ public class SearchRecordsController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/search", method = RequestMethod.POST, params = "action=clear")
+    @PostMapping(value = "/search", params = "action=clear")
     public ModelAndView clear(@Valid @ModelAttribute("searchRecordsRequest") SearchRecordsRequest searchRecordsRequest,
                               BindingResult result,
                               Model model) {
@@ -251,7 +247,7 @@ public class SearchRecordsController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/search", method = RequestMethod.POST, params = "action=newSearch")
+    @PostMapping(value = "/search", params = "action=newSearch")
     public ModelAndView newSearch(Model model) {
         SearchRecordsRequest searchRecordsRequest = new SearchRecordsRequest();
         model.addAttribute(RecapConstants.VIEW_SEARCH_RECORDS_REQUEST, searchRecordsRequest);
@@ -270,7 +266,7 @@ public class SearchRecordsController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/search", method = RequestMethod.POST, params = "action=request")
+    @PostMapping(value = "/search", params = "action=request")
     public ModelAndView requestRecords(@Valid @ModelAttribute("searchRecordsRequest") SearchRecordsRequest searchRecordsRequest,
                                        BindingResult result,
                                        Model model,
@@ -300,7 +296,7 @@ public class SearchRecordsController {
      * @throws Exception the exception
      */
     @ResponseBody
-    @RequestMapping(value = "/search", method = RequestMethod.POST, params = "action=export")
+    @PostMapping(value = "/search", params = "action=export")
     public byte[] exportRecords(@Valid @ModelAttribute("searchRecordsRequest") SearchRecordsRequest searchRecordsRequest, HttpServletResponse response,
                                   BindingResult result,
                                   Model model) throws Exception {
@@ -324,7 +320,7 @@ public class SearchRecordsController {
      * @throws Exception the exception
      */
     @ResponseBody
-    @RequestMapping(value = "/search", method = RequestMethod.POST, params = "action=pageSizeChange")
+    @PostMapping(value = "/search", params = "action=pageSizeChange")
     public ModelAndView onPageSizeChange(@Valid @ModelAttribute("searchRecordsRequest") SearchRecordsRequest searchRecordsRequest,
                                          BindingResult result,
                                          Model model) throws Exception {

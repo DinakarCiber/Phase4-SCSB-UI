@@ -20,10 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.HtmlUtils;
 
@@ -66,7 +63,7 @@ public class RolesController {
      * @param request the request
      * @return the string
      */
-    @RequestMapping("/roles")
+    @PostMapping("/roles")
     public String roles(Model model, HttpServletRequest request) {
         HttpSession session=request.getSession(false);
         boolean authenticated=userAuthUtil.authorizedUser(RecapConstants.SCSB_SHIRO_ROLE_URL,(UsernamePasswordToken)session.getAttribute(RecapConstants.USER_TOKEN));
@@ -89,7 +86,7 @@ public class RolesController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/roles", method = RequestMethod.POST, params = "action=searchRoles")
+    @PostMapping(value = "/roles", params = "action=searchRoles")
     public ModelAndView search(@Valid @ModelAttribute("rolesForm") RolesForm rolesForm,
                                Model model) {
         rolesForm.setShowResults(true);
@@ -105,7 +102,7 @@ public class RolesController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/roles", method = RequestMethod.POST, params = "action=populatePermissionName")
+    @PostMapping(value = "/roles", params = "action=populatePermissionName")
     public ModelAndView populatePermissionNames(Model model) {
         RolesForm rolesForm = getAllPermissionNames();
         model.addAttribute(RecapConstants.ROLES_FORM, rolesForm);
@@ -122,7 +119,7 @@ public class RolesController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/roles", method = RequestMethod.POST, params = "action=loadCreateRole")
+    @PostMapping(value = "/roles", params = "action=loadCreateRole")
     public ModelAndView newRole(@Valid @ModelAttribute("rolesForm") RolesForm rolesForm,
                                 Model model, HttpServletRequest request) {
         boolean specialCharacterCheck = isSpecialCharacterCheck(rolesForm.getNewRoleName());
@@ -157,7 +154,7 @@ public class RolesController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/roles", method = RequestMethod.GET, params = "action=editRole")
+    @GetMapping(value = "/roles", params = "action=editRole")
     public ModelAndView editRole(Integer roleId, String roleName, String roleDescription, String permissionName) {
         String htmlUnescapePermissionName = HtmlUtils.htmlUnescape(permissionName);
         RolesForm rolesForm = getAllPermissionNames();
@@ -180,7 +177,7 @@ public class RolesController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/roles", method = RequestMethod.GET, params = "action=saveEditedRole")
+    @GetMapping(value = "/roles", params = "action=saveEditedRole")
     public ModelAndView saveEditedRole(@ModelAttribute("roleId") Integer roleId,
                                        @ModelAttribute("roleName") String roleName,
                                        @ModelAttribute("roleDescription") String roleDescription,
@@ -225,7 +222,7 @@ public class RolesController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/roles", method = RequestMethod.GET, params = "action=deleteRole")
+    @GetMapping(value = "/roles", params = "action=deleteRole")
     public ModelAndView deleteRole(Integer roleId, String roleName, String roleDescription, String permissionName,
                                    Integer pageSize,Integer pageNumber,Integer totalPageCount) {
         String htmlUnescapePermissionName = HtmlUtils.htmlUnescape(permissionName);
@@ -253,7 +250,7 @@ public class RolesController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/roles", method = RequestMethod.GET, params = "action=delete")
+    @GetMapping(value = "/roles", params = "action=delete")
     public ModelAndView delete(@Valid @ModelAttribute("rolesForm") RolesForm rolesForm,
                                Model model) {
         Optional<RoleEntity> roleEntity = rolesDetailsRepositorty.findById(rolesForm.getRoleId());
@@ -288,7 +285,7 @@ public class RolesController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/roles", method = RequestMethod.POST, params = "action=previous")
+    @PostMapping(value = "/roles", params = "action=previous")
     public ModelAndView searchPrevious(@Valid @ModelAttribute("rolesForm") RolesForm rolesForm,
                                        Model model) {
         rolesForm.setShowResults(true);
@@ -305,7 +302,7 @@ public class RolesController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/roles", method = RequestMethod.POST, params = "action=next")
+    @PostMapping(value = "/roles", params = "action=next")
     public ModelAndView searchNext(@Valid @ModelAttribute("rolesForm") RolesForm rolesForm,
                                    Model model) {
         rolesForm.setShowResults(true);
@@ -322,7 +319,7 @@ public class RolesController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/roles", method = RequestMethod.POST, params = "action=first")
+    @PostMapping(value = "/roles", params = "action=first")
     public ModelAndView searchFirst(@Valid @ModelAttribute("rolesForm") RolesForm rolesForm,
                                     Model model) {
         rolesForm.setShowResults(true);
@@ -340,7 +337,7 @@ public class RolesController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/roles", method = RequestMethod.POST, params = "action=last")
+    @PostMapping(value = "/roles", params = "action=last")
     public ModelAndView searchLast(@Valid @ModelAttribute("rolesForm") RolesForm rolesForm,
                                    Model model) {
         rolesForm.setShowResults(true);
@@ -359,7 +356,7 @@ public class RolesController {
      * @throws Exception the exception
      */
     @ResponseBody
-    @RequestMapping(value = "/roles", method = RequestMethod.POST, params = "action=pageSizeChange")
+    @PostMapping(value = "/roles", params = "action=pageSizeChange")
     public ModelAndView onPageSizeChange(@Valid @ModelAttribute("rolesForm") RolesForm rolesForm,
                                          Model model) throws Exception {
         rolesForm.setShowResults(true);
@@ -377,7 +374,7 @@ public class RolesController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/roles", method = RequestMethod.POST, params = "action=goBack")
+    @PostMapping(value = "/roles", params = "action=goBack")
     public ModelAndView goBack(RolesForm rolesForm,Model model){
         rolesForm.setShowIntial(true);
         return new ModelAndView("roles", "rolesForm", rolesForm);

@@ -6,6 +6,8 @@ import org.recap.RecapCommonConstants;
 import org.recap.RecapConstants;
 import org.recap.spring.ApplicationContextProvider;
 import org.recap.spring.PropertyValueProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,6 +20,8 @@ import java.util.Iterator;
  * Created by sheiks on 20/01/17.
  */
 public class HelperUtil {
+
+    private static final Logger logger = LoggerFactory.getLogger(HelperUtil.class);
 
     /**
      * Gets attribute value from request.
@@ -87,7 +91,7 @@ public class HelperUtil {
                 UserAuthUtil userAuthUtil = HelperUtil.getBean(UserAuthUtil.class);
                 userAuthUtil.authorizedUser(RecapConstants.SCSB_SHIRO_LOGOUT_URL,(UsernamePasswordToken) attribute);
             }catch (Exception e) {
-                e.printStackTrace();
+               logger.error("Logout",e);
             }
         }
     }
