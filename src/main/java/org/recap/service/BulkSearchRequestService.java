@@ -1,6 +1,7 @@
 package org.recap.service;
 
 import org.apache.commons.lang3.StringUtils;
+import org.recap.RecapCommonConstants;
 import org.recap.RecapConstants;
 import org.recap.model.jpa.BulkRequestItemEntity;
 import org.recap.model.jpa.InstitutionEntity;
@@ -38,7 +39,7 @@ public class BulkSearchRequestService {
         if (institutionEntity != null){
             requestingInstitutionId = institutionEntity.getId();
         }
-        Pageable pageable = PageRequest.of(bulkRequestForm.getPageNumber(), bulkRequestForm.getPageSize(), Sort.Direction.DESC, RecapConstants.BULK_REQUEST_ID);
+        Pageable pageable = PageRequest.of(bulkRequestForm.getPageNumber(), bulkRequestForm.getPageSize(), Sort.Direction.DESC, RecapCommonConstants.BULK_REQUEST_ID);
 
         if (StringUtils.isNotBlank(requestId) && StringUtils.isBlank(bulkRequestName) && StringUtils.isBlank(patronId)) {
             return StringUtils.isNotBlank(institution) ? bulkRequestDetailsRepository.findByIdAndRequestingInstitutionId(pageable,bulkRequestId,requestingInstitutionId)

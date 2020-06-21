@@ -1,5 +1,6 @@
 package org.recap.model.search;
 
+import org.recap.RecapCommonConstants;
 import org.recap.RecapConstants;
 
 import java.io.Serializable;
@@ -63,7 +64,7 @@ public class SearchRecordsRequest implements Serializable {
         this.setFieldValue("");
         this.setSelectAllFacets(true);
         this.setDeleted(false);
-        this.setCatalogingStatus(RecapConstants.COMPLETE_STATUS);
+        this.setCatalogingStatus(RecapCommonConstants.COMPLETE_STATUS);
 
         this.getOwningInstitutions().add("NYPL");
         this.getOwningInstitutions().add("CUL");

@@ -2,6 +2,7 @@ package org.recap.service;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.recap.RecapCommonConstants;
 import org.recap.RecapConstants;
 import org.recap.model.jpa.BulkRequestItemEntity;
 import org.recap.model.jpa.InstitutionEntity;
@@ -112,7 +113,7 @@ public class BulkRequestService {
                 bulkRequestForm.setErrorMessage("Patron Barcode is incorrect");
             }
         } catch (IOException e) {
-            logger.error(RecapConstants.LOG_ERROR, e);
+            logger.error(RecapCommonConstants.LOG_ERROR, e);
         }
     }
 
@@ -134,7 +135,7 @@ public class BulkRequestService {
             }
             getPaginatedSearchResults(bulkRequestForm);
         }catch (Exception e){
-            logger.error(RecapConstants.LOG_ERROR,e);
+            logger.error(RecapCommonConstants.LOG_ERROR,e);
         }
     }
 
@@ -144,7 +145,7 @@ public class BulkRequestService {
             bulkRequestForm.setPageNumber(getPageNumberOnPageSizeChange(bulkRequestForm));
             getPaginatedSearchResults(bulkRequestForm);
         } catch (ParseException e) {
-            logger.error(RecapConstants.LOG_ERROR,e);
+            logger.error(RecapCommonConstants.LOG_ERROR,e);
         }
     }
 
@@ -176,7 +177,7 @@ public class BulkRequestService {
                     bulkSearchResultRow.setBulkRequestNotes(bulkRequestItemEntity.getNotes());
                     bulkSearchResultRows.add(bulkSearchResultRow);
                 } catch (Exception ex) {
-                    logger.error(RecapConstants.LOG_ERROR, ex);
+                    logger.error(RecapCommonConstants.LOG_ERROR, ex);
                 }
             }
             bulkRequestForm.setTotalRecordsCount(String.valueOf(bulkRequestItemEntities.getTotalElements()));

@@ -1,5 +1,6 @@
 package org.recap.util;
 
+import org.recap.RecapCommonConstants;
 import org.recap.RecapConstants;
 import org.recap.model.reports.ReportsRequest;
 import org.recap.model.reports.ReportsResponse;
@@ -43,14 +44,14 @@ public class ReportsServiceUtil {
         try {
             RestTemplate restTemplate = new RestTemplate();
             HttpHeaders headers = new HttpHeaders();
-            headers.set(RecapConstants.API_KEY, SwaggerAPIProvider.getInstance().getSwaggerApiKey());
+            headers.set(RecapCommonConstants.API_KEY, SwaggerAPIProvider.getInstance().getSwaggerApiKey());
             HttpEntity<ReportsRequest> httpEntity = new HttpEntity<>(reportsRequest, headers);
 
             ResponseEntity<ReportsResponse> responseEntity = restTemplate.exchange(scsbUrl + RecapConstants.SCSB_REPORTS_ACCESSION_DEACCESSION_COUNTS_URL, HttpMethod.POST, httpEntity, ReportsResponse.class);
             reportsResponse = responseEntity.getBody();
             return reportsResponse;
         } catch (Exception e) {
-            logger.error(RecapConstants.LOG_ERROR,e);
+            logger.error(RecapCommonConstants.LOG_ERROR,e);
             reportsResponse.setMessage(e.getMessage());
             return reportsResponse;
         }
@@ -70,14 +71,14 @@ public class ReportsServiceUtil {
         try {
             RestTemplate restTemplate = new RestTemplate();
             HttpHeaders headers = new HttpHeaders();
-            headers.set(RecapConstants.API_KEY, SwaggerAPIProvider.getInstance().getSwaggerApiKey());
+            headers.set(RecapCommonConstants.API_KEY, SwaggerAPIProvider.getInstance().getSwaggerApiKey());
             HttpEntity<ReportsRequest> httpEntity = new HttpEntity<>(reportsRequest, headers);
 
             ResponseEntity<ReportsResponse> responseEntity = restTemplate.exchange(scsbUrl + RecapConstants.SCSB_REPORTS_CGD_ITEM_COUNTS_URL, HttpMethod.POST, httpEntity, ReportsResponse.class);
             reportsResponse = responseEntity.getBody();
             return reportsResponse;
         } catch (Exception e) {
-            logger.error(RecapConstants.LOG_ERROR,e);
+            logger.error(RecapCommonConstants.LOG_ERROR,e);
             reportsResponse.setMessage(e.getMessage());
             return reportsResponse;
         }
@@ -101,14 +102,14 @@ public class ReportsServiceUtil {
         try {
             RestTemplate restTemplate = new RestTemplate();
             HttpHeaders headers = new HttpHeaders();
-            headers.set(RecapConstants.API_KEY, SwaggerAPIProvider.getInstance().getSwaggerApiKey());
+            headers.set(RecapCommonConstants.API_KEY, SwaggerAPIProvider.getInstance().getSwaggerApiKey());
             HttpEntity<ReportsRequest> httpEntity = new HttpEntity<>(reportsRequest, headers);
 
             ResponseEntity<ReportsResponse> responseEntity = restTemplate.exchange(scsbUrl + RecapConstants.SCSB_REPORTS_DEACCESSION_RESULTS_URL, HttpMethod.POST, httpEntity, ReportsResponse.class);
             reportsResponse = responseEntity.getBody();
             return reportsResponse;
         } catch (Exception e) {
-            logger.error(RecapConstants.LOG_ERROR,e);
+            logger.error(RecapCommonConstants.LOG_ERROR,e);
             reportsResponse.setMessage(e.getMessage());
             return reportsResponse;
         }
@@ -130,13 +131,13 @@ public class ReportsServiceUtil {
         try {
             RestTemplate restTemplate = new RestTemplate();
             HttpHeaders headers = new HttpHeaders();
-            headers.set(RecapConstants.API_KEY, SwaggerAPIProvider.getInstance().getSwaggerApiKey());
+            headers.set(RecapCommonConstants.API_KEY, SwaggerAPIProvider.getInstance().getSwaggerApiKey());
             HttpEntity<ReportsRequest> httpEntity = new HttpEntity<>(reportsRequest, headers);
             ResponseEntity<ReportsResponse> responseEntity = restTemplate.exchange(scsbUrl + RecapConstants.SCSB_REPORTS_INCOMPLETE_RESULTS_URL, HttpMethod.POST, httpEntity, ReportsResponse.class);
             reportsResponse = responseEntity.getBody();
             return reportsResponse;
         } catch (Exception e) {
-            logger.error(RecapConstants.LOG_ERROR,e);
+            logger.error(RecapCommonConstants.LOG_ERROR,e);
             reportsResponse.setMessage(e.getMessage());
             return reportsResponse;
         }

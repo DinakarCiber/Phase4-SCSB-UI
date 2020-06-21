@@ -6,6 +6,7 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.marc4j.marc.Record;
+import org.recap.RecapCommonConstants;
 import org.recap.RecapConstants;
 import org.recap.model.jpa.BibliographicEntity;
 import org.recap.model.jpa.InstitutionEntity;
@@ -292,10 +293,10 @@ public class RequestService {
             }
         }
         try {
-            jsonObject.put(RecapConstants.STATUS,responseMap);
-            jsonObject.put(RecapConstants.NOTES,responseMapForNotes);
+            jsonObject.put(RecapCommonConstants.STATUS,responseMap);
+            jsonObject.put(RecapCommonConstants.NOTES,responseMapForNotes);
         } catch (JSONException e) {
-            logger.error(RecapConstants.LOG_ERROR,e);
+            logger.error(RecapCommonConstants.LOG_ERROR,e);
         }
         return jsonObject.toString();
     }
@@ -327,7 +328,7 @@ public class RequestService {
             for (String itemBarcode : itemBarcodes) {
                 String barcode = itemBarcode.trim();
                 if (StringUtils.isNotBlank(barcode)) {
-                    List<ItemEntity> itemEntities = getItemDetailsRepository().findByBarcodeAndCatalogingStatusAndIsDeletedFalse(barcode, RecapConstants.COMPLETE_STATUS);
+                    List<ItemEntity> itemEntities = getItemDetailsRepository().findByBarcodeAndCatalogingStatusAndIsDeletedFalse(barcode, RecapCommonConstants.COMPLETE_STATUS);
                     if (CollectionUtils.isNotEmpty(itemEntities)) {
                         for (ItemEntity itemEntity : itemEntities) {
                             CustomerCodeEntity customerCodeEntity = getCustomerCodeDetailsRepository().findByCustomerCodeAndRecapDeliveryRestrictionLikeEDD(itemEntity.getCustomerCode());
@@ -343,7 +344,7 @@ public class RequestService {
                                     jsonObject.put(RecapConstants.NO_PERMISSION_ERROR_MESSAGE, RecapConstants.REQUEST_ERROR_USER_NOT_PERMITTED);
                                     return jsonObject.toString();
                                 } else {
-                                    if (null != itemEntity.getItemStatusEntity() && itemEntity.getItemStatusEntity().getStatusCode().equals(RecapConstants.NOT_AVAILABLE)) {
+                                    if (null != itemEntity.getItemStatusEntity() && itemEntity.getItemStatusEntity().getStatusCode().equals(RecapCommonConstants.NOT_AVAILABLE)) {
                                         notAvailableBarcodes.add(barcode);
                                     }
                                     Integer institutionId = itemEntity.getInstitutionEntity().getId();
@@ -379,13 +380,13 @@ public class RequestService {
             if (CollectionUtils.isNotEmpty(itemOwningInstitutions)) {
                 jsonObject.put(RecapConstants.REQUESTED_ITEM_OWNING_INSTITUTION, StringUtils.join(itemOwningInstitutions, ","));
             }
-            if((!multipleItemBarcodes && showEDD) && !(RecapConstants.RECALL.equals(requestForm.getRequestType()))){
+            if((!multipleItemBarcodes && showEDD) && !(RecapCommonConstants.RECALL.equals(requestForm.getRequestType()))){
                 List<RequestTypeEntity> requestTypeEntities = getRequestTypeDetailsRepository().findAllExceptBorrowDirect();
                 for (RequestTypeEntity requestTypeEntity : requestTypeEntities) {
                     requestTypes.add(requestTypeEntity.getRequestTypeCode());
                 }
             }
-            else if(!(RecapConstants.RECALL.equals(requestForm.getRequestType()))){
+            else if(!(RecapCommonConstants.RECALL.equals(requestForm.getRequestType()))){
                 List<RequestTypeEntity> requestTypeEntityList = getRequestTypeDetailsRepository().findAllExceptEDDAndBorrowDirect();
                 for (RequestTypeEntity requestTypeEntity : requestTypeEntityList) {
                     requestTypes.add(requestTypeEntity.getRequestTypeCode());
@@ -396,7 +397,7 @@ public class RequestService {
             jsonObject.put(RecapConstants.MULTIPLE_BARCODES, multipleItemBarcodes);
 
             if (CollectionUtils.isNotEmpty(invalidBarcodes)) {
-                jsonObject.put(RecapConstants.ERROR_MESSAGE, RecapConstants.BARCODES_NOT_FOUND + " - " + StringUtils.join(invalidBarcodes, ","));
+                jsonObject.put(RecapConstants.ERROR_MESSAGE, RecapCommonConstants.BARCODES_NOT_FOUND + " - " + StringUtils.join(invalidBarcodes, ","));
             }
             if (CollectionUtils.isNotEmpty(notAvailableBarcodes)) {
                 jsonObject.put(RecapConstants.NOT_AVAILABLE_ERROR_MESSAGE, RecapConstants.BARCODES_NOT_AVAILABLE + " - " + StringUtils.join(notAvailableBarcodes, ","));
@@ -461,7 +462,7 @@ public class RequestService {
                     }
                     requestForm.setDeliveryLocations(customerCodeEntities);
                 }
-                if(!(RecapConstants.RECALL.equals(requestForm.getRequestType())) && requestTypes!=null) {
+                if(!(RecapCommonConstants.RECALL.equals(requestForm.getRequestType())) && requestTypes!=null) {
                     JSONArray requestTypeArray = (JSONArray) requestTypes;
                     for (int i = 0; i < requestTypeArray.length(); i++) {
                         requestTypeList.add(requestTypeArray.getString(i));
@@ -489,10 +490,10 @@ public class RequestService {
         if (availabilty != null){
             HashSet<String> str = (HashSet<String>) availabilty;
             for (String itemAvailability : str){
-                if(RecapConstants.NOT_AVAILABLE.equalsIgnoreCase(itemAvailability)){
+                if(RecapCommonConstants.NOT_AVAILABLE.equalsIgnoreCase(itemAvailability)){
                     addOnlyRecall = true;
                 }
-                if(RecapConstants.AVAILABLE.equalsIgnoreCase(itemAvailability)){
+                if(RecapCommonConstants.AVAILABLE.equalsIgnoreCase(itemAvailability)){
                     addAllRequestType = true;
                 }
             }
@@ -523,7 +524,7 @@ public class RequestService {
         }
 
         if(addOnlyRecall &&(addAllRequestType == false)){
-            RequestTypeEntity requestTypeEntity = getRequestTypeDetailsRepository().findByRequestTypeCode(RecapConstants.RECALL);
+            RequestTypeEntity requestTypeEntity = getRequestTypeDetailsRepository().findByRequestTypeCode(RecapCommonConstants.RECALL);
             requestTypes.add(requestTypeEntity.getRequestTypeCode());
             requestForm.setRequestType(requestTypeEntity.getRequestTypeCode());
         }
@@ -531,11 +532,11 @@ public class RequestService {
             Iterable<RequestTypeEntity> requestTypeEntities = getRequestTypeDetailsRepository().findAll();
             for (Iterator iterator = requestTypeEntities.iterator(); iterator.hasNext(); ) {
                 RequestTypeEntity requestTypeEntity = (RequestTypeEntity) iterator.next();
-                if (!RecapConstants.BORROW_DIRECT.equals(requestTypeEntity.getRequestTypeCode())) {
+                if (!RecapCommonConstants.BORROW_DIRECT.equals(requestTypeEntity.getRequestTypeCode())) {
                     requestTypes.add(requestTypeEntity.getRequestTypeCode());
                 }
             }
-            requestForm.setRequestType(RecapConstants.RETRIEVAL);
+            requestForm.setRequestType(RecapCommonConstants.RETRIEVAL);
         }
         requestForm.setRequestTypes(requestTypes);
         return requestForm;

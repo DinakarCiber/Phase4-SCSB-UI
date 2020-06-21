@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.recap.BaseTestCase;
+import org.recap.RecapCommonConstants;
 import org.recap.RecapConstants;
 import org.recap.model.deaccession.DeAccessionItem;
 import org.recap.model.deaccession.DeAccessionRequest;
@@ -127,11 +128,11 @@ public class CollectionServiceUtilUT extends BaseTestCase {
         HttpEntity requestEntity = new HttpEntity<>(restHeaderService.getHttpHeaders());
         ResponseEntity responseEntity = new ResponseEntity("Success", HttpStatus.OK);
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(scsbUrl + RecapConstants.SCSB_UPDATE_CGD_URL)
-                .queryParam(RecapConstants.CGD_UPDATE_ITEM_BARCODE, bibliographicMarcForm.getBarcode())
-                .queryParam(RecapConstants.OWNING_INSTITUTION, bibliographicMarcForm.getOwningInstitution())
-                .queryParam(RecapConstants.OLD_CGD, bibliographicMarcForm.getCollectionGroupDesignation())
-                .queryParam(RecapConstants.NEW_CGD, bibliographicMarcForm.getNewCollectionGroupDesignation())
-                .queryParam(RecapConstants.CGD_CHANGE_NOTES, bibliographicMarcForm.getCgdChangeNotes());
+                .queryParam(RecapCommonConstants.CGD_UPDATE_ITEM_BARCODE, bibliographicMarcForm.getBarcode())
+                .queryParam(RecapCommonConstants.OWNING_INSTITUTION, bibliographicMarcForm.getOwningInstitution())
+                .queryParam(RecapCommonConstants.OLD_CGD, bibliographicMarcForm.getCollectionGroupDesignation())
+                .queryParam(RecapCommonConstants.NEW_CGD, bibliographicMarcForm.getNewCollectionGroupDesignation())
+                .queryParam(RecapCommonConstants.CGD_CHANGE_NOTES, bibliographicMarcForm.getCgdChangeNotes());
         collectionServiceUtil = Mockito.mock(CollectionServiceUtil.class);
         Mockito.when(collectionServiceUtil.getRestTemplate()).thenReturn(restTemplate);
         Mockito.when(collectionServiceUtil.getRestHeaderService()).thenReturn(restHeaderService);
@@ -204,7 +205,7 @@ public class CollectionServiceUtilUT extends BaseTestCase {
         bibliographicMarcForm.setBarcode(itemBarcode);
         bibliographicMarcForm.setCgdChangeNotes("Notes for deaccession");
         Map<String,String> map = new HashMap<>();
-        map.put(itemBarcode,RecapConstants.SUCCESS);
+        map.put(itemBarcode,RecapCommonConstants.SUCCESS);
         collectionServiceUtil = Mockito.mock(CollectionServiceUtil.class);
         Mockito.when(collectionServiceUtil.getDeAccessionRequest()).thenReturn(deAccessionRequest);
         Mockito.when(collectionServiceUtil.getCustomerCodeDetailsRepository()).thenReturn(customerCodeDetailsRepository);

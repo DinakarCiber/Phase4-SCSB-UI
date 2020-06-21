@@ -6,6 +6,7 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.recap.RecapCommonConstants;
 import org.recap.RecapConstants;
 import org.recap.model.jpa.CustomerCodeEntity;
 import org.recap.model.jpa.ItemEntity;
@@ -236,7 +237,7 @@ public class RequestController {
             UserDetailsForm userDetailsForm = getUserAuthUtil().getUserDetails(session, RecapConstants.REQUEST_PRIVILEGE);
             RequestForm requestForm = getRequestService().setFormDetailsForRequest(model, request, userDetailsForm);
             model.addAttribute(RecapConstants.REQUEST_FORM, requestForm);
-            model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.REQUEST);
+            model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.REQUEST);
             return RecapConstants.VIEW_SEARCH_RECORDS;
         } else {
             return UserManagementService.unAuthorizedUser(session, "Request", logger);
@@ -260,9 +261,9 @@ public class RequestController {
             disableRequestSearchInstitutionDropDown(requestForm);
             requestForm.resetPageNumber();
             searchAndSetResults(requestForm);
-            model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.REQUEST);
+            model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.REQUEST);
         } catch (Exception exception) {
-            logger.error(RecapConstants.LOG_ERROR, exception);
+            logger.error(RecapCommonConstants.LOG_ERROR, exception);
             logger.debug(exception.getMessage());
         }
         return new ModelAndView(RecapConstants.VIEW_SEARCH_REQUESTS_SECTION, RecapConstants.REQUEST_FORM, requestForm);
@@ -293,9 +294,9 @@ public class RequestController {
             setFormValuesToDisableSearchInstitution(requestForm, userDetails, institutionList);
             requestForm.setStatus("");
             searchAndSetResults(requestForm);
-            model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.REQUEST);
+            model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.REQUEST);
         } catch (Exception exception) {
-            logger.error(RecapConstants.LOG_ERROR, exception);
+            logger.error(RecapCommonConstants.LOG_ERROR, exception);
             logger.debug(exception.getMessage());
         }
         return new ModelAndView("request :: #requestContentId", RecapConstants.REQUEST_FORM, requestForm);
@@ -317,7 +318,7 @@ public class RequestController {
         disableRequestSearchInstitutionDropDown(requestForm);
         requestForm.resetPageNumber();
         searchAndSetResults(requestForm);
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.REQUEST);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.REQUEST);
         return new ModelAndView(RecapConstants.VIEW_SEARCH_REQUESTS_SECTION, RecapConstants.REQUEST_FORM, requestForm);
     }
 
@@ -337,7 +338,7 @@ public class RequestController {
         disableRequestSearchInstitutionDropDown(requestForm);
         requestForm.setPageNumber(requestForm.getTotalPageCount() - 1);
         searchAndSetResults(requestForm);
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.REQUEST);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.REQUEST);
         return new ModelAndView(RecapConstants.VIEW_SEARCH_REQUESTS_SECTION, RecapConstants.REQUEST_FORM, requestForm);
     }
 
@@ -356,7 +357,7 @@ public class RequestController {
                                        Model model) {
         disableRequestSearchInstitutionDropDown(requestForm);
         searchAndSetResults(requestForm);
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.REQUEST);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.REQUEST);
         return new ModelAndView(RecapConstants.VIEW_SEARCH_REQUESTS_SECTION, RecapConstants.REQUEST_FORM, requestForm);
     }
 
@@ -375,7 +376,7 @@ public class RequestController {
                                    Model model) {
         disableRequestSearchInstitutionDropDown(requestForm);
         searchAndSetResults(requestForm);
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.REQUEST);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.REQUEST);
         return new ModelAndView(RecapConstants.VIEW_SEARCH_REQUESTS_SECTION, RecapConstants.REQUEST_FORM, requestForm);
     }
 
@@ -395,7 +396,7 @@ public class RequestController {
         disableRequestSearchInstitutionDropDown(requestForm);
         requestForm.setPageNumber(getPageNumberOnPageSizeChange(requestForm));
         searchAndSetResults(requestForm);
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.REQUEST);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.REQUEST);
         return new ModelAndView(RecapConstants.VIEW_SEARCH_REQUESTS_SECTION, RecapConstants.REQUEST_FORM, requestForm);
     }
 
@@ -412,8 +413,8 @@ public class RequestController {
         UserDetailsForm userDetailsForm = getUserAuthUtil().getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE);
         RequestForm requestForm = getRequestService().setDefaultsToCreateRequest(userDetailsForm,model);
         model.addAttribute(RecapConstants.REQUEST_FORM, requestForm);
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.REQUEST);
-        return new ModelAndView(RecapConstants.REQUEST, RecapConstants.REQUEST_FORM, requestForm);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.REQUEST);
+        return new ModelAndView(RecapCommonConstants.REQUEST, RecapConstants.REQUEST_FORM, requestForm);
     }
 
     /**
@@ -430,8 +431,8 @@ public class RequestController {
         RequestForm requestForm = getRequestService().setDefaultsToCreateRequest(userDetailsForm,model);
         requestForm.setOnChange("true");
         model.addAttribute(RecapConstants.REQUEST_FORM, requestForm);
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.REQUEST);
-        return new ModelAndView(RecapConstants.REQUEST, RecapConstants.REQUEST_FORM, requestForm);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.REQUEST);
+        return new ModelAndView(RecapCommonConstants.REQUEST, RecapConstants.REQUEST_FORM, requestForm);
     }
 
     /**
@@ -452,8 +453,8 @@ public class RequestController {
         requestForm.setRequestStatuses(requestStatuses);
         setFormValuesToDisableSearchInstitution(requestForm, userDetails, institutionList);
         model.addAttribute(RecapConstants.REQUEST_FORM, requestForm);
-        model.addAttribute(RecapConstants.TEMPLATE, RecapConstants.REQUEST);
-        return new ModelAndView(RecapConstants.REQUEST, RecapConstants.REQUEST_FORM, requestForm);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.REQUEST);
+        return new ModelAndView(RecapCommonConstants.REQUEST, RecapConstants.REQUEST_FORM, requestForm);
     }
 
 
@@ -521,7 +522,7 @@ public class RequestController {
                     }
                     requestForm.setDeliveryLocations(customerCodeEntities);
                 }
-                if(!(RecapConstants.RECALL.equals(requestForm.getRequestType())) && requestTypes!=null) {
+                if(!(RecapCommonConstants.RECALL.equals(requestForm.getRequestType())) && requestTypes!=null) {
                     JSONArray requestTypeArray = (JSONArray) requestTypes;
                     for (int i = 0; i < requestTypeArray.length(); i++) {
                         requestTypeList.add(requestTypeArray.getString(i));
@@ -579,12 +580,12 @@ public class RequestController {
                 requestForm.setShowRequestErrorMsg(true);
             }
         } catch (HttpClientErrorException httpException) {
-            logger.error(RecapConstants.LOG_ERROR, httpException);
+            logger.error(RecapCommonConstants.LOG_ERROR, httpException);
             String responseBodyAsString = httpException.getResponseBodyAsString();
             requestForm.setErrorMessage(responseBodyAsString);
             requestForm.setShowRequestErrorMsg(true);
         } catch (Exception exception) {
-            logger.error(RecapConstants.LOG_ERROR, exception);
+            logger.error(RecapCommonConstants.LOG_ERROR, exception);
             requestForm.setErrorMessage(exception.getMessage());
             requestForm.setShowRequestErrorMsg(true);
         }
@@ -618,20 +619,20 @@ public class RequestController {
         String requestNotes = null;
         try {
             HttpEntity requestEntity = new HttpEntity<>(getRestHeaderService().getHttpHeaders());
-            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getScsbUrl() + RecapConstants.URL_REQUEST_CANCEL).queryParam(RecapConstants.REQUEST_ID, requestForm.getRequestId());
+            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getScsbUrl() + RecapConstants.URL_REQUEST_CANCEL).queryParam(RecapCommonConstants.REQUEST_ID, requestForm.getRequestId());
             HttpEntity<CancelRequestResponse> responseEntity = getRestTemplate().exchange(builder.build().encode().toUri(), HttpMethod.POST, requestEntity, CancelRequestResponse.class);
             CancelRequestResponse cancelRequestResponse = responseEntity.getBody();
-            jsonObject.put(RecapConstants.MESSAGE, cancelRequestResponse.getScreenMessage());
-            jsonObject.put(RecapConstants.STATUS, cancelRequestResponse.isSuccess());
+            jsonObject.put(RecapCommonConstants.MESSAGE, cancelRequestResponse.getScreenMessage());
+            jsonObject.put(RecapCommonConstants.STATUS, cancelRequestResponse.isSuccess());
             Optional<RequestItemEntity> requestItemEntity = getRequestItemDetailsRepository().findById(requestForm.getRequestId());
             if (null != requestItemEntity) {
                 requestStatus = requestItemEntity.get().getRequestStatusEntity().getRequestStatusDescription();
                 requestNotes = requestItemEntity.get().getNotes();
             }
-            jsonObject.put(RecapConstants.REQUEST_STATUS, requestStatus);
+            jsonObject.put(RecapCommonConstants.REQUEST_STATUS, requestStatus);
             jsonObject.put(RecapConstants.REQUEST_NOTES, requestNotes);
         } catch (Exception exception) {
-            logger.error(RecapConstants.LOG_ERROR, exception);
+            logger.error(RecapCommonConstants.LOG_ERROR, exception);
             logger.debug(exception.getMessage());
         }
         return jsonObject.toString();
@@ -652,30 +653,30 @@ public class RequestController {
         JSONObject jsonObject = new JSONObject();
         try {
             ReplaceRequest replaceRequest = new ReplaceRequest();
-            replaceRequest.setReplaceRequestByType(RecapConstants.REQUEST_IDS);
+            replaceRequest.setReplaceRequestByType(RecapCommonConstants.REQUEST_IDS);
             replaceRequest.setRequestStatus(RecapConstants.EXCEPTION);
             String requestId = String.valueOf(requestForm.getRequestId());
             replaceRequest.setRequestIds(requestId);
             HttpEntity request = new HttpEntity<>(replaceRequest, getRestHeaderService().getHttpHeaders());
             Map resultMap = getRestTemplate().postForObject(scsbUrl + RecapConstants.URL_REQUEST_RESUBMIT, request, Map.class);
-            jsonObject.put(RecapConstants.BARCODE, requestForm.getItemBarcodeHidden());
+            jsonObject.put(RecapCommonConstants.BARCODE, requestForm.getItemBarcodeHidden());
             if (resultMap.containsKey(requestId)) {
                 String message = (String) resultMap.get(requestId);
-                jsonObject.put(RecapConstants.MESSAGE, resultMap.get(requestId));
-                if (StringUtils.isNotBlank(message) && message.contains(RecapConstants.SUCCESS)) {
-                    jsonObject.put(RecapConstants.STATUS, true);
+                jsonObject.put(RecapCommonConstants.MESSAGE, resultMap.get(requestId));
+                if (StringUtils.isNotBlank(message) && message.contains(RecapCommonConstants.SUCCESS)) {
+                    jsonObject.put(RecapCommonConstants.STATUS, true);
                 } else {
-                    jsonObject.put(RecapConstants.STATUS, false);
+                    jsonObject.put(RecapCommonConstants.STATUS, false);
                 }
-            } else if (resultMap.containsKey(RecapConstants.INVALID_REQUEST)) {
-                jsonObject.put(RecapConstants.MESSAGE, resultMap.get(RecapConstants.INVALID_REQUEST));
-                jsonObject.put(RecapConstants.STATUS, false);
-            } else if (resultMap.containsKey(RecapConstants.FAILURE)) {
-                jsonObject.put(RecapConstants.MESSAGE, resultMap.get(RecapConstants.FAILURE));
-                jsonObject.put(RecapConstants.STATUS, false);
+            } else if (resultMap.containsKey(RecapCommonConstants.INVALID_REQUEST)) {
+                jsonObject.put(RecapCommonConstants.MESSAGE, resultMap.get(RecapCommonConstants.INVALID_REQUEST));
+                jsonObject.put(RecapCommonConstants.STATUS, false);
+            } else if (resultMap.containsKey(RecapCommonConstants.FAILURE)) {
+                jsonObject.put(RecapCommonConstants.MESSAGE, resultMap.get(RecapCommonConstants.FAILURE));
+                jsonObject.put(RecapCommonConstants.STATUS, false);
             }
         } catch (Exception exception) {
-            logger.error(RecapConstants.LOG_ERROR, exception);
+            logger.error(RecapCommonConstants.LOG_ERROR, exception);
             logger.debug(exception.getMessage());
         }
         logger.info(jsonObject.toString());
@@ -691,7 +692,7 @@ public class RequestController {
             requestForm.setTotalPageCount(requestItemEntities.getTotalPages());
         } else {
             requestForm.setSearchResultRows(Collections.emptyList());
-            requestForm.setMessage(RecapConstants.SEARCH_RESULT_ERROR_NO_RECORDS_FOUND);
+            requestForm.setMessage(RecapCommonConstants.SEARCH_RESULT_ERROR_NO_RECORDS_FOUND);
         }
         requestForm.setShowResults(true);
     }
@@ -710,7 +711,7 @@ public class RequestController {
                     }
                 }
                 catch (Exception e) {
-                    logger.error(RecapConstants.LOG_ERROR, e);
+                    logger.error(RecapCommonConstants.LOG_ERROR, e);
                 }
             }
             return searchResultRows;
@@ -776,7 +777,7 @@ public class RequestController {
                 pageNumber = totalPagesCount - 1;
             }
         } catch (Exception e) {
-            logger.error(RecapConstants.LOG_ERROR, e);
+            logger.error(RecapCommonConstants.LOG_ERROR, e);
         }
         return pageNumber;
     }
