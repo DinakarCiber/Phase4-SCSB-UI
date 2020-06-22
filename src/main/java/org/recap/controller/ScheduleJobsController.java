@@ -89,7 +89,7 @@ public class ScheduleJobsController {
      * @param request the request
      * @return the string
      */
-    @PostMapping("/jobs")
+    @GetMapping("/jobs")
     public String displayJobs(Model model, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         ScheduleJobsForm scheduleJobsForm = new ScheduleJobsForm();

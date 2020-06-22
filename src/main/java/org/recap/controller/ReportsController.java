@@ -84,7 +84,7 @@ public class ReportsController {
      * @param request the request
      * @return the string
      */
-     @PostMapping(path = "/reports")
+     @GetMapping(path = "/reports")
     public String reports(Model model, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         boolean authenticated = getUserAuthUtil().authorizedUser(RecapConstants.SCSB_SHIRO_REPORT_URL, (UsernamePasswordToken) session.getAttribute(RecapConstants.USER_TOKEN));

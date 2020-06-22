@@ -115,7 +115,7 @@ public class CollectionController {
      * @return the string
      */
 
-    @PostMapping (path = "/collection")
+    @GetMapping (path = "/collection")
     public String collection(Model model,HttpServletRequest request) {
         HttpSession session=request.getSession(false);
         boolean authenticated=getUserAuthUtil().authorizedUser(RecapConstants.SCSB_SHIRO_COLLECTION_URL,(UsernamePasswordToken)session.getAttribute(RecapConstants.USER_TOKEN));

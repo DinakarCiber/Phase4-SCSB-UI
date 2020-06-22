@@ -111,7 +111,7 @@ public class UserRoleController {
      * @param request the request
      * @return the string
      */
-    @PostMapping(value = "/userRoles")
+    @GetMapping(value = "/userRoles")
     public String showUserRoles(Model model, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         boolean authenticated = getUserAuthUtil().authorizedUser(RecapConstants.SCSB_SHIRO_USER_ROLE_URL, (UsernamePasswordToken) session.getAttribute(RecapConstants.USER_TOKEN));

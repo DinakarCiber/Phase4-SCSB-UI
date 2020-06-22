@@ -54,7 +54,7 @@ public class BulkRequestController {
     @Autowired
     private BulkRequestDetailsRepository bulkRequestDetailsRepository;
 
-    @PostMapping (path = "/bulkRequest")
+    @GetMapping (path = "/bulkRequest")
     public String bulkRequest(Model model, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         boolean authenticated = userAuthUtil.authorizedUser(RecapConstants.SCSB_SHIRO_BULK_REQUEST_URL, (UsernamePasswordToken) session.getAttribute(RecapConstants.USER_TOKEN));
