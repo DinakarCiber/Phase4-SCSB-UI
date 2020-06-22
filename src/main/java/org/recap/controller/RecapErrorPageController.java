@@ -2,6 +2,7 @@ package org.recap.controller;
 
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 /**
@@ -17,7 +18,7 @@ public class RecapErrorPageController implements ErrorController {
      *
      * @return the string
      */
-    @PostMapping(path = "/error")
+    @GetMapping(path = "/error")
      public String recapErrorPage() {
         return "error";
     }

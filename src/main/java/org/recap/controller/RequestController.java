@@ -226,7 +226,7 @@ public class RequestController {
      * @return the string
      * @throws JSONException the json exception
      */
-    @PostMapping("/request")
+    @GetMapping("/request")
     public String request(Model model, HttpServletRequest request) throws JSONException {
         HttpSession session = request.getSession(false);
         boolean authenticated = getUserAuthUtil().authorizedUser(RecapConstants.SCSB_SHIRO_REQUEST_URL, (UsernamePasswordToken) session.getAttribute(RecapConstants.USER_TOKEN));

@@ -63,7 +63,7 @@ public class RolesController {
      * @param request the request
      * @return the string
      */
-    @PostMapping("/roles")
+    @GetMapping("/roles")
     public String roles(Model model, HttpServletRequest request) {
         HttpSession session=request.getSession(false);
         boolean authenticated=userAuthUtil.authorizedUser(RecapConstants.SCSB_SHIRO_ROLE_URL,(UsernamePasswordToken)session.getAttribute(RecapConstants.USER_TOKEN));
