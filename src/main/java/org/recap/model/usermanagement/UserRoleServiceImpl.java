@@ -95,7 +95,7 @@ public class UserRoleServiceImpl implements UserRoleService {
         usersEntity.setLastUpdatedDate(new Date());
         usersEntity.setLastUpdatedBy(userRoleForm.getCreatedBy());
         Optional<InstitutionEntity> institutionEntity = institutionDetailsRepository.findById(userRoleForm.getInstitutionId());
-        if (institutionEntity != null) {
+        if (institutionEntity.isPresent()) {
             usersEntity.setInstitutionId(institutionEntity.get().getId());
             usersEntity.setInstitutionEntity(institutionEntity.get());
         }
@@ -103,7 +103,7 @@ public class UserRoleServiceImpl implements UserRoleService {
         usersEntity.setUserRole(roleEntityList);
         usersEntity.setUserDescription(userRoleForm.getUserDescription());
         String networkLoginId = userRoleForm.getNetworkLoginId();
-        if(institutionEntity != null) {
+        if(institutionEntity.isPresent()) {
             Integer institutionId = institutionEntity.get().getId();
             UsersEntity byLoginIdAndInstitutionEntity = userDetailsRepository.findByLoginIdAndInstitutionId(networkLoginId, institutionId);
             if (byLoginIdAndInstitutionEntity == null) {
@@ -122,7 +122,7 @@ public class UserRoleServiceImpl implements UserRoleService {
         UsersEntity usersEntity = new UsersEntity();
         UsersEntity savedUsersEntity = null;
         Optional<UsersEntity> checkUserId = userDetailsRepository.findById(userId);
-        if (checkUserId != null) {
+        if (checkUserId.isPresent()) {
             usersEntity.setId(userId);
             usersEntity.setLoginId(networkLoginId);
             usersEntity.setUserDescription(userDescription);
@@ -133,7 +133,7 @@ public class UserRoleServiceImpl implements UserRoleService {
             usersEntity.setLastUpdatedDate(new Date());
             usersEntity.setLastUpdatedBy(userRoleForm.getLastUpdatedBy());
             Optional<InstitutionEntity> institutionEntity = institutionDetailsRepository.findById(institutionId);
-            if (institutionEntity != null) {
+            if (institutionEntity.isPresent()) {
                 InstitutionEntity institutionEntity1 = new InstitutionEntity();
                 institutionEntity1.setId(institutionEntity.get().getId());
                 institutionEntity1.setInstitutionCode(institutionEntity.get().getInstitutionCode());
@@ -145,7 +145,7 @@ public class UserRoleServiceImpl implements UserRoleService {
                 usersEntity.setUserRole(roleEntityList);
             }
             Optional<UsersEntity> byUserIdUserEntity = userDetailsRepository.findById(userId);
-            if(byUserIdUserEntity != null) {
+            if(byUserIdUserEntity.isPresent()) {
                 if (byUserIdUserEntity.get().getInstitutionId().equals(institutionId)) {
                     savedUsersEntity = userDetailsRepository.saveAndFlush(usersEntity);
                     userRoleForm.setMessage(networkLoginId + RecapConstants.EDITED_SUCCESSFULLY);

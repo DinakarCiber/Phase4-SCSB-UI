@@ -57,7 +57,7 @@ public class SessionFilter implements Filter{
 
                 UserInstitutionCache userInstitutionCache = HelperUtil.getBean(UserInstitutionCache.class);
 
-                String requestedSessionId = request.getRequestedSessionId();
+                String requestedSessionId = request.getSession().getId();
 
                 String institutionCode = userInstitutionCache.getInstitutionForRequestSessionId(requestedSessionId);
 

@@ -22,6 +22,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.client.ResourceAccessException;
@@ -137,7 +138,9 @@ public class LoginController {
     }
 
     private HttpSession processSessionFixation(HttpServletRequest request) {
-        String requestedSessionId = request.getRequestedSessionId();
+
+        String requestedSessionId = request.getSession().getId();
+
         String institutionCode = userInstitutionCache.getInstitutionForRequestSessionId(requestedSessionId);
 
         userInstitutionCache.removeSessionId(requestedSessionId);
@@ -215,7 +218,7 @@ public class LoginController {
      * @param request the request
      * @return the string
      */
-    @RequestMapping("/logout")
+     @PostMapping(path = "/logout")
     public String logoutUser(HttpServletRequest request){
         logger.info("Subject Logged out");
         HttpSession session=null;

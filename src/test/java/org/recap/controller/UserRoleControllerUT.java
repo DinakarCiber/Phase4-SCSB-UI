@@ -172,7 +172,7 @@ public class UserRoleControllerUT extends BaseTestCase {
         Mockito.when(mockedUserRoleController.getLogger()).thenReturn(logger);
         Mockito.when(mockedUserRoleController.getUserDetailsRepository()).thenReturn(userDetailsRepository);
         Mockito.when(mockedUserRoleController.getUserAuthUtil().authorizedUser(RecapConstants.SCSB_SHIRO_USER_ROLE_URL, (UsernamePasswordToken) session.getAttribute(RecapConstants.USER_TOKEN))).thenReturn(true);
-        Mockito.when(mockedUserRoleController.getUserDetailsRepository().findById(userId)).thenReturn(usersEntity);
+        Mockito.when(mockedUserRoleController.getUserDetailsRepository().findById(userId).orElse(null)).thenReturn(usersEntity);
         Mockito.when(mockedUserRoleController.getUserRoleService().getRoles(Mockito.any(), userDetailsForm.isSuperAdmin())).thenReturn(roles);
         Mockito.when(mockedUserRoleController.getUserRoleService().getInstitutions(userDetailsForm.isSuperAdmin(), userDetailsForm.getLoginInstitutionId())).thenReturn(institution);
         Mockito.when(mockedUserRoleController.getUserAuthUtil().getUserDetails(request.getSession(), RecapConstants.BARCODE_RESTRICTED_PRIVILEGE)).thenReturn(userDetailsForm);
@@ -354,7 +354,7 @@ public class UserRoleControllerUT extends BaseTestCase {
         Mockito.when(mockedUserRoleController.getLogger()).thenReturn(logger);
         Mockito.when(mockedUserRoleController.getUserAuthUtil().getUserDetails(session, RecapConstants.BARCODE_RESTRICTED_PRIVILEGE)).thenReturn(userDetailsForm);
         Mockito.when(mockedUserRoleController.getUserAuthUtil().authorizedUser(RecapConstants.SCSB_SHIRO_USER_ROLE_URL, (UsernamePasswordToken) session.getAttribute(RecapConstants.USER_TOKEN))).thenReturn(true);
-        Mockito.when(mockedUserRoleController.getUserDetailsRepository().findById(userId)).thenReturn(usersEntity);
+        Mockito.when(mockedUserRoleController.getUserDetailsRepository().findById(userId).orElse(null)).thenReturn(usersEntity);
         Mockito.when(mockedUserRoleController.editUser(userId, "smith", request)).thenCallRealMethod();
         ModelAndView modelAndView = mockedUserRoleController.editUser(userId, "smith", request);
         assertNotNull(modelAndView);

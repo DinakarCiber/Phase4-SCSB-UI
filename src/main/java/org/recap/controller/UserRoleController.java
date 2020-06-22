@@ -21,10 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -114,7 +111,7 @@ public class UserRoleController {
      * @param request the request
      * @return the string
      */
-    @RequestMapping(value = "/userRoles")
+    @PostMapping(value = "/userRoles")
     public String showUserRoles(Model model, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         boolean authenticated = getUserAuthUtil().authorizedUser(RecapConstants.SCSB_SHIRO_USER_ROLE_URL, (UsernamePasswordToken) session.getAttribute(RecapConstants.USER_TOKEN));
@@ -197,7 +194,7 @@ public class UserRoleController {
             getAndSetRolesAndInstitutions(userRoleForm, userDetailsForm);
             userRoleForm.setEditUserId(userId);
             userRoleForm.setUserId(userId);
-            if(usersEntity != null) {
+            if(usersEntity.isPresent()) {
                 userRoleForm.setEditNetworkLoginId(usersEntity.get().getLoginId());
                 userRoleForm.setEditUserDescription(usersEntity.get().getUserDescription());
                 userRoleForm.setEmailId(usersEntity.get().getEmailId());
@@ -273,7 +270,7 @@ public class UserRoleController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/userRoles/first", method = RequestMethod.POST)
+    @PostMapping(value = "/userRoles/first")
     public ModelAndView searchFirstPage(@ModelAttribute("userForm") UserRoleForm userRoleForm, Model model, HttpServletRequest request) {
         getLogger().info("Users - Search First Page button Clicked");
         HttpSession session = request.getSession(false);
@@ -297,7 +294,7 @@ public class UserRoleController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/userRoles/next", method = RequestMethod.POST)
+    @PostMapping(value = "/userRoles/next")
     public ModelAndView searchNextPage(@ModelAttribute("userForm") UserRoleForm userRoleForm, Model model, HttpServletRequest request) {
         getLogger().info("Users - Search Next Page button Clicked");
         return getPaginatioinModelAndView(userRoleForm, model, request);
@@ -312,7 +309,7 @@ public class UserRoleController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/userRoles/previous", method = RequestMethod.POST)
+    @PostMapping(value = "/userRoles/previous")
     public ModelAndView searchPreviousPage(@ModelAttribute("userForm") UserRoleForm userRoleForm, Model model, HttpServletRequest request) {
         getLogger().info("Users - Search Previous Page button Clicked");
         return getPaginatioinModelAndView(userRoleForm, model, request);
@@ -327,7 +324,7 @@ public class UserRoleController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/userRoles/last", method = RequestMethod.POST)
+    @PostMapping(value = "/userRoles/last")
     public ModelAndView searchLastPage(@ModelAttribute("userForm") UserRoleForm userRoleForm, Model model, HttpServletRequest request) {
         getLogger().info("Users - Search Last Page button Clicked");
         return getPaginatioinModelAndView(userRoleForm, model, request);
@@ -341,7 +338,7 @@ public class UserRoleController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/userRoles/createUser", method = RequestMethod.POST)
+    @PostMapping(value = "/userRoles/createUser")
     public ModelAndView createUserRequest(@ModelAttribute("userRoleForm") UserRoleForm userRoleForm, HttpServletRequest request) {
         getLogger().info("User - Create Request clicked");
         HttpSession session = request.getSession(false);
@@ -372,7 +369,7 @@ public class UserRoleController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/userRoles/editUser", method = RequestMethod.GET)
+    @GetMapping(value = "/userRoles/editUser")
     public ModelAndView editUser(@ModelAttribute("userId") Integer userId, @ModelAttribute("networkLoginId") String networkLoginId, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         boolean authenticated = getUserAuthUtil().authorizedUser(RecapConstants.SCSB_SHIRO_USER_ROLE_URL, (UsernamePasswordToken) session.getAttribute(RecapConstants.USER_TOKEN));
@@ -382,7 +379,7 @@ public class UserRoleController {
         Optional<UsersEntity> usersEntity = getUserDetailsRepository().findById(userId);
             UserRoleForm userRoleForm = new UserRoleForm();
 
-            if(usersEntity != null) {
+            if(usersEntity.isPresent()) {
             getAndSetRolesAndInstitutions(userRoleForm, userDetailsForm);
             userRoleForm.setEditNetworkLoginId(usersEntity.get().getLoginId());
             userRoleForm.setEditUserDescription(usersEntity.get().getUserDescription());
@@ -421,7 +418,7 @@ public class UserRoleController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/userRoles/saveEditUserDetails", method = RequestMethod.GET)
+    @GetMapping(value = "/userRoles/saveEditUserDetails")
     public ModelAndView saveEditUserDetails(@ModelAttribute("userId") Integer userId, @ModelAttribute("networkLoginId") String networkLoginId,
                                             @ModelAttribute("userDescription") String userDescription,
                                             @ModelAttribute("institutionId") Integer institutionId,
@@ -485,7 +482,7 @@ public class UserRoleController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/userRoles", method = RequestMethod.POST, params = "action=goBack")
+    @PostMapping(value = "/userRoles", params = "action=goBack")
     public ModelAndView goBack(@ModelAttribute("userRoleForm") UserRoleForm userRoleForm,HttpServletRequest request){
         HttpSession session = request.getSession(false);
         boolean authenticated = getUserAuthUtil().authorizedUser(RecapConstants.SCSB_SHIRO_USER_ROLE_URL, (UsernamePasswordToken) session.getAttribute(RecapConstants.USER_TOKEN));

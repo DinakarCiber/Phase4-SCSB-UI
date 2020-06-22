@@ -4,6 +4,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.recap.RecapConstants;
 import org.recap.security.UserInstitutionCache;
 import org.recap.util.HelperUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -18,13 +20,16 @@ import java.io.IOException;
  */
 public class ReCAPInstitutionFilter extends OncePerRequestFilter {
 
+    private static final Logger log = LoggerFactory.getLogger(ReCAPInstitutionFilter.class);
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String institutionCode = HelperUtil.getInstitutionFromRequest(request);
 
         UserInstitutionCache userInstitutionCache = HelperUtil.getBean(UserInstitutionCache.class);
 
-        String requestedSessionId = request.getRequestedSessionId();
+        String requestedSessionId = request.getSession().getId();
+
         String requestURI = request.getRequestURI();
         if(StringUtils.equals(requestURI, "/home")) {
 
@@ -54,7 +59,7 @@ public class ReCAPInstitutionFilter extends OncePerRequestFilter {
                 try {
                     response.sendRedirect(logoutUrl);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                  log.error("Error While Redirect",e);
                 }
             } else {
 

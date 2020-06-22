@@ -42,10 +42,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
@@ -229,7 +226,7 @@ public class RequestController {
      * @return the string
      * @throws JSONException the json exception
      */
-    @RequestMapping("/request")
+    @PostMapping("/request")
     public String request(Model model, HttpServletRequest request) throws JSONException {
         HttpSession session = request.getSession(false);
         boolean authenticated = getUserAuthUtil().authorizedUser(RecapConstants.SCSB_SHIRO_REQUEST_URL, (UsernamePasswordToken) session.getAttribute(RecapConstants.USER_TOKEN));
@@ -625,7 +622,7 @@ public class RequestController {
             jsonObject.put(RecapCommonConstants.MESSAGE, cancelRequestResponse.getScreenMessage());
             jsonObject.put(RecapCommonConstants.STATUS, cancelRequestResponse.isSuccess());
             Optional<RequestItemEntity> requestItemEntity = getRequestItemDetailsRepository().findById(requestForm.getRequestId());
-            if (null != requestItemEntity) {
+            if (requestItemEntity.isPresent()) {
                 requestStatus = requestItemEntity.get().getRequestStatusEntity().getRequestStatusDescription();
                 requestNotes = requestItemEntity.get().getNotes();
             }
@@ -805,12 +802,12 @@ public class RequestController {
 
     private void setFormValuesToDisableSearchInstitution(@Valid @ModelAttribute("requestForm") RequestForm requestForm, UserDetailsForm userDetails, List<String> institutionList) {
         Optional<InstitutionEntity> institutionEntity = getInstitutionDetailsRepository().findById(userDetails.getLoginInstitutionId());
-        if(userDetails.isSuperAdmin() || userDetails.isRecapUser() || institutionEntity.get().getInstitutionCode().equalsIgnoreCase("HTC")){
+        if(userDetails.isSuperAdmin() || userDetails.isRecapUser() || ( (institutionEntity.isPresent()) && (institutionEntity.get().getInstitutionCode().equalsIgnoreCase("HTC")))){
             getRequestService().getInstitutionForSuperAdmin(institutionList);
             requestForm.setInstitutionList(institutionList);
         }else {
             requestForm.setDisableSearchInstitution(true);
-            if(institutionEntity != null) {
+            if(institutionEntity.isPresent()) {
                 requestForm.setInstitutionList(Arrays.asList(institutionEntity.get().getInstitutionCode()));
                 requestForm.setInstitution(institutionEntity.get().getInstitutionCode());
                 requestForm.setSearchInstitutionHdn(institutionEntity.get().getInstitutionCode());
