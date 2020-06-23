@@ -2,6 +2,7 @@ package org.recap.controller;
 
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.util.Assert;
+import org.apache.zookeeper.Op;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -51,12 +52,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.servlet.http.HttpSession;
-import java.util.Collections;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Random;
-import java.util.Date;
+import java.util.*;
 
 import static org.mockito.Mockito.when;
 import static org.junit.Assert.assertEquals;
@@ -430,7 +426,8 @@ public class RequestControllerUT extends BaseControllerUT {
         Mockito.when(requestController.getScsbUrl()).thenReturn(scsbUrl);
         Mockito.when(requestController.getRestHeaderService()).thenReturn(restHeaderService);
         Mockito.when(requestController.getRequestItemDetailsRepository()).thenReturn(requestItemDetailsRepository);
-        Mockito.when(requestController.getRequestItemDetailsRepository().findById(requestForm.getRequestId())).thenReturn(requestItemEntity);
+        Optional<RequestItemEntity> requestItemEntity1 = requestController.getRequestItemDetailsRepository().findById(requestForm.getRequestId());
+        Mockito.when(requestItemEntity1).thenReturn(requestItemEntity1);
         Mockito.when(requestController.getRestTemplate().exchange(builder.build().encode().toUri(), HttpMethod.POST, requestEntity, CancelRequestResponse.class)).thenReturn(responseEntity);
         Mockito.when(requestController.cancelRequest(requestForm,bindingResult,model)).thenCallRealMethod();
         String response = requestController.cancelRequest(requestForm,bindingResult,model);

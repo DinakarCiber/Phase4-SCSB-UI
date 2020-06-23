@@ -17,9 +17,17 @@ public class RequestServiceUtilUT extends BaseTestCase {
     @Autowired
     RequestServiceUtil requestServiceUtil;
 
+    private RequestForm getRequestForm() {
+        RequestForm requestForm = new RequestForm();
+        requestForm.setRequestId(01);
+        requestForm.setItemOwningInstitution("PUL");
+        requestForm.setRequestingInstitution("PUL");
+        requestForm.setRequestType("RETRIVAL");
+        return requestForm;
+    }
     @Test
     public void searchRequests()throws Exception {
-        RequestForm requestForm = new RequestForm();
+        RequestForm requestForm = getRequestForm();
         Page<RequestItemEntity> requestItemEntities = requestServiceUtil.searchRequests(requestForm);
         assertNotNull(requestItemEntities);
     }

@@ -403,11 +403,11 @@ public class SearchRecordsController {
     }
 
     private void processRequest(SearchRecordsRequest searchRecordsRequest, UserDetailsForm userDetailsForm, RedirectAttributes redirectAttributes) {
-        String userInstitution = null;
+        String userInstitution = null ;
         Optional<InstitutionEntity> institutionEntity = getInstitutionDetailsRepository().findById(userDetailsForm.getLoginInstitutionId());
-        if (null != institutionEntity) {
-            userInstitution = institutionEntity.get().getInstitutionCode();
-        }
+           if (institutionEntity.isPresent()) {
+               userInstitution = institutionEntity.get().getInstitutionCode();
+           }
         List<SearchResultRow> searchResultRows = searchRecordsRequest.getSearchResultRows();
         Set<String> barcodes = new HashSet<>();
         Set<String> itemTitles = new HashSet<>();

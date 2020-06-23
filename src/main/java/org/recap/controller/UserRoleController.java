@@ -197,7 +197,7 @@ public class UserRoleController {
             getAndSetRolesAndInstitutions(userRoleForm, userDetailsForm);
             userRoleForm.setEditUserId(userId);
             userRoleForm.setUserId(userId);
-            if(usersEntity != null) {
+            if(usersEntity.isPresent()) {
                 userRoleForm.setEditNetworkLoginId(usersEntity.get().getLoginId());
                 userRoleForm.setEditUserDescription(usersEntity.get().getUserDescription());
                 userRoleForm.setEmailId(usersEntity.get().getEmailId());
@@ -382,7 +382,7 @@ public class UserRoleController {
         Optional<UsersEntity> usersEntity = getUserDetailsRepository().findById(userId);
             UserRoleForm userRoleForm = new UserRoleForm();
 
-            if(usersEntity != null) {
+            if(usersEntity.isPresent()) {
             getAndSetRolesAndInstitutions(userRoleForm, userDetailsForm);
             userRoleForm.setEditNetworkLoginId(usersEntity.get().getLoginId());
             userRoleForm.setEditUserDescription(usersEntity.get().getUserDescription());

@@ -145,7 +145,7 @@ public class UserDetailsRepositoryUT extends BaseTestCase {
         UsersEntity savedUsersEntity = null;
         usersEntity.setLoginId(networkLoginId);
         usersEntity.setUserDescription(userDescription);
-        usersEntity.setId(institutionId);
+        usersEntity.setInstitutionId(institutionId);
         usersEntity.setEmailId(userEmailId);
         usersEntity.setCreatedDate(new Date());
         usersEntity.setCreatedBy("admin");
