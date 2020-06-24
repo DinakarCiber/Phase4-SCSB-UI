@@ -33,7 +33,7 @@ public class SessionFilter implements Filter{
 
     UserAuthUtil userAuthUtil;
 
-    private static final Logger logger = LoggerFactory.getLogger(SessionFilter.class);
+    //private static final Logger logger = LoggerFactory.getLogger(SessionFilter.class);
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -50,9 +50,7 @@ public class SessionFilter implements Filter{
                 HttpServletRequest request = (HttpServletRequest) req;
                 HttpServletResponse response = (HttpServletResponse) res;
                 Cookie cookie = new Cookie(RecapConstants.IS_USER_AUTHENTICATED, "Y");
-                cookie.setMaxAge(-1);
-                cookie.setHttpOnly(false);
-                cookie.setPath("/");
+                HelperUtil.setCookieProperties(cookie);
                 response.addCookie(cookie);
 
                 UserInstitutionCache userInstitutionCache = HelperUtil.getBean(UserInstitutionCache.class);
@@ -62,15 +60,13 @@ public class SessionFilter implements Filter{
                 String institutionCode = userInstitutionCache.getInstitutionForRequestSessionId(requestedSessionId);
 
                 Cookie institutionCodeCookies = new Cookie(RecapConstants.LOGGED_IN_INSTITUTION, institutionCode);
-                institutionCodeCookies.setMaxAge(-1);
-                institutionCodeCookies.setHttpOnly(false);
-                institutionCodeCookies.setPath("/");
+                HelperUtil.setCookieProperties(institutionCodeCookies);
                 response.addCookie(institutionCodeCookies);
 
                 HttpSession session=request.getSession(false);
                 UsernamePasswordToken usernamePasswordToken = (UsernamePasswordToken) session.getAttribute(RecapConstants.USER_TOKEN);
                 if(usernamePasswordToken != null) {
-                    boolean authenticated=getUserAuthUtil().authorizedUser(RecapConstants.SCSB_SHIRO_TOUCH_EXISTIN_SESSION_URL, usernamePasswordToken);
+                    getUserAuthUtil().authorizedUser(RecapConstants.SCSB_SHIRO_TOUCH_EXISTIN_SESSION_URL, usernamePasswordToken);
                 }
 
             }

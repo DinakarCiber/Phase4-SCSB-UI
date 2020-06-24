@@ -359,17 +359,8 @@ public class MarcUtil {
         String[] itemTags = {"876"};
         holdingsVariableFields.addAll(bibRecord.getVariableFields(holdingsTags));
         itemVariableFields.addAll(bibRecord.getVariableFields(itemTags));
-
-        if (org.apache.commons.collections.CollectionUtils.isNotEmpty(holdingsVariableFields)) {
-            for (VariableField holdingsVariableField : holdingsVariableFields) {
-                bibRecord.removeVariableField(holdingsVariableField);
-            }
-        }
-        if (org.apache.commons.collections.CollectionUtils.isNotEmpty(itemVariableFields)) {
-            for (VariableField itemVariableField : itemVariableFields) {
-                bibRecord.removeVariableField(itemVariableField);
-            }
-        }
+        setVariableFields(holdingsVariableFields,bibRecord);
+        setVariableFields(itemVariableFields,bibRecord);
         BibMarcRecord bibMarcRecord = new BibMarcRecord();
         bibMarcRecord.setBibRecord(bibRecord);
 
@@ -425,6 +416,7 @@ public class MarcUtil {
         return content;
     }
 
+/*
     private Record getRecordFromContent(byte[] content) {
         MarcReader reader;
         Record record = null;
@@ -434,5 +426,15 @@ public class MarcUtil {
             record = reader.next();
         }
         return record;
+    }
+*/
+
+    private void setVariableFields(List<VariableField> variableFields, Record bibRecord) {
+        if (org.apache.commons.collections.CollectionUtils.isNotEmpty(variableFields)) {
+            for (VariableField variableField : variableFields) {
+                bibRecord.removeVariableField(variableField);
+            }
+        }
+
     }
 }

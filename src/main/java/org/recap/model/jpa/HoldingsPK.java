@@ -74,12 +74,8 @@ public class HoldingsPK implements Serializable {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        HoldingsPK holdingsPK  = (HoldingsPK) obj;
-        if(holdingsPK.getOwningInstitutionId().equals(owningInstitutionId) && holdingsPK.getOwningInstitutionHoldingsId().equals(owningInstitutionHoldingsId)){
-            return true;
-        }
-
-        return false;
+        HoldingsPK holdingsPK = (HoldingsPK) obj;
+        return (holdingsPK.getOwningInstitutionId().equals(owningInstitutionId) && holdingsPK.getOwningInstitutionHoldingsId().equals(owningInstitutionHoldingsId));
     }
 }
 

@@ -18,9 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
-import org.springframework.web.bind.annotation.*;
-
-
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -88,9 +89,7 @@ public class BulkRequestController {
     public ModelAndView createRequest(@Valid @ModelAttribute("bulkRequestForm") BulkRequestForm bulkRequestForm, MultipartFile file, Model model, HttpServletRequest request) {
         loadCreateRequestPage(bulkRequestForm);
         bulkRequestService.processCreateBulkRequest(bulkRequestForm, request);
-        bulkRequestService.processDeliveryLocations(bulkRequestForm);
-        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.BULK_REQUEST);
-        return new ModelAndView(RecapConstants.BULK_REQUEST, RecapConstants.BULK_REQUEST_FORM, bulkRequestForm);
+        return processBulkRequest(bulkRequestForm, model);
     }
 
     @PostMapping("/bulkRequest/searchRequest")
@@ -155,9 +154,7 @@ public class BulkRequestController {
         loadCreateRequestPage(bulkRequestForm);
         bulkRequestForm.setSubmitted(false);
         bulkRequestForm.setRequestingInstitution(bulkRequestForm.getRequestingInstituionHidden());
-        bulkRequestService.processDeliveryLocations(bulkRequestForm);
-        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.BULK_REQUEST);
-        return new ModelAndView(RecapConstants.BULK_REQUEST, RecapConstants.BULK_REQUEST_FORM, bulkRequestForm);
+        return processBulkRequest(bulkRequestForm, model);
     }
 
     @PostMapping("/bulkRequest/populateDeliveryLocations")
@@ -189,5 +186,11 @@ public class BulkRequestController {
     private List<String> getInstitutions() {
         return institutionDetailsRepository.getInstitutionCodeForSuperAdmin().stream().map(InstitutionEntity::getInstitutionCode).collect(Collectors.toList());
     }
+    private ModelAndView processBulkRequest (BulkRequestForm bulkRequestForm, Model model) {
+        bulkRequestService.processDeliveryLocations(bulkRequestForm);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.BULK_REQUEST);
+        return new ModelAndView(RecapConstants.BULK_REQUEST, RecapConstants.BULK_REQUEST_FORM, bulkRequestForm);
+    }
+
 
 }

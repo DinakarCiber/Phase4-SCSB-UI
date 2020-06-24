@@ -3,6 +3,7 @@ package org.recap.controller;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.marc4j.MarcException;
 import org.recap.RecapCommonConstants;
 import org.recap.RecapConstants;
 import org.recap.model.jpa.RequestItemEntity;
@@ -18,14 +19,16 @@ import org.recap.security.UserManagementService;
 import org.recap.util.CollectionServiceUtil;
 import org.recap.util.MarcRecordViewUtil;
 import org.recap.util.SearchUtil;
-import org.recap.util.UserAuthUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -42,7 +45,7 @@ import java.util.ArrayList;
  * Created by rajeshbabuk on 12/10/16.
  */
 @Controller
-public class CollectionController {
+public class CollectionController extends AuthenticationController {
 
     private static final Logger logger = LoggerFactory.getLogger(CollectionController.class);
 
@@ -55,8 +58,6 @@ public class CollectionController {
     @Autowired
     private CollectionServiceUtil collectionServiceUtil;
 
-    @Autowired
-    private UserAuthUtil userAuthUtil;
 
     @Autowired
     private RequestItemDetailsRepository requestItemDetailsRepository;
@@ -68,24 +69,6 @@ public class CollectionController {
      */
     public MarcRecordViewUtil getMarcRecordViewUtil() {
         return marcRecordViewUtil;
-    }
-
-    /**
-     * Gets user auth util.
-     *
-     * @return the user auth util
-     */
-    public UserAuthUtil getUserAuthUtil() {
-        return userAuthUtil;
-    }
-
-    /**
-     * Sets user auth util.
-     *
-     * @param userAuthUtil the user auth util
-     */
-    public void setUserAuthUtil(UserAuthUtil userAuthUtil) {
-        this.userAuthUtil = userAuthUtil;
     }
 
     /**
@@ -140,7 +123,7 @@ public class CollectionController {
      * @throws Exception the exception
      */
     @ResponseBody
-    @RequestMapping(value = "/collection", method = RequestMethod.POST, params = "action=displayRecords")
+    @PostMapping(value = "/collection", params = "action=displayRecords")
     public ModelAndView displayRecords(@Valid @ModelAttribute("collectionForm") CollectionForm collectionForm,
                                        BindingResult result,
                                        Model model) throws Exception {
@@ -160,12 +143,12 @@ public class CollectionController {
      * @throws Exception the exception
      */
     @ResponseBody
-    @RequestMapping(value = "/collection", method = RequestMethod.POST, params = "action=openMarcView")
+    @PostMapping(value = "/collection", params = "action=openMarcView")
     public ModelAndView openMarcView(@Valid @ModelAttribute("collectionForm") CollectionForm collectionForm,
                                      BindingResult result,
-                                     Model model,HttpServletRequest request) throws Exception {
+                                     Model model,HttpServletRequest request) throws MarcException {
 
-        UserDetailsForm userDetailsForm=getUserAuthUtil().getUserDetails(request.getSession(false),RecapConstants.BARCODE_RESTRICTED_PRIVILEGE);
+        UserDetailsForm userDetailsForm = getUserDetails(request.getSession(false), RecapConstants.BARCODE_RESTRICTED_PRIVILEGE);
         BibliographicMarcForm bibliographicMarcForm = getMarcRecordViewUtil().buildBibliographicMarcForm(collectionForm.getBibId(), collectionForm.getItemId(),userDetailsForm);
         populateCollectionForm(collectionForm, bibliographicMarcForm);
         model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.COLLECTION);
@@ -183,7 +166,7 @@ public class CollectionController {
      * @throws Exception the exception
      */
     @ResponseBody
-    @RequestMapping(value = "/collection", method = RequestMethod.POST, params = "action=collectionUpdate")
+    @PostMapping(value = "/collection", params = "action=collectionUpdate")
     public ModelAndView collectionUpdate(@Valid @ModelAttribute("collectionForm") CollectionForm collectionForm,
                                          BindingResult result,
                                          Model model, HttpServletRequest request) throws Exception {
@@ -209,7 +192,7 @@ public class CollectionController {
      * @throws Exception the exception
      */
     @ResponseBody
-    @RequestMapping(value = "/collection", method = RequestMethod.POST, params = "action=checkCrossInstitutionBorrowed")
+    @PostMapping(value = "/collection", params = "action=checkCrossInstitutionBorrowed")
     public ModelAndView checkCrossInstitutionBorrowed(@Valid @ModelAttribute("collectionForm") CollectionForm collectionForm,
                                        BindingResult result,
                                        Model model) throws Exception {
@@ -275,7 +258,7 @@ public class CollectionController {
         collectionForm.setItemBarcodes(StringUtils.join(barcodeList, ","));
     }
 
-    private void buildResultRows(CollectionForm collectionForm) throws Exception {
+    private void buildResultRows(CollectionForm collectionForm) {
         if (StringUtils.isNotBlank(collectionForm.getItemBarcodes())) {
             SearchRecordsRequest searchRecordsRequest = new SearchRecordsRequest();
             searchRecordsRequest.setFieldName(RecapCommonConstants.BARCODE);

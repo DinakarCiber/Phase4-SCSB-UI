@@ -2,7 +2,6 @@ package org.recap.util;
 
 import com.csvreader.CsvWriter;
 import org.recap.RecapCommonConstants;
-import org.recap.RecapConstants;
 import org.recap.model.search.SearchItemResultRow;
 import org.recap.model.search.SearchResultRow;
 import org.slf4j.Logger;
@@ -41,9 +40,7 @@ public class CsvUtil {
                     if (searchResultRow.isSelected()) {
                         writeMainDataRow(searchResultRow, csvOutput);
                     } else if (!CollectionUtils.isEmpty(searchResultRow.getSearchItemResultRows())) {
-                        if (searchResultRow.isSelectAllItems()) {
-                            writeMainDataRow(searchResultRow, csvOutput);
-                        } else if (isAnyItemSelected(searchResultRow.getSearchItemResultRows())) {
+                        if (searchResultRow.isSelectAllItems() || isAnyItemSelected(searchResultRow.getSearchItemResultRows())) {
                             writeMainDataRow(searchResultRow, csvOutput);
                         }
                         boolean isHeaderExists = false;

@@ -1,5 +1,6 @@
 package org.recap.filter;
 
+import org.recap.util.HelperUtil;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -22,9 +23,7 @@ public class CsrfCookieGeneratorFilter extends OncePerRequestFilter {
         if (actualToken == null || !actualToken.equals(csrfToken.getToken())) {
             String pCookieName = "CSRF-TOKEN";
             Cookie cookie = new Cookie(pCookieName, csrfToken.getToken());
-            cookie.setMaxAge(-1);
-            cookie.setHttpOnly(false);
-            cookie.setPath("/");
+            HelperUtil.setCookieProperties(cookie);
             response.addCookie(cookie);
         }
         filterChain.doFilter(request, response);

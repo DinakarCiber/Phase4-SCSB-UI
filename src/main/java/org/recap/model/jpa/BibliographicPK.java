@@ -64,10 +64,9 @@ public class BibliographicPK implements Serializable {
     }
 
 
-
     @Override
     public int hashCode() {
-        return Integer.valueOf(owningInstitutionId.toString()+owningInstitutionBibId);
+        return Integer.valueOf(owningInstitutionId.toString() + owningInstitutionBibId);
     }
 
     @Override
@@ -76,11 +75,9 @@ public class BibliographicPK implements Serializable {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        BibliographicPK bibliographicPK  = (BibliographicPK) obj;
-        if(bibliographicPK.getOwningInstitutionId().equals(owningInstitutionId) && bibliographicPK.getOwningInstitutionBibId().equals(owningInstitutionBibId)){
-            return true;
-        }
+        BibliographicPK bibliographicPK = (BibliographicPK) obj;
 
-        return false;
+        return bibliographicPK.getOwningInstitutionId().equals(owningInstitutionId) && bibliographicPK.getOwningInstitutionBibId().equals
+                (owningInstitutionBibId);
     }
 }

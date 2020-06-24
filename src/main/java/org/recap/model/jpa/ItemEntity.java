@@ -1,6 +1,5 @@
 package org.recap.model.jpa;
 
-import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -10,9 +9,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.IdClass;
 import javax.persistence.Table;
 import javax.persistence.TemporalType;
-import javax.persistence.JoinTable;
 import javax.persistence.Temporal;
-import javax.persistence.ElementCollection;
 import javax.persistence.JoinColumn;
 import java.io.Serializable;
 import java.util.Date;
