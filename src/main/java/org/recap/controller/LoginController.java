@@ -8,7 +8,6 @@ import org.recap.model.usermanagement.LoginValidator;
 import org.recap.model.usermanagement.UserForm;
 import org.recap.security.UserInstitutionCache;
 import org.recap.util.HelperUtil;
-import org.recap.util.UserAuthUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +20,9 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.client.ResourceAccessException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,15 +36,13 @@ import java.util.Map;
  * Created by dharmendrag on 25/11/16.
  */
 @Controller
-public class LoginController {
+public class LoginController extends AuthenticationController {
 
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
     private LoginValidator loginValidator=new LoginValidator();
 
-    @Autowired
-    private UserAuthUtil userAuthUtil;
-
+    private static final String redirectSearch = "redirect:/search";
 
     @Autowired
     private TokenStore tokenStore;
@@ -60,11 +59,11 @@ public class LoginController {
      * @param userForm the user form
      * @return the string
      */
-    @RequestMapping(value="/",method= RequestMethod.GET)
+    @GetMapping(value="/")
     public String loginScreen(HttpServletRequest request, Model model, @ModelAttribute UserForm userForm) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if(null != auth && !HelperUtil.isAnonymousUser(auth)) {
-            return "redirect:/search";
+            return redirectSearch;
         }
         logger.debug("Login Screen called");
         return RecapConstants.VIEW_LOGIN;
@@ -78,7 +77,7 @@ public class LoginController {
      * @param userForm the user form
      * @return the string
      */
-    @RequestMapping(value="/home",method= RequestMethod.GET)
+    @GetMapping(value="/home")
     public String home(HttpServletRequest request, Model model, @ModelAttribute UserForm userForm) {
         return RecapConstants.VIEW_LOGIN;
     }
@@ -92,7 +91,7 @@ public class LoginController {
      * @param error    the error
      * @return the view name
      */
-    @RequestMapping(value = "/login-scsb", method = RequestMethod.GET)
+    @GetMapping(value = "/login-scsb")
     public String login(@Valid @ModelAttribute UserForm userForm, HttpServletRequest request, Model model, BindingResult error) {
         HttpSession session = processSessionFixation(request);
         try {
@@ -113,7 +112,7 @@ public class LoginController {
             userForm.setUsername(username);
             userForm.setPassword("");
             UsernamePasswordToken token = new UsernamePasswordToken(userForm.getUsername() + RecapConstants.TOKEN_SPLITER + userForm.getInstitution(), userForm.getPassword(), true);
-            Map<String, Object> resultMap = userAuthUtil.doAuthentication(token);
+            Map<String, Object> resultMap = getUserAuthUtil().doAuthentication(token);
             if (!(Boolean) resultMap.get(RecapConstants.IS_USER_AUTHENTICATED)) {
                 String errorMessage = (String) resultMap.get(RecapConstants.USER_AUTH_ERRORMSG);
                 userForm.setErrorMessage(errorMessage);
@@ -121,17 +120,15 @@ public class LoginController {
                 logger.error(RecapCommonConstants.LOG_ERROR + errorMessage);
                 return RecapConstants.VIEW_LOGIN;
             }
+            setSessionValues(session, resultMap, token);
 
-            session.setAttribute(RecapConstants.TOKEN, token);
-            session.setAttribute(RecapConstants.USER_AUTH, resultMap);
-            setValuesInSession(session, resultMap);
         } catch (Exception exception) {
             logger.error(RecapCommonConstants.LOG_ERROR, exception);
             logger.error("Exception occurred in authentication : " + exception.getLocalizedMessage());
             error.rejectValue(RecapConstants.ERROR_MESSAGE, RecapConstants.ERROR_CODE_ERROR_MESSAGE, exception.getMessage());
             return RecapConstants.VIEW_LOGIN;
         }
-        return "redirect:/search";
+        return redirectSearch;
     }
 
     private HttpSession processSessionFixation(HttpServletRequest request) {
@@ -160,7 +157,7 @@ public class LoginController {
      * @param error    the error
      * @return the view name
      */
-    @RequestMapping(value="/",method= RequestMethod.POST)
+    @PostMapping(value="/")
     public String createSession(@Valid @ModelAttribute UserForm userForm, HttpServletRequest request, Model model, BindingResult error){
         loginValidator.validate(userForm,error);
         final String loginScreen=RecapConstants.VIEW_LOGIN;
@@ -176,14 +173,16 @@ public class LoginController {
                 return loginScreen(request,model,userForm);
             }
             UsernamePasswordToken token=new UsernamePasswordToken(userForm.getUsername()+ RecapConstants.TOKEN_SPLITER +userForm.getInstitution(),userForm.getPassword(),true);
-            resultmap=userAuthUtil.doAuthentication(token);
+            resultmap=getUserAuthUtil().doAuthentication(token);
 
             if(!(Boolean) resultmap.get("isAuthenticated"))
             {
                 throw new Exception("Subject Authtentication Failed");
             }
             HttpSession session=request.getSession(false);
-            session.setAttribute(RecapConstants.USER_TOKEN,token);
+            setSessionValues(session, resultmap, token);
+
+            session.setAttribute(RecapConstants.USER_TOKEN, token);
             session.setAttribute(RecapConstants.USER_AUTH,resultmap);
             setValuesInSession(session,resultmap);
         }
@@ -205,7 +204,7 @@ public class LoginController {
             }
             return loginScreen;
         }
-        return "redirect:/search";
+        return redirectSearch;
 
     }
 
@@ -221,7 +220,7 @@ public class LoginController {
         HttpSession session=null;
         try{
             session=request.getSession(false);
-            userAuthUtil.authorizedUser(RecapConstants.SCSB_SHIRO_LOGOUT_URL,(UsernamePasswordToken)session.getAttribute(RecapConstants.USER_TOKEN));
+            getUserAuthUtil().authorizedUser(RecapConstants.SCSB_SHIRO_LOGOUT_URL,(UsernamePasswordToken)session.getAttribute(RecapConstants.USER_TOKEN));
         }finally{
             if(session!=null) {
                 session.invalidate();
@@ -232,22 +231,22 @@ public class LoginController {
 
     private void setValuesInSession(HttpSession session,Map<String,Object> authMap)
     {
-        session.setAttribute("userName",(String)authMap.get("userName"));
-        session.setAttribute(RecapConstants.USER_ID,(Integer)authMap.get(RecapConstants.USER_ID));
-        session.setAttribute(RecapConstants.USER_INSTITUTION,(Integer)authMap.get(RecapConstants.USER_INSTITUTION));
-        session.setAttribute(RecapConstants.SUPER_ADMIN_USER,(Boolean)authMap.get(RecapConstants.SUPER_ADMIN_USER));
-        session.setAttribute(RecapConstants.RECAP_USER,(Boolean)authMap.get(RecapConstants.RECAP_USER));
-        session.setAttribute(RecapConstants.REQUEST_PRIVILEGE,(Boolean)authMap.get(RecapConstants.REQUEST_PRIVILEGE));
-        session.setAttribute(RecapConstants.COLLECTION_PRIVILEGE,(Boolean)authMap.get(RecapConstants.COLLECTION_PRIVILEGE));
-        session.setAttribute(RecapConstants.REPORTS_PRIVILEGE,(Boolean)authMap.get(RecapConstants.REPORTS_PRIVILEGE));
-        session.setAttribute(RecapConstants.SEARCH_PRIVILEGE,(Boolean)authMap.get(RecapConstants.SEARCH_PRIVILEGE));
-        session.setAttribute(RecapConstants.USER_ROLE_PRIVILEGE,(Boolean)authMap.get(RecapConstants.USER_ROLE_PRIVILEGE));
-        session.setAttribute(RecapConstants.REQUEST_ALL_PRIVILEGE,(Boolean)authMap.get(RecapConstants.REQUEST_ALL_PRIVILEGE));
-        session.setAttribute(RecapConstants.REQUEST_ITEM_PRIVILEGE,(Boolean)authMap.get(RecapConstants.REQUEST_ITEM_PRIVILEGE));
-        session.setAttribute(RecapConstants.BARCODE_RESTRICTED_PRIVILEGE,(Boolean)authMap.get(RecapConstants.BARCODE_RESTRICTED_PRIVILEGE));
-        session.setAttribute(RecapConstants.DEACCESSION_PRIVILEGE,(Boolean)authMap.get(RecapConstants.DEACCESSION_PRIVILEGE));
-        session.setAttribute(RecapCommonConstants.BULK_REQUEST_PRIVILEGE,(Boolean)authMap.get(RecapCommonConstants.BULK_REQUEST_PRIVILEGE));
-        session.setAttribute(RecapCommonConstants.RESUBMIT_REQUEST_PRIVILEGE,(Boolean)authMap.get(RecapCommonConstants.RESUBMIT_REQUEST_PRIVILEGE));
+        session.setAttribute("userName", authMap.get("userName"));
+        session.setAttribute(RecapConstants.USER_ID, authMap.get(RecapConstants.USER_ID));
+        session.setAttribute(RecapConstants.USER_INSTITUTION, authMap.get(RecapConstants.USER_INSTITUTION));
+        session.setAttribute(RecapConstants.SUPER_ADMIN_USER, authMap.get(RecapConstants.SUPER_ADMIN_USER));
+        session.setAttribute(RecapConstants.RECAP_USER, authMap.get(RecapConstants.RECAP_USER));
+        session.setAttribute(RecapConstants.REQUEST_PRIVILEGE, authMap.get(RecapConstants.REQUEST_PRIVILEGE));
+        session.setAttribute(RecapConstants.COLLECTION_PRIVILEGE, authMap.get(RecapConstants.COLLECTION_PRIVILEGE));
+        session.setAttribute(RecapConstants.REPORTS_PRIVILEGE, authMap.get(RecapConstants.REPORTS_PRIVILEGE));
+        session.setAttribute(RecapConstants.SEARCH_PRIVILEGE, authMap.get(RecapConstants.SEARCH_PRIVILEGE));
+        session.setAttribute(RecapConstants.USER_ROLE_PRIVILEGE, authMap.get(RecapConstants.USER_ROLE_PRIVILEGE));
+        session.setAttribute(RecapConstants.REQUEST_ALL_PRIVILEGE, authMap.get(RecapConstants.REQUEST_ALL_PRIVILEGE));
+        session.setAttribute(RecapConstants.REQUEST_ITEM_PRIVILEGE, authMap.get(RecapConstants.REQUEST_ITEM_PRIVILEGE));
+        session.setAttribute(RecapConstants.BARCODE_RESTRICTED_PRIVILEGE, authMap.get(RecapConstants.BARCODE_RESTRICTED_PRIVILEGE));
+        session.setAttribute(RecapConstants.DEACCESSION_PRIVILEGE, authMap.get(RecapConstants.DEACCESSION_PRIVILEGE));
+        session.setAttribute(RecapCommonConstants.BULK_REQUEST_PRIVILEGE, authMap.get(RecapCommonConstants.BULK_REQUEST_PRIVILEGE));
+        session.setAttribute(RecapCommonConstants.RESUBMIT_REQUEST_PRIVILEGE, authMap.get(RecapCommonConstants.RESUBMIT_REQUEST_PRIVILEGE));
         Object isSuperAdmin = session.getAttribute(RecapConstants.SUPER_ADMIN_USER);
         if((boolean)isSuperAdmin){
             session.setAttribute(RecapConstants.ROLE_FOR_SUPER_ADMIN,true);
@@ -255,6 +254,12 @@ public class LoginController {
         else {
             session.setAttribute(RecapConstants.ROLE_FOR_SUPER_ADMIN,false);
         }
+    }
+
+    private void  setSessionValues(HttpSession session, Map<String,Object> resultmap, UsernamePasswordToken token) {
+        session.setAttribute(RecapConstants.USER_TOKEN, token);
+        session.setAttribute(RecapConstants.USER_AUTH,resultmap);
+        setValuesInSession(session,resultmap);
     }
 
 }

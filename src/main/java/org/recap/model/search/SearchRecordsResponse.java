@@ -11,14 +11,7 @@ import java.util.List;
  */
 @Setter
 @Getter
-public class SearchRecordsResponse {
+public class SearchRecordsResponse extends SearchRecordsCommonResponse {
 
     private List<SearchResultRow> searchResultRows = new ArrayList<>();
-    private Integer totalPageCount = 0;
-    private String totalBibRecordsCount = "0";
-    private String totalItemRecordsCount = "0";
-    private String totalRecordsCount = "0";
-    private boolean showTotalCount;
-    private String errorMessage;
-
 }

@@ -40,21 +40,7 @@ public class ReportsServiceUtil {
         reportsRequest.setAccessionDeaccessionToDate(reportsForm.getAccessionDeaccessionToDate());
         reportsRequest.setOwningInstitutions(reportsForm.getOwningInstitutions());
         reportsRequest.setCollectionGroupDesignations(reportsForm.getCollectionGroupDesignations());
-        ReportsResponse reportsResponse = new ReportsResponse();
-        try {
-            RestTemplate restTemplate = new RestTemplate();
-            HttpHeaders headers = new HttpHeaders();
-            headers.set(RecapCommonConstants.API_KEY, SwaggerAPIProvider.getInstance().getSwaggerApiKey());
-            HttpEntity<ReportsRequest> httpEntity = new HttpEntity<>(reportsRequest, headers);
-
-            ResponseEntity<ReportsResponse> responseEntity = restTemplate.exchange(scsbUrl + RecapConstants.SCSB_REPORTS_ACCESSION_DEACCESSION_COUNTS_URL, HttpMethod.POST, httpEntity, ReportsResponse.class);
-            reportsResponse = responseEntity.getBody();
-            return reportsResponse;
-        } catch (Exception e) {
-            logger.error(RecapCommonConstants.LOG_ERROR,e);
-            reportsResponse.setMessage(e.getMessage());
-            return reportsResponse;
-        }
+        return getReportsResponse(reportsRequest, RecapConstants.SCSB_REPORTS_ACCESSION_DEACCESSION_COUNTS_URL);
     }
 
     /**
@@ -70,15 +56,14 @@ public class ReportsServiceUtil {
         ReportsResponse reportsResponse = new ReportsResponse();
         try {
             RestTemplate restTemplate = new RestTemplate();
-            HttpHeaders headers = new HttpHeaders();
-            headers.set(RecapCommonConstants.API_KEY, SwaggerAPIProvider.getInstance().getSwaggerApiKey());
+            HttpHeaders headers =  HelperUtil.getSwaggerHeaders();
             HttpEntity<ReportsRequest> httpEntity = new HttpEntity<>(reportsRequest, headers);
 
             ResponseEntity<ReportsResponse> responseEntity = restTemplate.exchange(scsbUrl + RecapConstants.SCSB_REPORTS_CGD_ITEM_COUNTS_URL, HttpMethod.POST, httpEntity, ReportsResponse.class);
             reportsResponse = responseEntity.getBody();
             return reportsResponse;
         } catch (Exception e) {
-            logger.error(RecapCommonConstants.LOG_ERROR,e);
+            logger.error(RecapCommonConstants.LOG_ERROR, e);
             reportsResponse.setMessage(e.getMessage());
             return reportsResponse;
         }
@@ -97,22 +82,7 @@ public class ReportsServiceUtil {
         reportsRequest.setDeaccessionOwningInstitution(reportsForm.getDeaccessionOwnInst());
         reportsRequest.setPageNumber(reportsForm.getPageNumber());
         reportsRequest.setPageSize(reportsForm.getPageSize());
-
-        ReportsResponse reportsResponse = new ReportsResponse();
-        try {
-            RestTemplate restTemplate = new RestTemplate();
-            HttpHeaders headers = new HttpHeaders();
-            headers.set(RecapCommonConstants.API_KEY, SwaggerAPIProvider.getInstance().getSwaggerApiKey());
-            HttpEntity<ReportsRequest> httpEntity = new HttpEntity<>(reportsRequest, headers);
-
-            ResponseEntity<ReportsResponse> responseEntity = restTemplate.exchange(scsbUrl + RecapConstants.SCSB_REPORTS_DEACCESSION_RESULTS_URL, HttpMethod.POST, httpEntity, ReportsResponse.class);
-            reportsResponse = responseEntity.getBody();
-            return reportsResponse;
-        } catch (Exception e) {
-            logger.error(RecapCommonConstants.LOG_ERROR,e);
-            reportsResponse.setMessage(e.getMessage());
-            return reportsResponse;
-        }
+        return getReportsResponse(reportsRequest, RecapConstants.SCSB_REPORTS_DEACCESSION_RESULTS_URL);
     }
 
     /**
@@ -127,22 +97,23 @@ public class ReportsServiceUtil {
         reportsRequest.setIncompletePageNumber(reportsForm.getIncompletePageNumber());
         reportsRequest.setIncompletePageSize(reportsForm.getIncompletePageSize());
         reportsRequest.setExport(reportsForm.isExport());
+        return getReportsResponse(reportsRequest, RecapConstants.SCSB_REPORTS_INCOMPLETE_RESULTS_URL);
+    }
+
+    private ReportsResponse getReportsResponse(ReportsRequest reportsRequest, String reportUrl) {
         ReportsResponse reportsResponse = new ReportsResponse();
         try {
             RestTemplate restTemplate = new RestTemplate();
-            HttpHeaders headers = new HttpHeaders();
-            headers.set(RecapCommonConstants.API_KEY, SwaggerAPIProvider.getInstance().getSwaggerApiKey());
+            HttpHeaders headers = HelperUtil.getSwaggerHeaders();
             HttpEntity<ReportsRequest> httpEntity = new HttpEntity<>(reportsRequest, headers);
-            ResponseEntity<ReportsResponse> responseEntity = restTemplate.exchange(scsbUrl + RecapConstants.SCSB_REPORTS_INCOMPLETE_RESULTS_URL, HttpMethod.POST, httpEntity, ReportsResponse.class);
+            ResponseEntity<ReportsResponse> responseEntity = restTemplate.exchange(scsbUrl + reportUrl, HttpMethod.POST, httpEntity, ReportsResponse.class);
             reportsResponse = responseEntity.getBody();
             return reportsResponse;
         } catch (Exception e) {
-            logger.error(RecapCommonConstants.LOG_ERROR,e);
+            logger.error(RecapCommonConstants.LOG_ERROR, e);
             reportsResponse.setMessage(e.getMessage());
             return reportsResponse;
         }
-    }
-
-
-
+   }
 }
+

@@ -35,19 +35,7 @@ public class BibJSONUtil extends MarcUtil {
         }
         return null;
     }
-
-    private String getPublicationPlaceValue(Record record) {
-        String publicationPlaceValue;
-        List<String> publicationPlaceDataFields = Arrays.asList("260", "261", "262", "264");
-        for (String publicationPlaceDataField : publicationPlaceDataFields) {
-            publicationPlaceValue = getDataFieldValue(record, publicationPlaceDataField, null, null, "a");
-            if (StringUtils.isNotBlank(publicationPlaceValue)) {
-                return publicationPlaceValue;
-            }
-        }
-        return null;
-    }
-
+    
     /**
      * Gets publication date value from marc record.
      *
@@ -79,30 +67,7 @@ public class BibJSONUtil extends MarcUtil {
         }
         return lccnValue;
     }
-
-    private List<String> getOCLCNumbers(Record record, String institutionCode) {
-        List<String> oclcNumbers = new ArrayList<>();
-        List<String> oclcNumberList = getMultiDataFieldValues(record, "035", null, null, "a");
-        for (String oclcNumber : oclcNumberList) {
-            if (StringUtils.isNotBlank(oclcNumber) && oclcNumber.contains("OCoLC")) {
-                String modifiedOclc = oclcNumber.replaceAll(RecapConstants.OCLC_NUMBER_PATTERN, "");
-                modifiedOclc = StringUtils.stripStart(modifiedOclc, "0");
-                oclcNumbers.add(modifiedOclc);
-            }
-        }
-        if (CollectionUtils.isEmpty(oclcNumbers) && StringUtils.isNotBlank(institutionCode) && "NYPL".equalsIgnoreCase(institutionCode)) {
-            String oclcTag = getControlFieldValue(record, "003");
-            if (StringUtils.isNotBlank(oclcTag) && "OCoLC".equalsIgnoreCase(oclcTag)) {
-                oclcTag = getControlFieldValue(record, "001");
-            }
-            oclcTag = StringUtils.stripStart(oclcTag, "0");
-            if (StringUtils.isNotBlank(oclcTag)) {
-                oclcNumbers.add(oclcTag);
-            }
-        }
-        return oclcNumbers;
-    }
-
+    
     /**
      * Get isbn number from the marc record.
      *
@@ -170,16 +135,6 @@ public class BibJSONUtil extends MarcUtil {
         title.append(getDataFieldValueStartsWith(marcRecord, "740", Arrays.asList('a')) + " ");
         title.append(getDataFieldValueStartsWith(marcRecord, "830", Arrays.asList('a'))+ " ");
         return title.toString();
-    }
-
-    private String getTitleStartsWith(Record marcRecord){
-        String title = getTitleDisplay(marcRecord);
-        String titleStartsWith = null;
-        if(title!=null){
-            String[] splitedTitle = title.split(" ");
-            titleStartsWith = splitedTitle[0];
-        }
-        return titleStartsWith;
     }
 
     /**

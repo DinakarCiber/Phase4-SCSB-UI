@@ -10,7 +10,7 @@ import org.recap.model.search.RolesSearchResult;
 import org.recap.repository.jpa.PermissionsDetailsRepository;
 import org.recap.repository.jpa.RolesDetailsRepositorty;
 import org.recap.security.UserManagementService;
-import org.recap.util.UserAuthUtil;
+import org.recap.util.HelperUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.HtmlUtils;
 
@@ -43,7 +46,7 @@ import java.util.regex.Pattern;
  * Created by hemalathas on 22/12/16.
  */
 @Controller
-public class RolesController {
+public class RolesController extends AuthenticationController {
 
     private static final Logger logger = LoggerFactory.getLogger(RolesController.class);
 
@@ -53,8 +56,7 @@ public class RolesController {
     @Autowired
     private PermissionsDetailsRepository permissionsRepository;
 
-    @Autowired
-    private UserAuthUtil userAuthUtil;
+
 
     /**
      * Render the roles UI page for the scsb application.
@@ -66,7 +68,7 @@ public class RolesController {
     @GetMapping("/roles")
     public String roles(Model model, HttpServletRequest request) {
         HttpSession session=request.getSession(false);
-        boolean authenticated=userAuthUtil.authorizedUser(RecapConstants.SCSB_SHIRO_ROLE_URL,(UsernamePasswordToken)session.getAttribute(RecapConstants.USER_TOKEN));
+        boolean authenticated= HelperUtil.authenticate(session, getUserAuthUtil(), RecapConstants.SCSB_SHIRO_ROLE_URL);
         if(authenticated)
         {
             RolesForm rolesForm = new RolesForm();
@@ -288,10 +290,7 @@ public class RolesController {
     @PostMapping(value = "/roles", params = "action=previous")
     public ModelAndView searchPrevious(@Valid @ModelAttribute("rolesForm") RolesForm rolesForm,
                                        Model model) {
-        rolesForm.setShowResults(true);
-        findByPagination(rolesForm);
-        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.ROLES);
-        return new ModelAndView(RecapConstants.VIEW_SEARCH_RECORDS, RecapConstants.ROLES_FORM, rolesForm);
+        return searchPage(model, rolesForm);
     }
 
     /**
@@ -305,10 +304,7 @@ public class RolesController {
     @PostMapping(value = "/roles", params = "action=next")
     public ModelAndView searchNext(@Valid @ModelAttribute("rolesForm") RolesForm rolesForm,
                                    Model model) {
-        rolesForm.setShowResults(true);
-        findByPagination(rolesForm);
-        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.ROLES);
-        return new ModelAndView(RecapConstants.VIEW_SEARCH_RECORDS, RecapConstants.ROLES_FORM, rolesForm);
+        return searchPage(model, rolesForm);
     }
 
     /**
@@ -324,9 +320,7 @@ public class RolesController {
                                     Model model) {
         rolesForm.setShowResults(true);
         rolesForm.resetPageNumber();
-        findByPagination(rolesForm);
-        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.ROLES);
-        return new ModelAndView(RecapConstants.VIEW_SEARCH_RECORDS, RecapConstants.ROLES_FORM, rolesForm);
+        return setRolesForm(rolesForm, model);
     }
 
     /**
@@ -342,9 +336,7 @@ public class RolesController {
                                    Model model) {
         rolesForm.setShowResults(true);
         rolesForm.setPageNumber(rolesForm.getTotalPageCount() - 1);
-        findByPagination(rolesForm);
-        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.ROLES);
-        return new ModelAndView(RecapConstants.VIEW_SEARCH_RECORDS, RecapConstants.ROLES_FORM, rolesForm);
+        return setRolesForm(rolesForm, model);
     }
 
     /**
@@ -361,9 +353,7 @@ public class RolesController {
                                          Model model) throws Exception {
         rolesForm.setShowResults(true);
         rolesForm.setPageNumber(0);
-        findByPagination(rolesForm);
-        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.ROLES);
-        return new ModelAndView(RecapConstants.VIEW_SEARCH_RECORDS, RecapConstants.ROLES_FORM, rolesForm);
+        return setRolesForm(rolesForm, model);
     }
 
     /**
@@ -403,7 +393,7 @@ public class RolesController {
                 List<RoleEntity> roleEntityList = rolesEntityListByPagination.getContent();
                 rolesForm.setTotalRecordCount(NumberFormat.getNumberInstance().format(rolesEntityListByPagination.getTotalElements()));
                 rolesForm.setTotalPageCount(rolesEntityListByPagination.getTotalPages());
-                if (null != roleEntityList && !roleEntityList.isEmpty()) {
+                if (!roleEntityList.isEmpty()) {
                     for (RoleEntity roleEntity : roleEntityList) {
                         rolesForm.setTotalRecordCount(String.valueOf(1));
                         RolesSearchResult rolesSearchResult = getRolesSearchResult(roleEntity);
@@ -462,14 +452,8 @@ public class RolesController {
             } else if (StringUtils.isEmpty(rolesForm.getRoleName()) && StringUtils.isEmpty(rolesForm.getPermissionNames())) {
                 Pageable pageable = PageRequest.of(rolesForm.getPageNumber(), rolesForm.getPageSize());
                 Page<RoleEntity> rolesEntityListByPagination = rolesDetailsRepositorty.getRolesWithoutSuperAdmin(pageable);
-                List<RoleEntity> rolesEntityList = rolesEntityListByPagination.getContent();
-                rolesForm.setTotalRecordCount(NumberFormat.getNumberInstance().format(rolesEntityListByPagination.getTotalElements()));
-                rolesForm.setTotalPageCount(rolesEntityListByPagination.getTotalPages());
-                for (RoleEntity roleEntity : rolesEntityList) {
-                    RolesSearchResult rolesSearchResult = getRolesSearchResult(roleEntity);
-                    rolesSearchResults.add(rolesSearchResult);
-                }
-                rolesForm.setRolesSearchResults(rolesSearchResults);
+                List<RoleEntity> rolesEntityList = null;
+                searchRolesEntity(rolesForm, rolesEntityList, rolesSearchResults, rolesEntityListByPagination);
             }
 
         }
@@ -548,17 +532,10 @@ public class RolesController {
     public void findByPagination(RolesForm rolesForm){
         List<RolesSearchResult> rolesSearchResults = new ArrayList<>();
         Pageable pageable = PageRequest.of(rolesForm.getPageNumber(), rolesForm.getPageSize());
-        List<RoleEntity> rolesEntityList;
+        List<RoleEntity> rolesEntityList = null;
         if(!StringUtils.isEmpty(rolesForm.getRoleName()) && StringUtils.isEmpty(rolesForm.getPermissionNames())){
             Page<RoleEntity> rolesEntityListByPagination = rolesDetailsRepositorty.findByRoleName(pageable, rolesForm.getRoleName());
-            rolesEntityList = rolesEntityListByPagination.getContent();
-            rolesForm.setTotalRecordCount(NumberFormat.getNumberInstance().format(rolesEntityListByPagination.getTotalElements()));
-            rolesForm.setTotalPageCount(rolesEntityListByPagination.getTotalPages());
-            for(RoleEntity roleEntity : rolesEntityList){
-                RolesSearchResult rolesSearchResult = getRolesSearchResult(roleEntity);
-                rolesSearchResults.add(rolesSearchResult);
-            }
-            rolesForm.setRolesSearchResults(rolesSearchResults);
+            searchRolesEntity(rolesForm, rolesEntityList, rolesSearchResults, rolesEntityListByPagination);
         }
         else if(StringUtils.isEmpty(rolesForm.getRoleName()) && !StringUtils.isEmpty(rolesForm.getPermissionNames())){
             Pageable pageable1 = PageRequest.of(rolesForm.getPageNumber(), rolesForm.getPageSize());
@@ -569,14 +546,7 @@ public class RolesController {
 
         else if(StringUtils.isEmpty(rolesForm.getRoleName()) && StringUtils.isEmpty(rolesForm.getPermissionNames())) {
             Page<RoleEntity> rolesEntityListByPagination = rolesDetailsRepositorty.getRolesWithoutSuperAdmin(pageable);
-            rolesEntityList = rolesEntityListByPagination.getContent();
-            rolesForm.setTotalRecordCount(NumberFormat.getNumberInstance().format(rolesEntityListByPagination.getTotalElements()));
-            rolesForm.setTotalPageCount(rolesEntityListByPagination.getTotalPages());
-            for(RoleEntity roleEntity : rolesEntityList){
-                RolesSearchResult rolesSearchResult = getRolesSearchResult(roleEntity);
-                rolesSearchResults.add(rolesSearchResult);
-            }
-            rolesForm.setRolesSearchResults(rolesSearchResults);
+            searchRolesEntity(rolesForm, rolesEntityList, rolesSearchResults, rolesEntityListByPagination);
         }
 
     }
@@ -634,5 +604,27 @@ public class RolesController {
         return rolesForm;
     }
 
+    private void searchRolesEntity(RolesForm rolesForm, List<RoleEntity>  rolesEntityList, List<RolesSearchResult> rolesSearchResults, Page<RoleEntity>  rolesEntityListByPagination) {
+        rolesEntityList = rolesEntityListByPagination.getContent();
+        rolesForm.setTotalRecordCount(NumberFormat.getNumberInstance().format(rolesEntityListByPagination.getTotalElements()));
+        rolesForm.setTotalPageCount(rolesEntityListByPagination.getTotalPages());
+        for(RoleEntity roleEntity : rolesEntityList){
+            RolesSearchResult rolesSearchResult = getRolesSearchResult(roleEntity);
+            rolesSearchResults.add(rolesSearchResult);
+        }
+        rolesForm.setRolesSearchResults(rolesSearchResults);
 
+    }
+    private ModelAndView searchPage(Model model,RolesForm rolesForm) 
+    {
+        rolesForm.setShowResults(true);
+        return setRolesForm(rolesForm, model);
+    }
+
+    private ModelAndView setRolesForm(RolesForm rolesForm, Model model)
+    {
+        findByPagination(rolesForm);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.ROLES);
+        return new ModelAndView(RecapConstants.VIEW_SEARCH_RECORDS, RecapConstants.ROLES_FORM, rolesForm);
+    }
 }
