@@ -77,8 +77,7 @@ public class ReCAPExceptionTranslationFilter extends GenericFilterBean {
 
     @Override
     public void afterPropertiesSet() {
-        Assert.notNull(authenticationEntryPoint,
-                "authenticationEntryPoint must be specified");
+        Assert.notNull(authenticationEntryPoint,"authenticationEntryPoint must be specified");
     }
 
     @Override
@@ -269,5 +268,6 @@ public class ReCAPExceptionTranslationFilter extends GenericFilterBean {
         }
 
     }
+
 
 }

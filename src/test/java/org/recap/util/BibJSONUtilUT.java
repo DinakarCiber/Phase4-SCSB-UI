@@ -150,6 +150,22 @@ public class BibJSONUtilUT extends BaseTestCase{
     }
 
     @Test
+    public void testGetISBNNumber() throws Exception{
+        BibJSONUtil bibJSONUtil = new BibJSONUtil();
+        List<Record> records = bibJSONUtil.convertMarcXmlToRecord(bibContent);
+        Record marcRecord = records.get(0);
+        List isbnNumber = bibJSONUtil.getISBNNumber(marcRecord);
+        assertNotNull(isbnNumber);
+    }
+    @Test
+    public void testGetISSNNumber() throws Exception{
+        BibJSONUtil bibJSONUtil = new BibJSONUtil();
+        List<Record> records = bibJSONUtil.convertMarcXmlToRecord(bibContent);
+        Record marcRecord = records.get(0);
+        List issnNumber = bibJSONUtil.getISSNNumber(marcRecord);
+        assertNotNull(issnNumber);
+    }
+    @Test
     public void testTitleDisplayValue() throws Exception {
         BibJSONUtil bibJSONUtil = new BibJSONUtil();
         List<Record> records = bibJSONUtil.convertMarcXmlToRecord(bibContent);
@@ -209,5 +225,6 @@ public class BibJSONUtilUT extends BaseTestCase{
         number = StringUtils.stripStart(number, "0");
         assertEquals("23450", number);
     }
+
 
 }

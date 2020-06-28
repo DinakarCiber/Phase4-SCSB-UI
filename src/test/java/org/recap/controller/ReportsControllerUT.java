@@ -21,12 +21,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -39,6 +37,9 @@ public class ReportsControllerUT extends BaseControllerUT {
 
     @Mock
     Model model;
+
+    @Mock
+    HttpServletResponse httpServletResponse;
 
     @Mock
     BindingResult bindingResult;
@@ -67,9 +68,11 @@ public class ReportsControllerUT extends BaseControllerUT {
     @Mock
     public UserAuthUtil userAuthUtil;
 
+
     public UserAuthUtil getUserAuthUtil() {
         return userAuthUtil;
     }
+
 
     public void setUserAuthUtil(UserAuthUtil userAuthUtil) {
         this.userAuthUtil = userAuthUtil;
@@ -80,6 +83,7 @@ public class ReportsControllerUT extends BaseControllerUT {
         MockitoAnnotations.initMocks(this);
         this.mockMvc = MockMvcBuilders.standaloneSetup(reportsController).build();
     }
+
 
 
     @Test
@@ -180,7 +184,13 @@ public class ReportsControllerUT extends BaseControllerUT {
         assertEquals("reports :: #deaccessionInformation",modelAndView.getViewName());
 
     }
-
+    @Test
+    public void exportIncompleteRecords() throws Exception{
+        ReportsForm reportsForm = new ReportsForm();
+        reportsForm.setIncompleteRequestingInstitution("PUL");
+        /*byte[] fileContent= reportsControllerWired.exportIncompleteRecords(reportsForm,httpServletResponse,model);
+        assertNotNull(fileContent);*/
+    }
     @Test
     public void testDeaccessionItemResultRows() throws Exception {
         ReportsForm reportsForm = new ReportsForm();
@@ -297,4 +307,5 @@ public class ReportsControllerUT extends BaseControllerUT {
         assertNotNull(modelAndView);
         assertEquals("reports :: #IncompleteReporttableview",modelAndView.getViewName());
     }
+
 }

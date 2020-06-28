@@ -264,6 +264,15 @@ public class ReportsUtilUT extends BaseTestCase {
         assertNotNull(deaccessionItemResultsRowList);
     }
 
+    @Test
+    public void incompleteRecordsReportFieldsInformation() throws Exception{
+        ReportsForm reportsForm = new ReportsForm();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        reportsForm.setAccessionDeaccessionFromDate(simpleDateFormat.format(new Date()));
+        reportsForm.setAccessionDeaccessionToDate(simpleDateFormat.format(new Date()));
+        List<IncompleteReportResultsRow> incompleteReportResultsRows = reportsUtil.incompleteRecordsReportFieldsInformation(reportsForm);
+        assertNotNull(incompleteReportResultsRows);
+    }
     private BibliographicEntity saveBibHoldingItemEntity(Integer owningInstitutionId, Integer collectionGroupId, boolean isDeleted, String barcode) throws Exception {
         Random random = new Random();
 

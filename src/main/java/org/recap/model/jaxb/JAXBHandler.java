@@ -87,14 +87,15 @@ public class JAXBHandler {
     }
 
     private Unmarshaller getUnmarshaller(Class cl) throws JAXBException {
+        Unmarshaller unmarshaller = null;
         if (getUnmarshallerMap().containsKey(cl.getName())) {
             return getUnmarshallerMap().get(cl.getName());
         } else {
             JAXBContext jaxbContextForClass = JAXBContextHandler.getInstance().getJAXBContextForClass(cl);
-            Unmarshaller unmarshaller = jaxbContextForClass.createUnmarshaller();
+             unmarshaller = jaxbContextForClass.createUnmarshaller();
             getUnmarshallerMap().put(cl.getName(), unmarshaller);
         }
-        return getUnmarshallerMap().get(cl.getName());
+        return unmarshaller;
     }
 
     /**

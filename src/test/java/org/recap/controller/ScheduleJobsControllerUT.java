@@ -3,15 +3,31 @@ package org.recap.controller;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.recap.RecapCommonConstants;
 import org.recap.RecapConstants;
+import org.recap.model.jpa.JobEntity;
+import org.recap.model.jpa.RequestItemEntity;
+import org.recap.model.request.ReplaceRequest;
+import org.recap.model.schedule.ScheduleJobResponse;
+import org.recap.model.search.ScheduleJobsForm;
 import org.recap.model.usermanagement.UserDetailsForm;
+import org.recap.repository.jpa.JobDetailsRepository;
+import org.recap.service.RestHeaderService;
 import org.recap.util.UserAuthUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import java.util.*;
 
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
@@ -43,6 +59,21 @@ public class ScheduleJobsControllerUT extends BaseControllerUT {
     @Mock
     private UserAuthUtil userAuthUtil;
 
+    @Mock
+    JobDetailsRepository jobDetailsRepository;
+
+    @Autowired
+    RestHeaderService restHeaderService;
+
+    @Mock
+    BindingResult bindingResult;
+
+    @Mock
+    JobEntity jobEntity;
+
+    @Mock
+    ScheduleJobResponse scheduleJobResponse;
+
     public String getScsbUrl() {
         return scsbUrl;
     }
@@ -62,8 +93,12 @@ public class ScheduleJobsControllerUT extends BaseControllerUT {
     @Test
     public void testDisplayJobs() throws Exception {
         when(request.getSession(false)).thenReturn(session);
-        Mockito.when(getUserAuthUtil().getUserDetails(session, RecapConstants.BARCODE_RESTRICTED_PRIVILEGE)).thenReturn(new UserDetailsForm());
+        UserDetailsForm userDetailsForm = new UserDetailsForm();
+       // userDetailsForm.setSuperAdmin(true);
+        userDetailsForm.setRecapPermissionAllowed(true);
+        Mockito.when(getUserAuthUtil().getUserDetails(session, RecapConstants.BARCODE_RESTRICTED_PRIVILEGE)).thenReturn(userDetailsForm);
         Mockito.when(scheduleJobsController.getUserAuthUtil()).thenReturn(userAuthUtil);
+        when(jobDetailsRepository.findAll()).thenReturn(Collections.EMPTY_LIST);
         Mockito.when(scheduleJobsController.displayJobs(model, request)).thenCallRealMethod();
         String viewName = scheduleJobsController.displayJobs(model, request);
         assertNotNull(viewName);
@@ -71,10 +106,39 @@ public class ScheduleJobsControllerUT extends BaseControllerUT {
 
     @Test
     public void checkGetterMethod(){
+
         Mockito.doCallRealMethod().when(scheduleJobsController).setUserAuthUtil(userAuthUtil);
+        scheduleJobsController.setUserAuthUtil(userAuthUtil);
         Mockito.when(scheduleJobsController.getUserAuthUtil()).thenCallRealMethod();
         Mockito.when(scheduleJobsController.getRestTemplate()).thenCallRealMethod();
-        assertNotEquals(scheduleJobsController.getUserAuthUtil(),userAuthUtil);
-        assertNotEquals(scheduleJobsController.getRestTemplate(),restTemplate);
     }
+
+    @Test
+    public void testScheduleJob(){
+        ScheduleJobResponse scheduleJobResponse = new ScheduleJobResponse();
+        ScheduleJobsForm scheduleJobsForm = getScheduleJobsForm();
+        scheduleJobResponse.setMessage("SUCCESS");
+        scheduleJobResponse.setNextRunTime(new Date());
+        HttpEntity requestEntity = new HttpEntity<>(restHeaderService.getHttpHeaders());
+        ResponseEntity responseEntity1 = new ResponseEntity<ScheduleJobResponse>(scheduleJobResponse, HttpStatus.OK);
+        String requestItemUrl = scsbUrl + RecapCommonConstants.URL_SCHEDULE_JOBS;
+        Mockito.when(scheduleJobsController.getRestTemplate()).thenReturn(restTemplate);
+        Mockito.when(scheduleJobsController.getRestHeaderService()).thenReturn(restHeaderService);
+        Mockito.when(jobDetailsRepository.findByJobName(scheduleJobsForm.getJobName())).thenReturn(jobEntity);
+        Mockito.when(scheduleJobsController.getRestTemplate().exchange(requestItemUrl, HttpMethod.POST, requestEntity, ScheduleJobResponse.class)).thenReturn(responseEntity1);
+        Mockito.when(scheduleJobsController.scheduleJob(scheduleJobsForm,bindingResult,model)).thenCallRealMethod();
+        scheduleJobsController.scheduleJob(scheduleJobsForm,bindingResult,model);
+    }
+    private ScheduleJobsForm getScheduleJobsForm(){
+        ScheduleJobsForm scheduleJobsForm = new ScheduleJobsForm();
+        scheduleJobsForm.setCronExpression("cron");
+        scheduleJobsForm.setErrorMessage("error");
+        scheduleJobsForm.setJobDescription("description");
+        scheduleJobsForm.setJobId(1);
+        scheduleJobsForm.setJobName("SCHEDULEDER");
+        scheduleJobsForm.setMessage("SUCCESS");
+        scheduleJobsForm.setScheduleType("UNSCHEDULE");
+        return scheduleJobsForm;
+    }
+
 }

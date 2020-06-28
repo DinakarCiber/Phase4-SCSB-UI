@@ -44,7 +44,7 @@ public class ScheduleJobsController {
     private static final Logger logger = LoggerFactory.getLogger(ScheduleJobsController.class);
 
     @Value("${scsb.url}")
-    private String scsbUrl;
+    public String scsbUrl;
 
     @Autowired
     private UserAuthUtil userAuthUtil;
@@ -84,6 +84,8 @@ public class ScheduleJobsController {
     public RestTemplate getRestTemplate() {
         return new RestTemplate();
     }
+
+
 
     /**
      * Gets all the jobs information from scsb database and display them as rows in the jobs UI page.

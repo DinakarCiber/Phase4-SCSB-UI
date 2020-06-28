@@ -224,6 +224,7 @@ public class SearchRecordsControllerUT extends BaseControllerUT{
         when(searchUtil.requestSearchResults(searchRecordsRequest)).thenReturn(searchRecordsResponse);
         when(searchRecordsController.getSearchUtil()).thenReturn(searchUtil);
         when(searchRecordsController.onPageSizeChange(searchRecordsRequest,bindingResult,model)).thenCallRealMethod();
+        when(searchRecordsController.getPageNumberOnPageSizeChange(searchRecordsRequest)).thenCallRealMethod();
         ModelAndView modelAndView = searchRecordsController.onPageSizeChange(searchRecordsRequest,bindingResult,model);
         assertNotNull(modelAndView);
         assertEquals("searchRecords",modelAndView.getViewName());

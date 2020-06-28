@@ -20,6 +20,8 @@ public class CollectionGroupEntityUT extends BaseTestCase{
         collectionGroupEntity.setCollectionGroupDescription("public");
         collectionGroupEntity.setCreatedDate(new Date());
         collectionGroupEntity.setLastUpdatedDate(new Date());
+        collectionGroupEntity.equals(collectionGroupEntity.id);
+        collectionGroupEntity.hashCode();
         CollectionGroupEntity entity = collectionGroupDetailRepository.save(collectionGroupEntity);
         assertNotNull(entity);
         System.out.println("collection group id -->"+entity.getId());

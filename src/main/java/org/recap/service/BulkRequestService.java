@@ -216,7 +216,7 @@ public class BulkRequestService {
 
     public BulkRequestItemEntity saveUpadatedRequestStatus(Integer bulkRequestId) throws Exception {
         Optional<BulkRequestItemEntity> bulkRequestItemEntity = bulkRequestDetailsRepository.findById(bulkRequestId);
-        if(bulkRequestItemEntity !=null){
+        if(bulkRequestItemEntity.isPresent()){
             if("PROCESSED".equalsIgnoreCase(bulkRequestItemEntity.get().getBulkRequestStatus())){
                 StringBuilder csvRowBuilder = new StringBuilder();
                 Map<Integer, String> currentStatus = new HashMap<>();

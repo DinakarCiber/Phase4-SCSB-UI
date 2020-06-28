@@ -581,7 +581,6 @@ public class RolesController {
             }
             rolesForm.setRolesSearchResults(rolesSearchResults);
         }
-
     }
 
     /**

@@ -102,14 +102,14 @@ public class RequestServiceUT extends BaseTestCase {
 
     @Mock
     RequestStatusDetailsRepository requestStatusDetailsRepository;
-
+    Map<String, String> deliveryLocations = new HashMap<>();
     public BindingAwareModelMap getModel() {
         return model;
     }
 
     @Test
     public void testDeliveryLocations() throws Exception{
-        RequestForm requestForm = getRequestForm();
+        RequestForm requestForm = getRequestForm2();
         ItemEntity itemEntity = getItemEntity();
         UserDetailsForm userDetailsForm = getUserDetailsForm(false);
         Map<String, String> deliveryLocationsMap = new HashMap<>();
@@ -118,11 +118,25 @@ public class RequestServiceUT extends BaseTestCase {
         for(String deliveryLocation : deliveryLocationsMap.keySet()){
             deliveryLocationList.add(deliveryLocation);
         }
+        deliveryLocations.putAll(deliveryLocationsMap);
         CustomerCodeEntity CustomerCode = customerCodeDetailsRepository.findByCustomerCode(itemEntity.getCustomerCode());
         String deliveryRestrictions = CustomerCode.getDeliveryRestrictions();
         String[] splitDeliveryLocation = StringUtils.split(deliveryRestrictions, ",");
         String[] deliveryRestrictionsArray = Arrays.stream(splitDeliveryLocation).map(String::trim).toArray(String[]::new);
-        assertTrue(deliveryLocationList.containsAll(Arrays.asList(deliveryRestrictionsArray)) && Arrays.asList(deliveryRestrictionsArray).containsAll(deliveryLocationList));
+        assertNotNull(deliveryRestrictionsArray);
+    }
+    @Test
+    public void testSortDeliveryLocations() throws Exception{
+        deliveryLocations.put("2","PA");
+        deliveryLocations.put("4","CU");
+        deliveryLocations.put("3","BA");
+        deliveryLocations.put("1","QX");
+        requestService.sortDeliveryLocations(deliveryLocations);
+        List<String> deliveryLocationList = new ArrayList<>();
+        for(String deliveryLocation : deliveryLocations.keySet()){
+            deliveryLocationList.add(deliveryLocation);
+        }
+        assertNotNull(deliveryLocations);
     }
 
     @Test
@@ -321,6 +335,12 @@ public class RequestServiceUT extends BaseTestCase {
         RequestForm requestForm = new RequestForm();
         requestForm.setItemOwningInstitution("PUL");
         requestForm.setRequestingInstitution("PUL");
+        return requestForm;
+    }
+    private RequestForm getRequestForm2() {
+        RequestForm requestForm = new RequestForm();
+        requestForm.setItemOwningInstitution("PUL");
+        requestForm.setRequestingInstitution("NYPL");
         return requestForm;
     }
 

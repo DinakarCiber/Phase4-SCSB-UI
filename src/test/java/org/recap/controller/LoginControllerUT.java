@@ -4,17 +4,26 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.recap.RecapConstants;
 import org.recap.model.usermanagement.UserForm;
 import org.recap.util.UserAuthUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpSession;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -46,6 +55,17 @@ public class LoginControllerUT extends BaseControllerUT{
     @Mock
     private Authentication auth;
 
+    @Mock
+    private UsernamePasswordToken token;
+
+    @Mock
+    private RestTemplate restTemplate;
+
+    @Value("${scsb.shiro}")
+    private String scsbShiro;
+
+    @Mock
+    private HttpEntity requestEntity;
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
@@ -61,15 +81,17 @@ public class LoginControllerUT extends BaseControllerUT{
 
     @Test
     public void logOutTest() throws Exception {
-        when(request.getSession()).thenReturn(session);
+        when(request.getSession(false)).thenReturn(session);
         usersSessionAttributes();
         String response = loginController.logoutUser(request);
         assertNotNull(response);
     }
 
     @Test
-    public void createSessionTest(){
-        UserForm userForm = new UserForm();
+    public void createSessionTest() throws Exception{
+        UserForm userForm = getUserForm();
+        when(userAuthUtil.doAuthentication(token)).thenCallRealMethod();
+        when(restTemplate.postForObject(scsbShiro + RecapConstants.SCSB_SHIRO_AUTHENTICATE_URL, requestEntity, HashMap.class)).thenCallRealMethod();
         String response = loginController.createSession(userForm,request,model,error);
         assertNotNull(response);
         assertEquals(response,"login");
@@ -79,10 +101,10 @@ public class LoginControllerUT extends BaseControllerUT{
     public void testLogin(){
         when(request.getSession(false)).thenReturn(session);
         when(request.getSession(true)).thenReturn(session);
-        when(auth.getName()).thenReturn("Test");
+        Mockito.when(auth.getName()).thenReturn("john");
         UserForm userForm = new UserForm();
         userForm.setInstitution("PUL");
-        userForm.setUsername("test");
+        userForm.setUsername("john");
         String response = loginController.login(userForm,request,model,error);
         assertNotNull(response);
     }
@@ -104,6 +126,23 @@ public class LoginControllerUT extends BaseControllerUT{
         when(session.getAttribute(RecapConstants.USER_INSTITUTION)).thenReturn(1);
         when(session.getAttribute(RecapConstants.REQUEST_ALL_PRIVILEGE)).thenReturn(false);
         userAuthUtil.getUserDetails(session,RecapConstants.BARCODE_RESTRICTED_PRIVILEGE);
+    }
+
+    private UserForm getUserForm(){
+        Set<String> permissions = new HashSet<>();
+        permissions.add("admin");
+        UserForm userForm = new UserForm();
+        userForm.setUserId(1);
+        userForm.setUsername("john");
+        userForm.setPassword("john");
+        userForm.setRememberMe(true);
+        userForm.setWrongCredentials("test");
+        userForm.setPasswordMatcher(true);
+        userForm.setInstitution("PUL");
+        userForm.setErrorMessage("test");
+        userForm.setPermissions(permissions);
+        userForm.setPasswordMatcher(true);
+        return userForm;
     }
 
 }
