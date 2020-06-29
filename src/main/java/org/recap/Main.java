@@ -20,6 +20,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpMethod;
 
+import brave.sampler.Sampler;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -142,5 +144,10 @@ public class Main {
 			context.addConstraint(constraint);
 		}
 	}
+	
+    @Bean
+    public Sampler defaultSampler() {
+          return Sampler.ALWAYS_SAMPLE;
+    }
 
 }
