@@ -1,7 +1,6 @@
 package org.recap.controller;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.shiro.authc.UsernamePasswordToken;
 import org.recap.RecapCommonConstants;
 import org.recap.RecapConstants;
 import org.recap.model.jpa.InstitutionEntity;
@@ -10,8 +9,6 @@ import org.recap.model.jpa.UsersEntity;
 import org.recap.model.usermanagement.UserDetailsForm;
 import org.recap.model.usermanagement.UserRoleForm;
 import org.recap.model.usermanagement.UserRoleService;
-import org.recap.repository.jpa.InstitutionDetailsRepository;
-import org.recap.repository.jpa.RolesDetailsRepositorty;
 import org.recap.repository.jpa.UserDetailsRepository;
 import org.recap.security.UserManagementService;
 import org.slf4j.Logger;
@@ -244,7 +241,7 @@ public class UserRoleController extends AbstractController {
     @PostMapping(value = "/userRoles/next")
     public ModelAndView searchNextPage(@ModelAttribute("userForm") UserRoleForm userRoleForm, Model model, HttpServletRequest request) {
         logger.info("Users - Search Next Page button Clicked");
-        return getPaginatioinModelAndView(userRoleForm, model, request);
+        return getPaginationModelAndView(userRoleForm, model, request);
     }
 
     /**
@@ -259,7 +256,7 @@ public class UserRoleController extends AbstractController {
     @PostMapping(value = "/userRoles/previous")
     public ModelAndView searchPreviousPage(@ModelAttribute("userForm") UserRoleForm userRoleForm, Model model, HttpServletRequest request) {
         logger.info("Users - Search Previous Page button Clicked");
-        return getPaginatioinModelAndView(userRoleForm, model, request);
+        return getPaginationModelAndView(userRoleForm, model, request);
     }
 
     /**
@@ -274,7 +271,7 @@ public class UserRoleController extends AbstractController {
     @PostMapping(value = "/userRoles/last")
     public ModelAndView searchLastPage(@ModelAttribute("userForm") UserRoleForm userRoleForm, Model model, HttpServletRequest request) {
         logger.info("Users - Search Last Page button Clicked");
-        return getPaginatioinModelAndView(userRoleForm, model, request);
+        return getPaginationModelAndView(userRoleForm, model, request);
     }
 
     /**
@@ -505,28 +502,28 @@ public class UserRoleController extends AbstractController {
                 }
             }
             if (addUsers) {
-                    UserRoleForm userRoleDeatailsForm = new UserRoleForm();
+                    UserRoleForm userRoleDetailsForm = new UserRoleForm();
                     StringBuilder rolesBuffer = new StringBuilder();
-                    userRoleDeatailsForm.setUserId(usersEntity.getId());
-                    userRoleDeatailsForm.setInstitutionId(institutionEntity.getId());
-                    userRoleDeatailsForm.setInstitutionName(institutionEntity.getInstitutionName());
-                    userRoleDeatailsForm.setNetworkLoginId(usersEntity.getLoginId());
-                    userRoleDeatailsForm.setUserDescription(usersEntity.getUserDescription());
+                    userRoleDetailsForm.setUserId(usersEntity.getId());
+                    userRoleDetailsForm.setInstitutionId(institutionEntity.getId());
+                    userRoleDetailsForm.setInstitutionName(institutionEntity.getInstitutionName());
+                    userRoleDetailsForm.setNetworkLoginId(usersEntity.getLoginId());
+                    userRoleDetailsForm.setUserDescription(usersEntity.getUserDescription());
                     for (RoleEntity roleEntity : usersEntity.getUserRole()) {
                         rolesBuffer.append(roleEntity.getRoleName() + ",");
                     }
-                    userRoleDeatailsForm.setRoleName(roles(rolesBuffer.toString(), ","));
-                    if (userRoleDeatailsForm.getUserId() == userId) {
-                        userRoleDeatailsForm.setShowEditDeleteIcon(false);
+                    userRoleDetailsForm.setRoleName(roles(rolesBuffer.toString(), ","));
+                    if (userRoleDetailsForm.getUserId() == userId) {
+                        userRoleDetailsForm.setShowEditDeleteIcon(false);
                     } else {
-                        userRoleDeatailsForm.setShowEditDeleteIcon(true);
+                        userRoleDetailsForm.setShowEditDeleteIcon(true);
                     }
-                    userRoleFormList.add(userRoleDeatailsForm);//Added all user's details
+                    userRoleFormList.add(userRoleDetailsForm);//Added all user's details
             }
         }
     }
 
-    private ModelAndView getPaginatioinModelAndView(@ModelAttribute("userForm") UserRoleForm userRoleForm, Model model, HttpServletRequest request) {
+    private ModelAndView getPaginationModelAndView(@ModelAttribute("userForm") UserRoleForm userRoleForm, Model model, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         boolean authenticated = getUserAuthUtil().isAuthenticated(session, RecapConstants.SCSB_SHIRO_USER_ROLE_URL);
         if (authenticated) {
