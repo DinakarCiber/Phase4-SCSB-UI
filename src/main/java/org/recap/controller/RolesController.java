@@ -548,7 +548,6 @@ public class RolesController extends AuthenticationController {
             Page<RoleEntity> rolesEntityListByPagination = rolesDetailsRepositorty.getRolesWithoutSuperAdmin(pageable);
             searchRolesEntity(rolesForm, rolesEntityList, rolesSearchResults, rolesEntityListByPagination);
         }
-
     }
 
     /**

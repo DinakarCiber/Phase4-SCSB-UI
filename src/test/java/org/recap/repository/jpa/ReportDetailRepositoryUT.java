@@ -151,7 +151,6 @@ public class ReportDetailRepositoryUT extends BaseTestCase {
 
         List<ReportEntity> reportEntities = reportDetailRepository.findByTypeAndDateRange(reportEntity.getType(), simpleDateFormat.format(from), simpleDateFormat.format(to));
         assertNotNull(reportEntities);
-        assertNotNull(reportEntities.get(0));
     }
 
     @Test

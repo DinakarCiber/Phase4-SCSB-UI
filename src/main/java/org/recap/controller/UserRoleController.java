@@ -451,8 +451,8 @@ public class UserRoleController extends AuthenticationController {
         HttpSession session = request.getSession(false);
         Integer userId = (Integer) session.getAttribute(RecapConstants.USER_ID);
         UserDetailsForm userDetailsForm = getUserAuthUtil().getUserDetails(session, RecapConstants.BARCODE_RESTRICTED_PRIVILEGE);
-        List<Object> roles = getUserRoleService().getRoles(getUserManagementService().getSuperAdminRoleId(), userDetailsForm.isSuperAdmin());
         List<Object> institutions = getUserRoleService().getInstitutions(userDetailsForm.isSuperAdmin(), userDetailsForm.getLoginInstitutionId());
+        List<Object> roles = getUserRoleService().getRoles(getUserManagementService().getSuperAdminRoleId(), userDetailsForm.isSuperAdmin());
         userRoleForm.setUserId(userId);
         userRoleForm.setInstitutionId(userDetailsForm.getLoginInstitutionId());
         userRoleForm.setRoles(roles);

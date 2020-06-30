@@ -2,6 +2,7 @@ package org.recap.controller;
 
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.util.Assert;
+import org.apache.zookeeper.Op;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -20,7 +21,10 @@ import org.recap.model.jpa.RequestStatusEntity;
 import org.recap.model.CancelRequestResponse;
 import org.recap.model.request.ItemRequestInformation;
 import org.recap.model.request.ItemResponseInformation;
+import org.recap.model.request.ReplaceRequest;
 import org.recap.model.search.RequestForm;
+import org.recap.model.search.SearchResultRow;
+import org.recap.model.search.SearchResultRowUT;
 import org.recap.model.usermanagement.UserDetailsForm;
 import org.recap.repository.jpa.InstitutionDetailsRepository;
 import org.recap.repository.jpa.RequestTypeDetailsRepository;
@@ -31,6 +35,7 @@ import org.recap.repository.jpa.RequestStatusDetailsRepository;
 import org.recap.service.RequestService;
 import org.recap.service.RestHeaderService;
 import org.recap.util.RequestServiceUtil;
+import org.recap.util.RequestServiceUtilUT;
 import org.recap.util.UserAuthUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,6 +49,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.support.BindingAwareModelMap;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -51,12 +57,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.servlet.http.HttpSession;
-import java.util.Collections;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Random;
-import java.util.Date;
+import java.util.*;
 
 import static org.mockito.Mockito.when;
 import static org.junit.Assert.assertEquals;
@@ -81,6 +82,9 @@ public class RequestControllerUT extends BaseControllerUT {
 
     @Mock
     RequestController requestController;
+
+    @Autowired
+    RequestController requestControllerWired;
 
     @Mock
     RequestServiceUtil requestServiceUtil;
@@ -166,7 +170,8 @@ public class RequestControllerUT extends BaseControllerUT {
         Mockito.when(requestController.getRequestService().getInstitutionDetailsRepository().findAll()).thenReturn(Arrays.asList(institutionEntity));
         Mockito.when(requestService.getRequestTypeDetailsRepository()).thenReturn(requestTypeDetailsRepository);
         Mockito.when(requestService.setFormDetailsForRequest(model,request,userDetailsForm)).thenCallRealMethod();
-        when(institutionDetailsRepository.findAll()).thenReturn(Collections.EMPTY_LIST);
+        Mockito.when(requestServiceUtil.searchRequests(getRequestForm())).thenCallRealMethod();
+        Mockito.when(institutionDetailsRepository.findByInstitutionCode(institutionEntity.getInstitutionCode())).thenReturn(institutionEntity);        when(institutionDetailsRepository.findAll()).thenReturn(Collections.EMPTY_LIST);
         when(requestTypeDetailsRepository.findAll()).thenReturn(Collections.EMPTY_LIST);
         when(customerCodeDetailsRepository.findAll()).thenReturn(Collections.EMPTY_LIST);
         when(((BindingAwareModelMap) model).get("requestedBarcode")).thenReturn("test");
@@ -179,12 +184,18 @@ public class RequestControllerUT extends BaseControllerUT {
 
     @Test
     public void searchRequests() throws Exception {
-        RequestForm requestForm = new RequestForm();
+        RequestForm requestForm = getRequestForm();
+        String institution ="PUL";
         Page<RequestItemEntity> requestItemEntities = new PageImpl<RequestItemEntity>(new ArrayList<>());
+        InstitutionEntity institutionEntity = new InstitutionEntity();
+        institutionEntity.setInstitutionCode("PUL");
+        institutionEntity.setInstitutionName("Princeton");
         when(requestController.getRequestServiceUtil()).thenReturn(requestServiceUtil);
-        when(requestServiceUtil.searchRequests(requestForm)).thenReturn(requestItemEntities);
-        when(requestController.searchRequests(requestForm, bindingResult, model)).thenCallRealMethod();
-        ModelAndView modelAndView = requestController.searchRequests(requestForm, bindingResult, model);
+        //when(requestController.getRequestServiceUtil().searchRequests(requestForm)).thenCallRealMethod();
+       // Mockito.when(institutionDetailsRepository.findByInstitutionCode(institution)).thenReturn(institutionEntity);
+      /*  Mockito.when(requestServiceUtil.searchRequests(requestForm)).thenCallRealMethod();
+        when(requestController.searchRequests(requestForm, bindingResult, model)).thenCallRealMethod();*/
+        ModelAndView modelAndView = requestControllerWired.searchRequests(requestForm, bindingResult, model);
         assertNotNull(modelAndView);
         assertEquals("request :: #searchRequestsSection", modelAndView.getViewName());
     }
@@ -212,7 +223,16 @@ public class RequestControllerUT extends BaseControllerUT {
         assertNotNull(modelAndView);
         assertEquals("request :: #searchRequestsSection", modelAndView.getViewName());
     }
-
+    @Test
+    public void onRequestPageSizeChange() throws Exception {
+        RequestForm requestForm = new RequestForm();
+        Page<RequestItemEntity> requestItemEntities = new PageImpl<RequestItemEntity>(new ArrayList<>());
+        when(requestController.getRequestServiceUtil()).thenReturn(requestServiceUtil);
+        when(requestServiceUtil.searchRequests(requestForm)).thenReturn(requestItemEntities);
+        when(requestController.onRequestPageSizeChange(requestForm, bindingResult, model)).thenCallRealMethod();
+        ModelAndView modelAndView = requestController.onRequestPageSizeChange(requestForm, bindingResult, model);
+        assertNotNull(modelAndView);
+    }
     @Test
     public void searchFirst() throws Exception {
         RequestForm requestForm = new RequestForm();
@@ -314,7 +334,7 @@ public class RequestControllerUT extends BaseControllerUT {
         requestStatusEntity.setRequestStatusDescription("RETRIEVAL ORDER PLACED");
         InstitutionEntity institutionEntity = new InstitutionEntity();
         institutionEntity.setInstitutionCode("PUL");
-        Mockito.when(requestController.getRequestStatusDetailsRepository().findAll()).thenReturn(Arrays.asList(requestStatusEntity));
+//        Mockito.when(requestService.getRequestStatusDetailsRepository().findAll()).thenReturn(Arrays.asList(requestStatusEntity));
         Mockito.when(requestController.getInstitutionDetailsRepository().getInstitutionCodeForSuperAdmin()).thenReturn(Arrays.asList(institutionEntity));
         List<String> requestStatuses=new ArrayList<>();
         List<String> institutionList=new ArrayList<>();
@@ -331,9 +351,22 @@ public class RequestControllerUT extends BaseControllerUT {
     public void populateItem() throws Exception {
         RequestForm requestForm = new RequestForm();
         BibliographicEntity bibliographicEntity = saveBibSingleHoldingsSingleItem();
+        CustomerCodeEntity customerCodeEntity = new CustomerCodeEntity();
+        customerCodeEntity.setCustomerCode("CU12513083");
+        customerCodeEntity.setId(5);
+        customerCodeEntity.setOwningInstitutionId(1);
+        customerCodeEntity.setDeliveryRestrictions("PG,QP");
+        customerCodeEntity.setDescription("Rare Books");
+        customerCodeEntity.setPwdDeliveryRestrictions("QC");
         String barcode = bibliographicEntity.getItemEntities().get(0).getBarcode();
+        String customerCode = bibliographicEntity.getItemEntities().get(0).getCustomerCode();
         requestForm.setItemBarcodeInRequest(barcode);
+        List<ItemEntity> itemEntityArrayList;
+        itemEntityArrayList = bibliographicEntity.getItemEntities();
         Mockito.when(requestController.getItemDetailsRepository()).thenReturn(itemDetailsRepository);
+      //  Mockito.when(requestController.getCustomerCodeDetailsRepository()).thenReturn(customerCodeDetailsRepository);
+      //  Mockito.when(requestController.getItemDetailsRepository().findByBarcodeAndCatalogingStatusAndIsDeletedFalse(barcode, RecapCommonConstants.COMPLETE_STATUS)).thenReturn( bibliographicEntity.getItemEntities());
+       // Mockito.when(requestController.getCustomerCodeDetailsRepository().findByCustomerCodeAndRecapDeliveryRestrictionLikeEDD(customerCode)).thenReturn(customerCodeEntity);
         Mockito.when(requestController.getUserAuthUtil()).thenReturn(userAuthUtil);
         when(request.getSession()).thenReturn(session);
         Mockito.when(requestController.getRequestService()).thenReturn(requestService);
@@ -390,13 +423,14 @@ public class RequestControllerUT extends BaseControllerUT {
         RequestForm requestForm = getRequestForm();
         ResponseEntity responseEntity = new ResponseEntity(RecapCommonConstants.VALID_REQUEST,HttpStatus.OK);
         ResponseEntity responseEntity1 = new ResponseEntity<ItemResponseInformation>(getItemResponseInformation(),HttpStatus.OK);
-        when(request.getSession()).thenReturn(session);
+        Mockito.when(request.getSession(false)).thenReturn(session);
         ItemRequestInformation itemRequestInformation = getItemRequestInformation();
         HttpEntity<ItemRequestInformation> requestEntity = new HttpEntity<>(itemRequestInformation, restHeaderService.getHttpHeaders());
         String validateRequestItemUrl = getScsbUrl() + RecapConstants.VALIDATE_REQUEST_ITEM_URL;
         String requestItemUrl = scsbUrl + RecapConstants.REQUEST_ITEM_URL;
+
         CustomerCodeEntity customerCodeEntity = new CustomerCodeEntity();
-        customerCodeEntity.setCustomerCode("PB");
+        customerCodeEntity.setCustomerCode("PG");
         Mockito.when(requestController.getItemRequestInformation()).thenReturn(itemRequestInformation);
         Mockito.when((String) session.getAttribute(RecapConstants.USER_NAME)).thenReturn("Admin");
         Mockito.when(requestController.getRestTemplate()).thenReturn(restTemplate);
@@ -404,12 +438,34 @@ public class RequestControllerUT extends BaseControllerUT {
         Mockito.when(requestController.getScsbUrl()).thenReturn(scsbUrl);
         Mockito.when(requestController.getRestHeaderService()).thenReturn(restHeaderService);
         Mockito.when(requestController.getCustomerCodeDetailsRepository()).thenReturn(customerCodeDetailsRepository);
+        Mockito.when(requestService.populateItemForRequest(requestForm, request)).thenCallRealMethod();
+        Mockito.when(requestController.populateItem(requestForm,bindingResult,model,request)).thenCallRealMethod();
         Mockito.when(requestController.getCustomerCodeDetailsRepository().findByDescription(requestForm.getDeliveryLocationInRequest())).thenReturn(customerCodeEntity);
         Mockito.when(requestController.getRestTemplate().exchange(requestItemUrl, HttpMethod.POST, requestEntity, ItemResponseInformation.class)).thenReturn(responseEntity1);
         Mockito.when(requestController.getRestTemplate().exchange(validateRequestItemUrl, HttpMethod.POST, requestEntity, String.class)).thenReturn(responseEntity);
         Mockito.when(requestController.createRequest(requestForm,bindingResult,model,request)).thenCallRealMethod();
         ModelAndView modelAndView = requestController.createRequest(requestForm,bindingResult,model,request);
         assertNotNull(modelAndView);
+    }
+
+    @Test
+    public void testRequestResubmit()throws Exception{
+        ReplaceRequest replaceRequest = getReplaceRequest();
+        RequestForm requestForm = getRequestForm();
+        ItemRequestInformation itemRequestInfo = new ItemRequestInformation();
+        HttpEntity requestEntity = new HttpEntity<>(restHeaderService.getHttpHeaders());
+        ResponseEntity responseEntity1 = new ResponseEntity<ReplaceRequest>(replaceRequest,HttpStatus.OK);
+        Mockito.when(requestController.getItemRequestInformation()).thenReturn(itemRequestInfo);
+        String requestItemUrl = scsbUrl + RecapConstants.URL_REQUEST_RESUBMIT;
+        Mockito.when(requestController.getRestTemplate()).thenReturn(restTemplate);
+        Mockito.when(requestController.getScsbShiro()).thenReturn(scsbShiro);
+        Mockito.when(requestController.getScsbUrl()).thenReturn(scsbUrl);
+        Mockito.when(requestController.getRestHeaderService()).thenReturn(restHeaderService);
+        Mockito.when(requestController.getRestTemplate().postForEntity( scsbUrl + RecapConstants.URL_REQUEST_RESUBMIT,itemRequestInfo,Map.class)).thenThrow(new RestClientException("Exception occured"));
+        Mockito.when(requestController.getRestTemplate().exchange(requestItemUrl, HttpMethod.POST, requestEntity, ReplaceRequest.class)).thenReturn(responseEntity1);
+        Mockito.when(requestController.resubmitRequest(requestForm,bindingResult,model)).thenCallRealMethod();
+        String response = requestController.resubmitRequest(requestForm,bindingResult,model);
+        assertNotNull(response);
     }
 
     @Test
@@ -430,14 +486,15 @@ public class RequestControllerUT extends BaseControllerUT {
         Mockito.when(requestController.getScsbUrl()).thenReturn(scsbUrl);
         Mockito.when(requestController.getRestHeaderService()).thenReturn(restHeaderService);
         Mockito.when(requestController.getRequestItemDetailsRepository()).thenReturn(requestItemDetailsRepository);
-        Mockito.when(requestController.getRequestItemDetailsRepository().findById(requestForm.getRequestId()).orElse(null)).thenReturn(requestItemEntity);
+
+        Optional<RequestItemEntity> requestItemEntity1 = requestController.getRequestItemDetailsRepository().findById(requestForm.getRequestId());
+        Mockito.when(requestItemEntity1).thenReturn(requestItemEntity1);
         Mockito.when(requestController.getRestTemplate().exchange(builder.build().encode().toUri(), HttpMethod.POST, requestEntity, CancelRequestResponse.class)).thenReturn(responseEntity);
         Mockito.when(requestController.cancelRequest(requestForm,bindingResult,model)).thenCallRealMethod();
         String response = requestController.cancelRequest(requestForm,bindingResult,model);
         assertNotNull(response);
         assertTrue(response.contains("Request cancelled."));
     }
-
     @Test
     public void testLoadSearchRequest(){
         UserDetailsForm userDetailsForm = new UserDetailsForm();
@@ -477,9 +534,11 @@ public class RequestControllerUT extends BaseControllerUT {
         Mockito.when(requestService.getRequestItemDetailsRepository()).thenReturn(requestItemDetailsRepository);
         Mockito.when(requestItemDetailsRepository.findByIdIn(Arrays.asList(requestItemEntity.getId()))).thenReturn(Arrays.asList(requestItemEntity));
         Mockito.when(requestService.getRequestStatusDetailsRepository().findAllRequestStatusDescExceptProcessing()).thenReturn(Arrays.asList("RETRIEVAL ORDER PLACED","RECALL ORDER PLACED","EDD ORDER PLACED","REFILED","CANCELED","EXCEPTION","PENDING","INITIAL LOAD"));
-        Mockito.doCallRealMethod().when(requestService).getRefreshedStatus(mockedRequest);
-        String refreshedStatus = requestService.getRefreshedStatus(mockedRequest);
-        Assert.notNull(refreshedStatus);
+        //Mockito.doCallRealMethod().when(requestService).getRefreshedStatus(mockedRequest);
+        //String refreshedStatus = requestService.getRefreshedStatus(mockedRequest);
+        //Assert.notNull(refreshedStatus);
+        Mockito.doCallRealMethod().when(requestController).refreshStatus(mockedRequest);
+        String response = requestController.refreshStatus(mockedRequest);
     }
 
     private RequestItemEntity getRequestItemEntity(){
@@ -492,18 +551,31 @@ public class RequestControllerUT extends BaseControllerUT {
         return requestItemEntity;
     }
 
+    private ReplaceRequest getReplaceRequest(){
+        ReplaceRequest replaceRequest = new ReplaceRequest();
+        RequestForm requestForm = getRequestForm();
+        replaceRequest.setEndRequestId("10");
+        replaceRequest.setFromDate((new Date()).toString());
+        replaceRequest.setToDate((new Date()).toString());
+        replaceRequest.setReplaceRequestByType(RecapCommonConstants.REQUEST_IDS);
+        replaceRequest.setRequestStatus(RecapConstants.EXCEPTION);
+        String requestId = String.valueOf(requestForm.getRequestId());
+        replaceRequest.setRequestIds(requestId);
+        replaceRequest.setStartRequestId("1");
+        return replaceRequest;
+    }
     private RequestForm getRequestForm(){
         RequestForm requestForm = new RequestForm();
         requestForm.setRequestId(1);
         requestForm.setPatronBarcode("43265854");
         requestForm.setSubmitted(true);
-        requestForm.setItemBarcode("3324545547568535");
-        requestForm.setStatus("Success");
+        requestForm.setItemBarcode("32101074849843");
+        requestForm.setStatus("active");
         requestForm.setDeliveryLocation("PB");
         requestForm.setVolumeNumber("1");
         requestForm.setMessage("testing");
-        requestForm.setErrorMessage("testing");
-        requestForm.setIssue("test");
+        requestForm.setErrorMessage("error");
+        requestForm.setIssue("issue");
         requestForm.setTotalPageCount(1);
         requestForm.setTotalRecordsCount("10");
         requestForm.setPageSize(1);
@@ -514,6 +586,7 @@ public class RequestControllerUT extends BaseControllerUT {
         requestForm.setPatronBarcodeInRequest("46259871");
         requestForm.setRequestingInstitution("PUL");
         requestForm.setPatronEmailAddress("hemalatha.s@htcindia.com");
+        requestForm.setInstitution("PUL");
         requestForm.setItemTitle("test");
         requestForm.setItemOwningInstitution("PUL");
         requestForm.setRequestType("recall");
@@ -587,15 +660,16 @@ public class RequestControllerUT extends BaseControllerUT {
         itemEntity.setLastUpdatedDate(new Date());
         itemEntity.setOwningInstitutionItemId(String.valueOf(random.nextInt()));
         itemEntity.setOwningInstitutionId(1);
-        itemEntity.setBarcode("123");
+        itemEntity.setBarcode("CU12513083");
         itemEntity.setCallNumber("x.12321");
         itemEntity.setCollectionGroupId(3);
         itemEntity.setCallNumberType("1");
-        itemEntity.setCustomerCode("123");
+        itemEntity.setCustomerCode("PG");
         itemEntity.setCreatedDate(new Date());
         itemEntity.setCreatedBy("tst");
         itemEntity.setLastUpdatedBy("tst");
         itemEntity.setItemAvailabilityStatusId(1);
+        itemEntity.setCatalogingStatus("Complete");
         itemEntity.setHoldingsEntities(Arrays.asList(holdingsEntity));
         itemEntity.setBibliographicEntities(Arrays.asList(bibliographicEntity));
         bibliographicEntity.setHoldingsEntities(Arrays.asList(holdingsEntity));
@@ -635,5 +709,22 @@ public class RequestControllerUT extends BaseControllerUT {
         institutionCodeList.add(institutionEntity2.getInstitutionCode());
         return institutionCodeList;
     }
+
+    private SearchResultRow getSearchResultRow(){
+        SearchResultRow searchResultRow = new SearchResultRow();
+        RequestItemEntity requestItemEntity = getRequestItemEntity();
+        searchResultRow.setBarcode(requestItemEntity.getItemEntity().getBarcode());
+        searchResultRow.setAvailability(requestItemEntity.getItemEntity().getItemStatusEntity().getStatusCode());
+        searchResultRow.setCreatedDate(requestItemEntity.getCreatedDate());
+        searchResultRow.setLastUpdatedDate(requestItemEntity.getLastUpdatedDate());
+        searchResultRow.setOwningInstitution(requestItemEntity.getInstitutionEntity().getInstitutionCode());
+        searchResultRow.setRequestId(requestItemEntity.getId());
+        searchResultRow.setRequestType(requestItemEntity.getRequestTypeEntity().getRequestTypeCode());
+        searchResultRow.setRequestNotes(requestItemEntity.getNotes());
+        searchResultRow.setStatus(requestItemEntity.getRequestStatusEntity().getRequestStatusDescription());
+
+        return  searchResultRow;
+    }
+
 
 }

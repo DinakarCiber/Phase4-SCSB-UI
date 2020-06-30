@@ -22,6 +22,10 @@ public class RecapErrorPageControllerUT extends BaseTestCase{
         assertEquals(response,"error");
     }
 
+    @Test
+    public void getErrorPath(){
+        recapErrorPageController.getErrorPath();
+    }
 
 
 }

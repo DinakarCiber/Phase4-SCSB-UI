@@ -127,18 +127,14 @@ public class RolesControllerUT extends BaseTestCase {
         rolesForm.setRoleNameForDelete("Admin");
         rolesForm.setRoleDescriptionForDelete("test desc");
         rolesForm.setPermissionNamesForDelete("CreateUser");
-        ModelAndView modelAndView = rolesController.deleteRole(rolesForm.getRoleId(),rolesForm.getRoleName(),rolesForm.getRoleDescription(),rolesForm.getPermissionNames(),10,1,2);
+        ModelAndView modelAndView = rolesController.deleteRole(rolesForm.getRoleId(),rolesForm.getRoleName(),rolesForm.getRoleDescription(),rolesForm.getPermissionNamesForDelete(),10,1,2);
         assertNotNull(modelAndView);
         assertEquals("roles",modelAndView.getViewName());
     }
 
     @Test
     public void delete() throws Exception{
-        RolesForm rolesForm = new RolesForm();
-        rolesForm.setRoleId(1);
-        rolesForm.setRoleNameForDelete("Admin");
-        rolesForm.setRoleDescriptionForDelete("test desc");
-        rolesForm.setPermissionNamesForDelete("CreateUser");
+        RolesForm rolesForm = getRolesForm();
         ModelAndView modelAndView = rolesController.delete(rolesForm,model);
         assertNotNull(modelAndView);
         assertEquals("roles",modelAndView.getViewName());
@@ -179,6 +175,16 @@ public class RolesControllerUT extends BaseTestCase {
         assertNotNull(modelAndView);
         assertEquals("searchRecords",modelAndView.getViewName());
     }
+    @Test
+    public void goBack() throws Exception{
+        RolesForm rolesForm = new RolesForm();
+        rolesForm.setRoleName("Admin");
+        rolesForm.setPermissionNames("CreateUser");
+        rolesForm.setPageNumber(0);
+        rolesForm.setPageSize(25);
+        ModelAndView modelAndView = rolesController.goBack(rolesForm,model);
+        assertNotNull(modelAndView);
+    }
 
     @Test
     public void searchLast() throws Exception{
@@ -206,6 +212,69 @@ public class RolesControllerUT extends BaseTestCase {
     }
 
     @Test
+    public void findByPagination() {
+        RolesForm rolesForm = getRolesForm();
+        rolesForm.setRoleName("Super Admin");
+        rolesForm.setPermissionNames("");
+        rolesController.findByPagination(rolesForm);
+    }
+    @Test
+    public void findByPagination1() {
+        RolesForm rolesForm = getRolesForm();
+        rolesForm.setRoleName("");
+        rolesForm.setPermissionNames("Super Admin");
+        rolesController.findByPagination(rolesForm);
+    }
+    @Test
+    public void findByPagination2() {
+        RolesForm rolesForm = getRolesForm();
+        rolesForm.setRoleName("");
+        rolesForm.setPermissionNames("");
+        rolesController.findByPagination(rolesForm);
+    }
+    @Test
+    public void setRolesFormSearchResults()throws Exception{
+        RolesForm rolesForm = getRolesForm();
+        rolesForm.setRoleName("Super Admin");
+        rolesForm.setPermissionNames("Super Admin");
+        rolesController.setRolesFormSearchResults(rolesForm);
+    }
+
+    @Test
+    public void setRolesFormSearchResults1()throws Exception{
+        RolesForm rolesForm = getRolesForm();
+        rolesForm.setRoleName("Super@Admin");
+        rolesForm.setPermissionNames("");
+        rolesController.setRolesFormSearchResults(rolesForm);
+    }
+    @Test
+    public void setRolesFormSearchResults2()throws Exception{
+        RolesForm rolesForm = getRolesForm();
+        rolesForm.setRoleName("Super");
+        rolesForm.setPermissionNames("");
+        rolesController.setRolesFormSearchResults(rolesForm);
+    }
+    @Test
+    public void setRolesFormSearchResults3()throws Exception{
+        RolesForm rolesForm = getRolesForm();
+        rolesForm.setRoleName("SuperAdmin");
+        rolesForm.setPermissionNames("SuperAdmin");
+        rolesForm.setPageNumber(20);
+        rolesForm.setPageSize(10);
+        rolesController.setRolesFormSearchResults(rolesForm);
+    }
+
+    @Test
+    public void setRolesFormSearchResults4()throws Exception{
+        RolesForm rolesForm = getRolesForm();
+        rolesForm.setRoleName("");
+        rolesForm.setPermissionNames("SuperAdmin");
+        rolesForm.setPageNumber(20);
+        rolesForm.setPageSize(10);
+        rolesController.setRolesFormSearchResults(rolesForm);
+    }
+
+    @Test
     public void testRolesSearchResult(){
         RolesSearchResult rolesSearchResult = new RolesSearchResult();
         rolesSearchResult.setRolesName("admin");
@@ -219,6 +288,16 @@ public class RolesControllerUT extends BaseTestCase {
         assertNotNull(rolesSearchResult.getRoleId());
     }
 
+    private RolesForm getRolesForm(){
+        RolesForm rolesForm = new RolesForm();
+        rolesForm.setRoleId(1);
+        rolesForm.setRoleNameForDelete("Admin");
+        rolesForm.setRoleDescriptionForDelete("test desc");
+        rolesForm.setPermissionNamesForDelete("CreateUser");
+        rolesForm.setPageSize(5);
+        rolesForm.setPageNumber(10);
+        return rolesForm;
+    }
 
 
 }

@@ -38,7 +38,6 @@ public class UserRoleServiceImpl implements UserRoleService {
     @Override
     public Page<UsersEntity> searchUsers(UserRoleForm userRoleForm, boolean superAdmin) {
         Pageable pageable = getPageable(userRoleForm);
-
         if (superAdmin) {
             return userDetailsRepository.findAll(pageable);
         } else {
@@ -51,7 +50,9 @@ public class UserRoleServiceImpl implements UserRoleService {
 
     @Override
     public Page<UsersEntity> searchByNetworkId(UserRoleForm userRoleForm, boolean superAdmin) {
+
         Pageable pageable = getPageable(userRoleForm);
+
         if (superAdmin) {
             return userDetailsRepository.findByLoginId(userRoleForm.getSearchNetworkId(), pageable);
         } else {
@@ -63,7 +64,9 @@ public class UserRoleServiceImpl implements UserRoleService {
 
     @Override
     public Page<UsersEntity> searchByUserEmailId(UserRoleForm userRoleForm, boolean superAdmin) {
+
         Pageable pageable = getPageable(userRoleForm);
+
         if (superAdmin) {
             return userDetailsRepository.findByEmailId(userRoleForm.getUserEmailId(), pageable);
         } else {
@@ -75,7 +78,9 @@ public class UserRoleServiceImpl implements UserRoleService {
 
     @Override
     public Page<UsersEntity> searchByNetworkIdAndUserEmailId(UserRoleForm userRoleForm, boolean superAdmin) {
+
         Pageable pageable = getPageable(userRoleForm);
+
         if (superAdmin) {
             return userDetailsRepository.findByLoginIdAndEmailId(userRoleForm.getSearchNetworkId(), userRoleForm.getUserEmailId(), pageable);
         } else {

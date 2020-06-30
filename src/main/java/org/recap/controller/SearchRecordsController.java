@@ -332,8 +332,10 @@ public class SearchRecordsController extends RecapController {
 
 
     private void processRequest(SearchRecordsRequest searchRecordsRequest, UserDetailsForm userDetailsForm, RedirectAttributes redirectAttributes) {
-        String userInstitution = null;
+        String userInstitution = null ;
         Optional<InstitutionEntity> institutionEntity = getInstitutionDetailsRepository().findById(userDetailsForm.getLoginInstitutionId());
+
+
         if (institutionEntity.isPresent()) {
             userInstitution = institutionEntity.get().getInstitutionCode();
         }
@@ -346,10 +348,8 @@ public class SearchRecordsController extends RecapController {
             if (searchResultRow.isSelected()) {
                 if (RecapCommonConstants.PRIVATE.equals(searchResultRow.getCollectionGroupDesignation()) && !userDetailsForm.isSuperAdmin() && !userDetailsForm.isRecapUser() && StringUtils.isNotBlank(userInstitution) && !userInstitution.equals(searchResultRow.getOwningInstitution())) {
                     searchRecordsRequest.setErrorMessage(RecapConstants.REQUEST_PRIVATE_ERROR_USER_NOT_PERMITTED);
-                    return;
                 } else if (!userDetailsForm.isRecapPermissionAllowed()) {
                     searchRecordsRequest.setErrorMessage(RecapConstants.REQUEST_ERROR_USER_NOT_PERMITTED);
-                    return;
                 } else {
                     processBarcodesForSearchResultRow(barcodes, itemTitles, itemOwningInstitutions, searchResultRow,itemAvailabilty);
                 }
@@ -358,10 +358,8 @@ public class SearchRecordsController extends RecapController {
                     if (searchItemResultRow.isSelectedItem()) {
                         if (RecapCommonConstants.PRIVATE.equals(searchItemResultRow.getCollectionGroupDesignation()) && !userDetailsForm.isSuperAdmin() && !userDetailsForm.isRecapUser() && StringUtils.isNotBlank(userInstitution) && !userInstitution.equals(searchResultRow.getOwningInstitution())) {
                             searchRecordsRequest.setErrorMessage(RecapConstants.REQUEST_PRIVATE_ERROR_USER_NOT_PERMITTED);
-                            return;
                         } else if (!userDetailsForm.isRecapPermissionAllowed()) {
                             searchRecordsRequest.setErrorMessage(RecapConstants.REQUEST_ERROR_USER_NOT_PERMITTED);
-                            return;
                         } else {
                             processBarcodeForSearchItemResultRow(barcodes, itemTitles, itemOwningInstitutions, searchItemResultRow, searchResultRow,itemAvailabilty);
                         }

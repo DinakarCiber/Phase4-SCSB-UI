@@ -10,9 +10,12 @@ import org.recap.model.search.ScheduleJobsForm;
 import org.recap.model.usermanagement.UserDetailsForm;
 import org.recap.repository.jpa.JobDetailsRepository;
 import org.recap.security.UserManagementService;
+import org.recap.service.RestHeaderService;
+import org.recap.util.UserAuthUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +26,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,8 +43,49 @@ public class ScheduleJobsController extends AuthenticationController {
 
     private static final Logger logger = LoggerFactory.getLogger(ScheduleJobsController.class);
 
+
+    @Value("${scsb.url}")
+    public String scsbUrl;
+
+    @Autowired
+    private UserAuthUtil userAuthUtil;
+
     @Autowired
     private JobDetailsRepository jobDetailsRepository;
+
+    @Autowired
+    RestHeaderService restHeaderService;
+
+    public RestHeaderService getRestHeaderService(){
+        return restHeaderService;
+    }
+    /**
+     * Gets user auth util.
+     *
+     * @return the user auth util
+     */
+    public UserAuthUtil getUserAuthUtil() {
+        return userAuthUtil;
+    }
+
+    /**
+     * Sets user auth util.
+     *
+     * @param userAuthUtil the user auth util
+     */
+    public void setUserAuthUtil(UserAuthUtil userAuthUtil) {
+        this.userAuthUtil = userAuthUtil;
+    }
+
+    /**
+     * Gets rest template.
+     *
+     * @return the rest template
+     */
+    public RestTemplate getRestTemplate() {
+        return new RestTemplate();
+    }
+
 
     /**
      * Gets all the jobs information from scsb database and display them as rows in the jobs UI page.
