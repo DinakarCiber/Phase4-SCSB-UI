@@ -57,9 +57,6 @@ public class SearchRecordsController extends RecapController {
 
     private static final Logger logger = LoggerFactory.getLogger(SearchRecordsController.class);
 
-    @Value("${scsb.shiro}")
-    private String scsbShiro;
-
     @Autowired
     private SearchUtil searchUtil;
 
@@ -97,7 +94,7 @@ public class SearchRecordsController extends RecapController {
     @GetMapping("/search")
     public String searchRecords(Model model, HttpServletRequest request) {
         HttpSession session=request.getSession(false);
-        boolean authenticated=getUserAuthUtil().authorizedUser(RecapConstants.SCSB_SHIRO_SEARCH_URL,(UsernamePasswordToken)session.getAttribute(RecapConstants.USER_TOKEN));
+        boolean authenticated = getUserAuthUtil().isAuthenticated(request, RecapConstants.SCSB_SHIRO_SEARCH_URL);
         if(authenticated)
         {
             SearchRecordsRequest searchRecordsRequest = new SearchRecordsRequest();
@@ -240,7 +237,7 @@ public class SearchRecordsController extends RecapController {
                                        Model model,
                                        HttpServletRequest request,
                                        RedirectAttributes redirectAttributes) {
-        UserDetailsForm userDetailsForm = getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE);
+        UserDetailsForm userDetailsForm = getUserAuthUtil().getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE);
         processRequest(searchRecordsRequest, userDetailsForm, redirectAttributes);
         if (StringUtils.isNotBlank(searchRecordsRequest.getErrorMessage())) {
             searchRecordsRequest.setShowResults(true);

@@ -39,43 +39,12 @@ import java.util.List;
  */
 
 @Controller
-public class ScheduleJobsController extends AuthenticationController {
+public class ScheduleJobsController extends AbstractController {
 
     private static final Logger logger = LoggerFactory.getLogger(ScheduleJobsController.class);
 
-
-    @Value("${scsb.url}")
-    public String scsbUrl;
-
-    @Autowired
-    private UserAuthUtil userAuthUtil;
-
     @Autowired
     private JobDetailsRepository jobDetailsRepository;
-
-    @Autowired
-    RestHeaderService restHeaderService;
-
-    public RestHeaderService getRestHeaderService(){
-        return restHeaderService;
-    }
-    /**
-     * Gets user auth util.
-     *
-     * @return the user auth util
-     */
-    public UserAuthUtil getUserAuthUtil() {
-        return userAuthUtil;
-    }
-
-    /**
-     * Sets user auth util.
-     *
-     * @param userAuthUtil the user auth util
-     */
-    public void setUserAuthUtil(UserAuthUtil userAuthUtil) {
-        this.userAuthUtil = userAuthUtil;
-    }
 
     /**
      * Gets rest template.

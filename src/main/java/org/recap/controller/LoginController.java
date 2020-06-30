@@ -36,7 +36,7 @@ import java.util.Map;
  * Created by dharmendrag on 25/11/16.
  */
 @Controller
-public class LoginController extends AuthenticationController {
+public class LoginController extends AbstractController {
 
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 

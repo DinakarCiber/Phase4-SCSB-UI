@@ -46,7 +46,7 @@ import java.util.regex.Pattern;
  * Created by hemalathas on 22/12/16.
  */
 @Controller
-public class RolesController extends AuthenticationController {
+public class RolesController extends AbstractController {
 
     private static final Logger logger = LoggerFactory.getLogger(RolesController.class);
 
@@ -68,7 +68,7 @@ public class RolesController extends AuthenticationController {
     @GetMapping("/roles")
     public String roles(Model model, HttpServletRequest request) {
         HttpSession session=request.getSession(false);
-        boolean authenticated= HelperUtil.authenticate(session, getUserAuthUtil(), RecapConstants.SCSB_SHIRO_ROLE_URL);
+        boolean authenticated = getUserAuthUtil().isAuthenticated(request, RecapConstants.SCSB_SHIRO_ROLE_URL);
         if(authenticated)
         {
             RolesForm rolesForm = new RolesForm();

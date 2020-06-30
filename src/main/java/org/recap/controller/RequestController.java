@@ -89,23 +89,13 @@ public class RequestController extends  RecapController {
     private RequestItemDetailsRepository requestItemDetailsRepository;
 
     @Autowired
-    private UserAuthUtil userAuthUtil;
-
-    @Autowired
     private RequestService requestService;
 
     @Autowired
     private SecurityUtil securityUtil;
 
 
-    /**
-     * Gets user auth util.
-     *
-     * @return the user auth util
-     */
-    public UserAuthUtil getUserAuthUtil() {
-        return userAuthUtil;
-    }
+
 
     /**
      * Gets institution details repository.
@@ -191,9 +181,9 @@ public class RequestController extends  RecapController {
     @GetMapping("/request")
     public String request(Model model, HttpServletRequest request) throws JSONException {
         HttpSession session=request.getSession(false);
-        boolean authenticated= HelperUtil.authenticate(session, getUserAuthUtil(), RecapConstants.SCSB_SHIRO_REQUEST_URL);
+        boolean authenticated = getUserAuthUtil().isAuthenticated(request, RecapConstants.SCSB_SHIRO_REQUEST_URL);
         if (authenticated) {
-            UserDetailsForm userDetailsForm = getUserDetails(session, RecapConstants.REQUEST_PRIVILEGE);
+            UserDetailsForm userDetailsForm = getUserAuthUtil().getUserDetails(session, RecapConstants.REQUEST_PRIVILEGE);
             RequestForm requestForm = getRequestService().setFormDetailsForRequest(model, request, userDetailsForm);
             model.addAttribute(RecapConstants.REQUEST_FORM, requestForm);
             model.addAttribute( RecapCommonConstants.TEMPLATE,  RecapCommonConstants.REQUEST);
@@ -240,7 +230,7 @@ public class RequestController extends  RecapController {
                                        BindingResult result,
                                        Model model,HttpServletRequest request) {
         try {
-            UserDetailsForm userDetails = getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE);
+            UserDetailsForm userDetails = getUserAuthUtil().getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE);
             requestForm.resetPageNumber();
             requestForm.setPatronBarcode(patronBarcodeInRequest);
             setFormValues(requestForm, userDetails);
@@ -353,7 +343,7 @@ public class RequestController extends  RecapController {
     @ResponseBody
     @PostMapping(value = "/request", params = "action=loadCreateRequest")
     public ModelAndView loadCreateRequest(Model model, HttpServletRequest request) {
-        UserDetailsForm userDetailsForm = getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE);
+        UserDetailsForm userDetailsForm = getUserAuthUtil().getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE);
         RequestForm requestForm = getRequestService().setDefaultsToCreateRequest(userDetailsForm,model);
         return setRequestAttribute(requestForm, model);
     }
@@ -368,7 +358,7 @@ public class RequestController extends  RecapController {
     @ResponseBody
     @PostMapping(value = "/request", params = "action=loadCreateRequestForSamePatron")
     public ModelAndView loadCreateRequestForSamePatron(Model model, HttpServletRequest request) {
-        UserDetailsForm userDetailsForm = getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE);
+        UserDetailsForm userDetailsForm = getUserAuthUtil().getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE);
         RequestForm requestForm = getRequestService().setDefaultsToCreateRequest(userDetailsForm,model);
         requestForm.setOnChange("true");
         return setRequestAttribute(requestForm, model);
@@ -384,7 +374,7 @@ public class RequestController extends  RecapController {
     @ResponseBody
     @PostMapping(value = "/request", params = "action=loadSearchRequest")
     public ModelAndView loadSearchRequest(Model model, HttpServletRequest request) {
-        UserDetailsForm userDetails = getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE);
+        UserDetailsForm userDetails = getUserAuthUtil().getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE);
         RequestForm requestForm = new RequestForm();
         setFormValues(requestForm, userDetails);
         return setRequestAttribute(requestForm, model);

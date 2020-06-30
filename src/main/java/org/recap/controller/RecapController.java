@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import javax.validation.Valid;
 
-public class RecapController extends AuthenticationController {
+public class RecapController extends AbstractController {
 
     public SearchResultRow setSearchResultRow(RequestItemEntity requestItemEntity) {
         SearchResultRow searchResultRow = new SearchResultRow();

@@ -1,11 +1,14 @@
 package org.recap.controller;
 
+import lombok.Getter;
 import org.recap.service.RestHeaderService;
 import org.recap.util.RequestServiceUtil;
+import org.recap.util.UserAuthUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.client.RestTemplate;
 
+@Getter
 public class AbstractController {
 
     @Value("${scsb.url}")
@@ -15,17 +18,13 @@ public class AbstractController {
     private String scsbShiro;
 
     @Autowired
-    RestHeaderService restHeaderService;
+    private RestHeaderService restHeaderService;
 
     @Autowired
     private RequestServiceUtil requestServiceUtil;
-    
 
-    public RestHeaderService getRestHeaderService(){return restHeaderService;}
-
-    public RequestServiceUtil getRequestServiceUtil() {
-        return requestServiceUtil;
-    }
+    @Autowired
+    private UserAuthUtil userAuthUtil;
 
     /**
      * Get rest template rest template.

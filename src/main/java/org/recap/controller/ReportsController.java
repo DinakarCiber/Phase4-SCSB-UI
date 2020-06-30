@@ -41,7 +41,7 @@ import java.util.List;
  * Created by rajeshbabuk on 13/10/16.
  */
 @Controller
-public class ReportsController {
+public class ReportsController extends  AbstractController {
 
     private static final Logger logger = LoggerFactory.getLogger(ReportsController.class);
 
@@ -49,28 +49,7 @@ public class ReportsController {
     private ReportsUtil reportsUtil;
 
     @Autowired
-    private UserAuthUtil userAuthUtil;
-
-    @Autowired
     private InstitutionDetailsRepository institutionDetailsRepository;
-
-    /**
-     * Gets user auth util.
-     *
-     * @return the user auth util
-     */
-    public UserAuthUtil getUserAuthUtil() {
-        return userAuthUtil;
-    }
-
-    /**
-     * Sets user auth util.
-     *
-     * @param userAuthUtil the user auth util
-     */
-    public void setUserAuthUtil(UserAuthUtil userAuthUtil) {
-        this.userAuthUtil = userAuthUtil;
-    }
 
     /**
      * Gets reports util.
@@ -91,13 +70,13 @@ public class ReportsController {
      @GetMapping(path = "/reports")
     public String reports(Model model, HttpServletRequest request) {
          HttpSession session=request.getSession(false);
-         boolean authenticated= HelperUtil.authenticate(session, getUserAuthUtil(), RecapConstants.SCSB_SHIRO_REPORT_URL);
-        if (authenticated) {
+         boolean authenticated = getUserAuthUtil().isAuthenticated(request, RecapConstants.SCSB_SHIRO_REPORT_URL);
+         if (authenticated) {
             ReportsForm reportsForm = new ReportsForm();
             model.addAttribute(RecapConstants.REPORTS_FORM, reportsForm);
             model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.REPORTS);
             return RecapConstants.VIEW_SEARCH_RECORDS;
-        } else {
+         } else {
             return UserManagementService.unAuthorizedUser(session, "Reports", logger);
         }
 

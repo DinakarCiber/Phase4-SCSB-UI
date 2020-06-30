@@ -101,7 +101,7 @@ public class CollectionController extends AuthenticationController {
     @GetMapping (path = "/collection")
     public String collection(Model model,HttpServletRequest request) {
         HttpSession session=request.getSession(false);
-        boolean authenticated=getUserAuthUtil().authorizedUser(RecapConstants.SCSB_SHIRO_COLLECTION_URL,(UsernamePasswordToken)session.getAttribute(RecapConstants.USER_TOKEN));
+        boolean authenticated = getUserAuthUtil().isAuthenticated(request, RecapConstants.SCSB_SHIRO_COLLECTION_URL);
         if(authenticated)
         {
             CollectionForm collectionForm = new CollectionForm();
@@ -148,7 +148,7 @@ public class CollectionController extends AuthenticationController {
                                      BindingResult result,
                                      Model model,HttpServletRequest request) throws MarcException {
 
-        UserDetailsForm userDetailsForm = getUserDetails(request.getSession(false), RecapConstants.BARCODE_RESTRICTED_PRIVILEGE);
+        UserDetailsForm userDetailsForm = getUserAuthUtil().getUserDetails(request.getSession(false), RecapConstants.BARCODE_RESTRICTED_PRIVILEGE);
         BibliographicMarcForm bibliographicMarcForm = getMarcRecordViewUtil().buildBibliographicMarcForm(collectionForm.getBibId(), collectionForm.getItemId(),userDetailsForm);
         populateCollectionForm(collectionForm, bibliographicMarcForm);
         model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.COLLECTION);
