@@ -48,7 +48,7 @@ public class RequestServiceUtil {
         }
         Pageable pageable = PageRequest.of(requestForm.getPageNumber(), requestForm.getPageSize(), Sort.Direction.DESC, "id");
 
-        Page<RequestItemEntity> requestItemEntities;
+        Page<RequestItemEntity> requestItemEntities = null;
         if (StringUtils.isNotBlank(patronBarcode) && StringUtils.isNotBlank(itemBarcode) && StringUtils.isNotBlank(status) && StringUtils.isNotBlank(institution)) {
             if (status.equals(RecapConstants.SEARCH_REQUEST_ACTIVE)) {
                 requestItemEntities = requestItemDetailsRepository.findByPatronBarcodeAndItemBarcodeAndActiveAndInstitution(pageable, patronBarcode, itemBarcode,institutionEntity.getId());

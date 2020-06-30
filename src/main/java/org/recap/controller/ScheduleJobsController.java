@@ -22,9 +22,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
@@ -39,9 +39,10 @@ import java.util.List;
  */
 
 @Controller
-public class ScheduleJobsController {
+public class ScheduleJobsController extends AuthenticationController {
 
     private static final Logger logger = LoggerFactory.getLogger(ScheduleJobsController.class);
+
 
     @Value("${scsb.url}")
     public String scsbUrl;
@@ -86,7 +87,6 @@ public class ScheduleJobsController {
     }
 
 
-
     /**
      * Gets all the jobs information from scsb database and display them as rows in the jobs UI page.
      *
@@ -94,7 +94,7 @@ public class ScheduleJobsController {
      * @param request the request
      * @return the string
      */
-    @RequestMapping("/jobs")
+    @GetMapping("/jobs")
     public String displayJobs(Model model, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         ScheduleJobsForm scheduleJobsForm = new ScheduleJobsForm();
@@ -119,7 +119,7 @@ public class ScheduleJobsController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/jobs", method = RequestMethod.POST, params = "action=scheduleJob")
+    @PostMapping(value = "/jobs", params = "action=scheduleJob")
     public ModelAndView scheduleJob(@Valid @ModelAttribute("scheduleJobsForm") ScheduleJobsForm scheduleJobsForm,
                                     BindingResult result,
                                     Model model) {
@@ -133,7 +133,7 @@ public class ScheduleJobsController {
             scheduleJobRequest.setScheduleType(scheduleJobsForm.getScheduleType());
             HttpEntity<ScheduleJobRequest> httpEntity = new HttpEntity<>(scheduleJobRequest, getRestHeaderService().getHttpHeaders());
 
-            ResponseEntity<ScheduleJobResponse> responseEntity = getRestTemplate().exchange(scsbUrl + RecapCommonConstants.URL_SCHEDULE_JOBS, HttpMethod.POST, httpEntity, ScheduleJobResponse.class);
+            ResponseEntity<ScheduleJobResponse> responseEntity = getRestTemplate().exchange(getScsbUrl() + RecapCommonConstants.URL_SCHEDULE_JOBS, HttpMethod.POST, httpEntity, ScheduleJobResponse.class);
             scheduleJobResponse = responseEntity.getBody();
             String message = scheduleJobResponse.getMessage();
             if (StringUtils.containsIgnoreCase(message, RecapCommonConstants.SUCCESS)) {

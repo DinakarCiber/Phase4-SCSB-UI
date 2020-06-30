@@ -337,7 +337,7 @@ public class RequestService {
                             }
                             if (null != itemEntity && CollectionUtils.isNotEmpty(itemEntity.getBibliographicEntities())) {
                                 userDetailsForm = getUserAuthUtil().getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE);
-                                if (itemEntity.getCollectionGroupId() == RecapConstants.CGD_PRIVATE && !userDetailsForm.isSuperAdmin() && !userDetailsForm.isRecapUser() && !userDetailsForm.getLoginInstitutionId().equals(itemEntity.getOwningInstitutionId())) {
+                                if ((itemEntity.getCollectionGroupId().equals(RecapConstants.CGD_PRIVATE)) && (!userDetailsForm.isSuperAdmin()) && (!userDetailsForm.isRecapUser()) && (!userDetailsForm.getLoginInstitutionId().equals(itemEntity.getOwningInstitutionId()))) {
                                     jsonObject.put(RecapConstants.NO_PERMISSION_ERROR_MESSAGE, RecapConstants.REQUEST_PRIVATE_ERROR_USER_NOT_PERMITTED);
                                     return jsonObject.toString();
                                 } else if (!userDetailsForm.isRecapPermissionAllowed()) {

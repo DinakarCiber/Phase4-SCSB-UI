@@ -486,6 +486,7 @@ public class RequestControllerUT extends BaseControllerUT {
         Mockito.when(requestController.getScsbUrl()).thenReturn(scsbUrl);
         Mockito.when(requestController.getRestHeaderService()).thenReturn(restHeaderService);
         Mockito.when(requestController.getRequestItemDetailsRepository()).thenReturn(requestItemDetailsRepository);
+
         Optional<RequestItemEntity> requestItemEntity1 = requestController.getRequestItemDetailsRepository().findById(requestForm.getRequestId());
         Mockito.when(requestItemEntity1).thenReturn(requestItemEntity1);
         Mockito.when(requestController.getRestTemplate().exchange(builder.build().encode().toUri(), HttpMethod.POST, requestEntity, CancelRequestResponse.class)).thenReturn(responseEntity);

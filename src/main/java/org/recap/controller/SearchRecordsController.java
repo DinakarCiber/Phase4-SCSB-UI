@@ -1,7 +1,6 @@
 package org.recap.controller;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.recap.RecapCommonConstants;
@@ -9,14 +8,13 @@ import org.recap.RecapConstants;
 import org.recap.model.jpa.InstitutionEntity;
 import org.recap.model.search.SearchItemResultRow;
 import org.recap.model.search.SearchRecordsRequest;
-import org.recap.model.search.SearchRecordsResponse;
 import org.recap.model.search.SearchResultRow;
 import org.recap.model.usermanagement.UserDetailsForm;
 import org.recap.repository.jpa.InstitutionDetailsRepository;
 import org.recap.security.UserManagementService;
 import org.recap.util.CsvUtil;
+import org.recap.util.HelperUtil;
 import org.recap.util.SearchUtil;
-import org.recap.util.UserAuthUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +23,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
@@ -39,7 +37,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.File;
-import java.io.FileInputStream;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -56,7 +53,7 @@ import java.util.ArrayList;
  */
 
 @Controller
-public class SearchRecordsController {
+public class SearchRecordsController extends RecapController {
 
     private static final Logger logger = LoggerFactory.getLogger(SearchRecordsController.class);
 
@@ -70,9 +67,6 @@ public class SearchRecordsController {
     private CsvUtil csvUtil;
 
     @Autowired
-    private UserAuthUtil userAuthUtil;
-
-    @Autowired
     private InstitutionDetailsRepository institutionDetailsRepository;
 
     /**
@@ -82,24 +76,6 @@ public class SearchRecordsController {
      */
     public SearchUtil getSearchUtil() {
         return searchUtil;
-    }
-
-    /**
-     * Gets user auth util.
-     *
-     * @return the user auth util
-     */
-    public UserAuthUtil getUserAuthUtil() {
-        return userAuthUtil;
-    }
-
-    /**
-     * Sets user auth util.
-     *
-     * @param userAuthUtil the user auth util
-     */
-    public void setUserAuthUtil(UserAuthUtil userAuthUtil) {
-        this.userAuthUtil = userAuthUtil;
     }
 
     /**
@@ -118,7 +94,7 @@ public class SearchRecordsController {
      * @param request the request
      * @return the string
      */
-    @RequestMapping("/search")
+    @GetMapping("/search")
     public String searchRecords(Model model, HttpServletRequest request) {
         HttpSession session=request.getSession(false);
         boolean authenticated=getUserAuthUtil().authorizedUser(RecapConstants.SCSB_SHIRO_SEARCH_URL,(UsernamePasswordToken)session.getAttribute(RecapConstants.USER_TOKEN));
@@ -143,14 +119,11 @@ public class SearchRecordsController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/search", method = RequestMethod.POST, params = "action=search")
+    @PostMapping(value = "/search", params = "action=search")
     public ModelAndView search(@Valid @ModelAttribute("searchRecordsRequest") SearchRecordsRequest searchRecordsRequest,
                                   BindingResult result,
                                   Model model) {
-        searchRecordsRequest.resetPageNumber();
-        searchAndSetResults(searchRecordsRequest);
-        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.SEARCH);
-        return new ModelAndView(RecapConstants.VIEW_SEARCH_RECORDS, RecapConstants.VIEW_SEARCH_RECORDS_REQUEST, searchRecordsRequest);
+        return searchUtil.searchRecord(searchRecordsRequest, model);
     }
 
     /**
@@ -162,13 +135,11 @@ public class SearchRecordsController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/search", method = RequestMethod.POST, params = "action=previous")
+    @PostMapping(value = "/search", params = "action=previous")
     public ModelAndView searchPrevious(@Valid @ModelAttribute("searchRecordsRequest") SearchRecordsRequest searchRecordsRequest,
                                BindingResult result,
                                Model model) {
-        searchAndSetResults(searchRecordsRequest);
-        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.SEARCH);
-        return new ModelAndView(RecapConstants.VIEW_SEARCH_RECORDS, RecapConstants.VIEW_SEARCH_RECORDS_REQUEST, searchRecordsRequest);
+        return searchRecordsPage(searchRecordsRequest, model);
     }
 
     /**
@@ -180,13 +151,11 @@ public class SearchRecordsController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/search", method = RequestMethod.POST, params = "action=next")
+    @PostMapping(value = "/search", params = "action=next")
     public ModelAndView searchNext(@Valid @ModelAttribute("searchRecordsRequest") SearchRecordsRequest searchRecordsRequest,
                                    BindingResult result,
                                    Model model) {
-        searchAndSetResults(searchRecordsRequest);
-        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.SEARCH);
-        return new ModelAndView(RecapConstants.VIEW_SEARCH_RECORDS, RecapConstants.VIEW_SEARCH_RECORDS_REQUEST, searchRecordsRequest);
+        return searchRecordsPage(searchRecordsRequest, model);
     }
 
     /**
@@ -198,14 +167,11 @@ public class SearchRecordsController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/search", method = RequestMethod.POST, params = "action=first")
+    @PostMapping(value = "/search", params = "action=first")
     public ModelAndView searchFirst(@Valid @ModelAttribute("searchRecordsRequest") SearchRecordsRequest searchRecordsRequest,
                                        BindingResult result,
                                        Model model) {
-        searchRecordsRequest.resetPageNumber();
-        searchAndSetResults(searchRecordsRequest);
-        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.SEARCH);
-        return new ModelAndView(RecapConstants.VIEW_SEARCH_RECORDS, RecapConstants.VIEW_SEARCH_RECORDS_REQUEST, searchRecordsRequest);
+        return searchUtil.searchRecord(searchRecordsRequest, model);
     }
 
     /**
@@ -217,18 +183,16 @@ public class SearchRecordsController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/search", method = RequestMethod.POST, params = "action=last")
+    @PostMapping(value = "/search", params = "action=last")
     public ModelAndView searchLast(@Valid @ModelAttribute("searchRecordsRequest") SearchRecordsRequest searchRecordsRequest,
                                        BindingResult result,
                                        Model model) {
         searchRecordsRequest.setPageNumber(searchRecordsRequest.getTotalPageCount() - 1);
-        searchAndSetResults(searchRecordsRequest);
-        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.SEARCH);
-        return new ModelAndView(RecapConstants.VIEW_SEARCH_RECORDS, RecapConstants.VIEW_SEARCH_RECORDS_REQUEST, searchRecordsRequest);
+        return searchRecordsPage(searchRecordsRequest, model);
     }
 
     @ResponseBody
-    @RequestMapping(value = "/search", method = RequestMethod.POST, params = "action=clear")
+    @PostMapping(value = "/search", params = "action=clear")
     public ModelAndView clear(@Valid @ModelAttribute("searchRecordsRequest") SearchRecordsRequest searchRecordsRequest,
                               BindingResult result,
                               Model model) {
@@ -251,7 +215,7 @@ public class SearchRecordsController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/search", method = RequestMethod.POST, params = "action=newSearch")
+    @PostMapping(value = "/search", params = "action=newSearch")
     public ModelAndView newSearch(Model model) {
         SearchRecordsRequest searchRecordsRequest = new SearchRecordsRequest();
         model.addAttribute(RecapConstants.VIEW_SEARCH_RECORDS_REQUEST, searchRecordsRequest);
@@ -270,13 +234,13 @@ public class SearchRecordsController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/search", method = RequestMethod.POST, params = "action=request")
+    @PostMapping(value = "/search", params = "action=request")
     public ModelAndView requestRecords(@Valid @ModelAttribute("searchRecordsRequest") SearchRecordsRequest searchRecordsRequest,
                                        BindingResult result,
                                        Model model,
                                        HttpServletRequest request,
                                        RedirectAttributes redirectAttributes) {
-        UserDetailsForm userDetailsForm = getUserAuthUtil().getUserDetails(request.getSession(false),RecapConstants.REQUEST_PRIVILEGE);
+        UserDetailsForm userDetailsForm = getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE);
         processRequest(searchRecordsRequest, userDetailsForm, redirectAttributes);
         if (StringUtils.isNotBlank(searchRecordsRequest.getErrorMessage())) {
             searchRecordsRequest.setShowResults(true);
@@ -300,18 +264,14 @@ public class SearchRecordsController {
      * @throws Exception the exception
      */
     @ResponseBody
-    @RequestMapping(value = "/search", method = RequestMethod.POST, params = "action=export")
+    @PostMapping(value = "/search", params = "action=export")
     public byte[] exportRecords(@Valid @ModelAttribute("searchRecordsRequest") SearchRecordsRequest searchRecordsRequest, HttpServletResponse response,
                                   BindingResult result,
                                   Model model) throws Exception {
         DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
         String fileNameWithExtension = "ExportRecords_" + dateFormat.format(new Date()) + ".csv";
         File csvFile = csvUtil.writeSearchResultsToCsv(searchRecordsRequest.getSearchResultRows(), fileNameWithExtension);
-        byte[] fileContent = IOUtils.toByteArray(new FileInputStream(csvFile));
-        response.setHeader("Content-Disposition", "attachment; filename=\"" + fileNameWithExtension + "\"");
-        response.setContentLength(fileContent.length);
-        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.SEARCH);
-        return fileContent;
+        return HelperUtil.getFileContent(csvFile, model, response, fileNameWithExtension, RecapCommonConstants.SEARCH);
     }
 
     /**
@@ -324,14 +284,12 @@ public class SearchRecordsController {
      * @throws Exception the exception
      */
     @ResponseBody
-    @RequestMapping(value = "/search", method = RequestMethod.POST, params = "action=pageSizeChange")
+    @PostMapping(value = "/search", params = "action=pageSizeChange")
     public ModelAndView onPageSizeChange(@Valid @ModelAttribute("searchRecordsRequest") SearchRecordsRequest searchRecordsRequest,
                                          BindingResult result,
                                          Model model) throws Exception {
         searchRecordsRequest.setPageNumber(getPageNumberOnPageSizeChange(searchRecordsRequest));
-        searchAndSetResults(searchRecordsRequest);
-        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.SEARCH);
-        return new ModelAndView(RecapConstants.VIEW_SEARCH_RECORDS, RecapConstants.VIEW_SEARCH_RECORDS_REQUEST, searchRecordsRequest);
+        return searchRecordsPage(searchRecordsRequest, model);
     }
 
     /**
@@ -362,52 +320,25 @@ public class SearchRecordsController {
     }
 
     private boolean isEmptyField(SearchRecordsRequest searchRecordsRequest) {
-        if (StringUtils.isBlank(searchRecordsRequest.getFieldName()) && StringUtils.isNotBlank(searchRecordsRequest.getFieldValue())) {
-            return true;
-        }
-        return false;
+        return StringUtils.isBlank(searchRecordsRequest.getFieldName()) && StringUtils.isNotBlank(searchRecordsRequest.getFieldValue());
     }
 
     private boolean isItemField(SearchRecordsRequest searchRecordsRequest) {
-        if (StringUtils.isNotBlank(searchRecordsRequest.getFieldName())
-                && (searchRecordsRequest.getFieldName().equalsIgnoreCase(RecapCommonConstants.BARCODE) || searchRecordsRequest.getFieldName().equalsIgnoreCase(RecapCommonConstants.CALL_NUMBER))) {
-            return true;
-        }
-        return false;
+        return (StringUtils.isNotBlank(searchRecordsRequest.getFieldName())
+                && (searchRecordsRequest.getFieldName().equalsIgnoreCase(RecapCommonConstants.BARCODE) ||
+                searchRecordsRequest.getFieldName().equalsIgnoreCase(RecapCommonConstants.CALL_NUMBER)));
     }
 
-    private void searchAndSetResults(SearchRecordsRequest searchRecordsRequest) {
-        searchRecordsRequest.reset();
-        searchRecordsRequest.setSearchResultRows(null);
-        searchRecordsRequest.setShowResults(true);
-        searchRecordsRequest.setSelectAll(false);
 
-        SearchRecordsResponse searchRecordsResponse = getSearchUtil().requestSearchResults(searchRecordsRequest);
-        searchRecordsRequest.setSearchResultRows(searchRecordsResponse.getSearchResultRows());
-        searchRecordsRequest.setTotalRecordsCount(searchRecordsResponse.getTotalRecordsCount());
-        searchRecordsRequest.setTotalBibRecordsCount(searchRecordsResponse.getTotalBibRecordsCount());
-        searchRecordsRequest.setTotalItemRecordsCount(searchRecordsResponse.getTotalItemRecordsCount());
-        searchRecordsRequest.setTotalPageCount(searchRecordsResponse.getTotalPageCount());
-        searchRecordsRequest.setShowTotalCount(searchRecordsResponse.isShowTotalCount());
-        searchRecordsRequest.setErrorMessage(searchRecordsResponse.getErrorMessage());
-
-        if(CollectionUtils.isEmpty(searchRecordsRequest.getSearchResultRows())) {
-            searchRecordsRequest.setTotalRecordsCount(String.valueOf(0));
-            searchRecordsRequest.setTotalBibRecordsCount(String.valueOf(0));
-            searchRecordsRequest.setTotalItemRecordsCount(String.valueOf(0));
-            if (searchRecordsRequest.getErrorMessage() == null) {
-                searchRecordsRequest.setErrorMessage(RecapCommonConstants.SEARCH_RESULT_ERROR_NO_RECORDS_FOUND);
-            }
-        }
-
-    }
 
     private void processRequest(SearchRecordsRequest searchRecordsRequest, UserDetailsForm userDetailsForm, RedirectAttributes redirectAttributes) {
         String userInstitution = null ;
         Optional<InstitutionEntity> institutionEntity = getInstitutionDetailsRepository().findById(userDetailsForm.getLoginInstitutionId());
-           if (institutionEntity.isPresent()) {
-               userInstitution = institutionEntity.get().getInstitutionCode();
-           }
+
+
+        if (institutionEntity.isPresent()) {
+            userInstitution = institutionEntity.get().getInstitutionCode();
+        }
         List<SearchResultRow> searchResultRows = searchRecordsRequest.getSearchResultRows();
         Set<String> barcodes = new HashSet<>();
         Set<String> itemTitles = new HashSet<>();
@@ -467,14 +398,6 @@ public class SearchRecordsController {
         }
     }
 
-    private boolean isAnyItemSelected(List<SearchItemResultRow> searchItemResultRows) {
-        for (SearchItemResultRow searchItemResultRow :  searchItemResultRows) {
-            if (searchItemResultRow.isSelectedItem()) {
-                return true;
-            }
-        }
-        return false;
-    }
 
 
     /**
@@ -487,5 +410,9 @@ public class SearchRecordsController {
         binder.setAutoGrowCollectionLimit(1048576);
     }
 
-
+    private ModelAndView searchRecordsPage(SearchRecordsRequest searchRecordsRequest, Model model) {
+        searchUtil.searchAndSetResults(searchRecordsRequest);
+        model.addAttribute( RecapCommonConstants.TEMPLATE,  RecapCommonConstants.SEARCH);
+        return new ModelAndView(RecapConstants.VIEW_SEARCH_RECORDS, RecapConstants.VIEW_SEARCH_RECORDS_REQUEST, searchRecordsRequest);
+    }
 }

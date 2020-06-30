@@ -2,7 +2,8 @@ package org.recap.controller;
 
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 /**
  * Created by rajeshbabuk on 1/11/16.
@@ -17,8 +18,8 @@ public class RecapErrorPageController implements ErrorController {
      *
      * @return the string
      */
-    @RequestMapping(value = PATH)
-    public String recapErrorPage() {
+    @GetMapping(path = "/error")
+     public String recapErrorPage() {
         return "error";
     }
 

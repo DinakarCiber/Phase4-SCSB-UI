@@ -6,8 +6,10 @@ import org.recap.util.MarcRecordViewUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+
 
 import javax.validation.Valid;
 
@@ -27,7 +29,7 @@ public class MarcRecordController {
      * @param model the model
      * @return the string
      */
-    @RequestMapping("/openMarcRecord")
+    @GetMapping(path = "/openMarcRecord")
     public String openMarcRecord(@Valid @ModelAttribute("bibId") Integer bibId, Model model) {
         BibliographicMarcForm bibliographicMarcForm = marcRecordViewUtil.buildBibliographicMarcForm(bibId, null,null);
         model.addAttribute("bibliographicMarcForm", bibliographicMarcForm);

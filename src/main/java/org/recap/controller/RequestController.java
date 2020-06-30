@@ -2,7 +2,6 @@ package org.recap.controller;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.shiro.authc.UsernamePasswordToken;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -27,14 +26,12 @@ import org.recap.repository.jpa.RequestItemDetailsRepository;
 import org.recap.repository.jpa.RequestStatusDetailsRepository;
 import org.recap.security.UserManagementService;
 import org.recap.service.RequestService;
-import org.recap.service.RestHeaderService;
-import org.recap.util.RequestServiceUtil;
-import org.recap.util.SecurityUtil;
+import org.recap.util.HelperUtil;
 import org.recap.util.UserAuthUtil;
+import org.recap.util.SecurityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -42,9 +39,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -68,18 +65,10 @@ import java.util.Map;
  */
 
 @Controller
-public class RequestController {
+public class RequestController extends  RecapController {
 
     private static final Logger logger = LoggerFactory.getLogger(RequestController.class);
 
-    @Value("${scsb.url}")
-    private String scsbUrl;
-
-    @Value("${scsb.shiro}")
-    private String scsbShiro;
-
-    @Autowired
-    private RequestServiceUtil requestServiceUtil;
 
     @Autowired
     private InstitutionDetailsRepository institutionDetailsRepository;
@@ -106,21 +95,8 @@ public class RequestController {
     private RequestService requestService;
 
     @Autowired
-    RestHeaderService restHeaderService;
-
-    @Autowired
     private SecurityUtil securityUtil;
 
-    public RestHeaderService getRestHeaderService(){return restHeaderService;}
-
-    /**
-     * Gets request service util.
-     *
-     * @return the request service util
-     */
-    public RequestServiceUtil getRequestServiceUtil() {
-        return requestServiceUtil;
-    }
 
     /**
      * Gets user auth util.
@@ -167,23 +143,6 @@ public class RequestController {
         return itemDetailsRepository;
     }
 
-    /**
-     * Gets scsb shiro.
-     *
-     * @return the scsb shiro
-     */
-    public String getScsbShiro() {
-        return scsbShiro;
-    }
-
-    /**
-     * Gets scsb url.
-     *
-     * @return the scsb url
-     */
-    public String getScsbUrl() {
-        return scsbUrl;
-    }
 
     /**
      * Gets request item details repository.
@@ -229,15 +188,15 @@ public class RequestController {
      * @return the string
      * @throws JSONException the json exception
      */
-    @RequestMapping("/request")
+    @GetMapping("/request")
     public String request(Model model, HttpServletRequest request) throws JSONException {
-        HttpSession session = request.getSession(false);
-        boolean authenticated = getUserAuthUtil().authorizedUser(RecapConstants.SCSB_SHIRO_REQUEST_URL, (UsernamePasswordToken) session.getAttribute(RecapConstants.USER_TOKEN));
+        HttpSession session=request.getSession(false);
+        boolean authenticated= HelperUtil.authenticate(session, getUserAuthUtil(), RecapConstants.SCSB_SHIRO_REQUEST_URL);
         if (authenticated) {
-            UserDetailsForm userDetailsForm = getUserAuthUtil().getUserDetails(session, RecapConstants.REQUEST_PRIVILEGE);
+            UserDetailsForm userDetailsForm = getUserDetails(session, RecapConstants.REQUEST_PRIVILEGE);
             RequestForm requestForm = getRequestService().setFormDetailsForRequest(model, request, userDetailsForm);
             model.addAttribute(RecapConstants.REQUEST_FORM, requestForm);
-            model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.REQUEST);
+            model.addAttribute( RecapCommonConstants.TEMPLATE,  RecapCommonConstants.REQUEST);
             return RecapConstants.VIEW_SEARCH_RECORDS;
         } else {
             return UserManagementService.unAuthorizedUser(session, "Request", logger);
@@ -253,15 +212,12 @@ public class RequestController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/request", method = RequestMethod.POST, params = "action=searchRequests")
+    @PostMapping(value = "/request",  params = "action=searchRequests")
     public ModelAndView searchRequests(@Valid @ModelAttribute("requestForm") RequestForm requestForm,
                                        BindingResult result,
                                        Model model) {
         try {
-            disableRequestSearchInstitutionDropDown(requestForm);
-            requestForm.resetPageNumber();
-            searchAndSetResults(requestForm);
-            model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.REQUEST);
+            setSearch(requestForm, model);
         } catch (Exception exception) {
             logger.error(RecapCommonConstants.LOG_ERROR, exception);
             logger.debug(exception.getMessage());
@@ -279,19 +235,15 @@ public class RequestController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/request/goToSearchRequest", method = RequestMethod.GET)
+    @GetMapping(value = "/request/goToSearchRequest")
     public ModelAndView goToSearchRequest(@Valid @ModelAttribute("requestForm") RequestForm requestForm,String patronBarcodeInRequest,
                                        BindingResult result,
                                        Model model,HttpServletRequest request) {
         try {
-            UserDetailsForm userDetails = getUserAuthUtil().getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE);
+            UserDetailsForm userDetails = getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE);
             requestForm.resetPageNumber();
             requestForm.setPatronBarcode(patronBarcodeInRequest);
-            List<String> requestStatuses = new ArrayList<>();
-            List<String> institutionList = new ArrayList<>();
-            getRequestService().findAllRequestStatusExceptProcessing(requestStatuses);
-            requestForm.setRequestStatuses(requestStatuses);
-            setFormValuesToDisableSearchInstitution(requestForm, userDetails, institutionList);
+            setFormValues(requestForm, userDetails);
             requestForm.setStatus("");
             searchAndSetResults(requestForm);
             model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.REQUEST);
@@ -311,14 +263,11 @@ public class RequestController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/request", method = RequestMethod.POST, params = "action=first")
+    @PostMapping(value = "/request", params = "action=first")
     public ModelAndView searchFirst(@Valid @ModelAttribute("requestForm") RequestForm requestForm,
                                     BindingResult result,
                                     Model model) {
-        disableRequestSearchInstitutionDropDown(requestForm);
-        requestForm.resetPageNumber();
-        searchAndSetResults(requestForm);
-        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.REQUEST);
+        setSearch(requestForm, model);
         return new ModelAndView(RecapConstants.VIEW_SEARCH_REQUESTS_SECTION, RecapConstants.REQUEST_FORM, requestForm);
     }
 
@@ -331,7 +280,7 @@ public class RequestController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/request", method = RequestMethod.POST, params = "action=last")
+    @PostMapping(value = "/request", params = "action=last")
     public ModelAndView searchLast(@Valid @ModelAttribute("requestForm") RequestForm requestForm,
                                    BindingResult result,
                                    Model model) {
@@ -351,14 +300,11 @@ public class RequestController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/request", method = RequestMethod.POST, params = "action=previous")
+    @PostMapping(value = "/request", params = "action=previous")
     public ModelAndView searchPrevious(@Valid @ModelAttribute("requestForm") RequestForm requestForm,
                                        BindingResult result,
                                        Model model) {
-        disableRequestSearchInstitutionDropDown(requestForm);
-        searchAndSetResults(requestForm);
-        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.REQUEST);
-        return new ModelAndView(RecapConstants.VIEW_SEARCH_REQUESTS_SECTION, RecapConstants.REQUEST_FORM, requestForm);
+        return search(requestForm, model);
     }
 
     /**
@@ -370,14 +316,11 @@ public class RequestController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/request", method = RequestMethod.POST, params = "action=next")
+    @PostMapping(value = "/request", params = "action=next")
     public ModelAndView searchNext(@Valid @ModelAttribute("requestForm") RequestForm requestForm,
                                    BindingResult result,
                                    Model model) {
-        disableRequestSearchInstitutionDropDown(requestForm);
-        searchAndSetResults(requestForm);
-        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.REQUEST);
-        return new ModelAndView(RecapConstants.VIEW_SEARCH_REQUESTS_SECTION, RecapConstants.REQUEST_FORM, requestForm);
+        return search(requestForm, model);
     }
 
     /**
@@ -389,7 +332,7 @@ public class RequestController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/request", method = RequestMethod.POST, params = "action=requestPageSizeChange")
+    @PostMapping(value = "/request", params = "action=requestPageSizeChange")
     public ModelAndView onRequestPageSizeChange(@Valid @ModelAttribute("requestForm") RequestForm requestForm,
                                                 BindingResult result,
                                                 Model model) {
@@ -408,13 +351,11 @@ public class RequestController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/request", method = RequestMethod.POST, params = "action=loadCreateRequest")
+    @PostMapping(value = "/request", params = "action=loadCreateRequest")
     public ModelAndView loadCreateRequest(Model model, HttpServletRequest request) {
-        UserDetailsForm userDetailsForm = getUserAuthUtil().getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE);
+        UserDetailsForm userDetailsForm = getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE);
         RequestForm requestForm = getRequestService().setDefaultsToCreateRequest(userDetailsForm,model);
-        model.addAttribute(RecapConstants.REQUEST_FORM, requestForm);
-        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.REQUEST);
-        return new ModelAndView(RecapCommonConstants.REQUEST, RecapConstants.REQUEST_FORM, requestForm);
+        return setRequestAttribute(requestForm, model);
     }
 
     /**
@@ -425,14 +366,12 @@ public class RequestController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/request", method = RequestMethod.POST, params = "action=loadCreateRequestForSamePatron")
+    @PostMapping(value = "/request", params = "action=loadCreateRequestForSamePatron")
     public ModelAndView loadCreateRequestForSamePatron(Model model, HttpServletRequest request) {
-        UserDetailsForm userDetailsForm = getUserAuthUtil().getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE);
+        UserDetailsForm userDetailsForm = getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE);
         RequestForm requestForm = getRequestService().setDefaultsToCreateRequest(userDetailsForm,model);
         requestForm.setOnChange("true");
-        model.addAttribute(RecapConstants.REQUEST_FORM, requestForm);
-        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.REQUEST);
-        return new ModelAndView(RecapCommonConstants.REQUEST, RecapConstants.REQUEST_FORM, requestForm);
+        return setRequestAttribute(requestForm, model);
     }
 
     /**
@@ -443,18 +382,12 @@ public class RequestController {
      * @return the model and view
      */
     @ResponseBody
-    @RequestMapping(value = "/request", method = RequestMethod.POST, params = "action=loadSearchRequest")
+    @PostMapping(value = "/request", params = "action=loadSearchRequest")
     public ModelAndView loadSearchRequest(Model model, HttpServletRequest request) {
-        UserDetailsForm userDetails = getUserAuthUtil().getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE);
+        UserDetailsForm userDetails = getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE);
         RequestForm requestForm = new RequestForm();
-        List<String> requestStatuses = new ArrayList<>();
-        List<String> institutionList = new ArrayList<>();
-        getRequestService().findAllRequestStatusExceptProcessing(requestStatuses);
-        requestForm.setRequestStatuses(requestStatuses);
-        setFormValuesToDisableSearchInstitution(requestForm, userDetails, institutionList);
-        model.addAttribute(RecapConstants.REQUEST_FORM, requestForm);
-        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.REQUEST);
-        return new ModelAndView(RecapCommonConstants.REQUEST, RecapConstants.REQUEST_FORM, requestForm);
+        setFormValues(requestForm, userDetails);
+        return setRequestAttribute(requestForm, model);
     }
 
 
@@ -469,7 +402,7 @@ public class RequestController {
      * @throws JSONException the json exception
      */
     @ResponseBody
-    @RequestMapping(value = "/request", method = RequestMethod.POST, params = "action=populateItem")
+    @PostMapping(value = "/request", params = "action=populateItem")
     public String populateItem(@Valid @ModelAttribute("requestForm") RequestForm requestForm,
                                BindingResult result,
                                Model model, HttpServletRequest request) throws JSONException {
@@ -488,7 +421,7 @@ public class RequestController {
      * @throws JSONException the json exception
      */
     @ResponseBody
-    @RequestMapping(value = "/request", method = RequestMethod.POST, params = "action=createRequest")
+    @PostMapping(value = "/request", params = "action=createRequest")
     public ModelAndView createRequest(@Valid @ModelAttribute("requestForm") RequestForm requestForm,
                                 BindingResult result,
                                 Model model, HttpServletRequest request) throws JSONException {
@@ -610,7 +543,7 @@ public class RequestController {
      * @return the string
      */
     @ResponseBody
-    @RequestMapping(value = "/request", method = RequestMethod.POST, params = "action=cancelRequest")
+    @PostMapping(value = "/request", params = "action=cancelRequest")
     public String cancelRequest(@Valid @ModelAttribute("requestForm") RequestForm requestForm,
                                 BindingResult result,
                                 Model model) {
@@ -625,7 +558,7 @@ public class RequestController {
             jsonObject.put(RecapCommonConstants.MESSAGE, cancelRequestResponse.getScreenMessage());
             jsonObject.put(RecapCommonConstants.STATUS, cancelRequestResponse.isSuccess());
             Optional<RequestItemEntity> requestItemEntity = getRequestItemDetailsRepository().findById(requestForm.getRequestId());
-            if (null != requestItemEntity) {
+            if (requestItemEntity.isPresent()) {
                 requestStatus = requestItemEntity.get().getRequestStatusEntity().getRequestStatusDescription();
                 requestNotes = requestItemEntity.get().getNotes();
             }
@@ -646,7 +579,7 @@ public class RequestController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "/request", method = RequestMethod.POST, params = "action=resubmitRequest")
+    @PostMapping(value = "/request", params = "action=resubmitRequest")
     public String resubmitRequest(@Valid @ModelAttribute("requestForm") RequestForm requestForm,
                                 BindingResult result,
                                 Model model) {
@@ -658,7 +591,7 @@ public class RequestController {
             String requestId = String.valueOf(requestForm.getRequestId());
             replaceRequest.setRequestIds(requestId);
             HttpEntity request = new HttpEntity<>(replaceRequest, getRestHeaderService().getHttpHeaders());
-            Map resultMap = getRestTemplate().postForObject(scsbUrl + RecapConstants.URL_REQUEST_RESUBMIT, request, Map.class);
+            Map resultMap = getRestTemplate().postForObject(getScsbUrl() + RecapConstants.URL_REQUEST_RESUBMIT, request, Map.class);
             jsonObject.put(RecapCommonConstants.BARCODE, requestForm.getItemBarcodeHidden());
             if (resultMap.containsKey(requestId)) {
                 String message = (String) resultMap.get(requestId);
@@ -720,51 +653,23 @@ public class RequestController {
     }
 
     private void populateRequestResultsForRecall(List<SearchResultRow> searchResultRows, RequestItemEntity requestItemEntity) {
-        SearchResultRow searchResultRow = new SearchResultRow();
-        searchResultRow.setRequestId(requestItemEntity.getId());
-        searchResultRow.setRequestingInstitution(requestItemEntity.getInstitutionEntity().getInstitutionCode());
-        searchResultRow.setBarcode(requestItemEntity.getItemEntity().getBarcode());
-        searchResultRow.setOwningInstitution(requestItemEntity.getItemEntity().getInstitutionEntity().getInstitutionCode());
-        searchResultRow.setRequestType(requestItemEntity.getRequestTypeEntity().getRequestTypeCode());
-        searchResultRow.setAvailability(requestItemEntity.getItemEntity().getItemStatusEntity().getStatusCode());
-        searchResultRow.setCreatedDate(requestItemEntity.getCreatedDate());
-        searchResultRow.setLastUpdatedDate(requestItemEntity.getLastUpdatedDate());
-        searchResultRow.setStatus(requestItemEntity.getRequestStatusEntity().getRequestStatusDescription());
-        searchResultRow.setRequestNotes(requestItemEntity.getNotes());
+        SearchResultRow searchResultRow = setSearchResultRow(requestItemEntity);
         searchResultRow.setShowItems(false);
-        ItemEntity itemEntity = requestItemEntity.getItemEntity();
-        if (null != itemEntity && CollectionUtils.isNotEmpty(itemEntity.getBibliographicEntities())) {
-            searchResultRow.setBibId(itemEntity.getBibliographicEntities().get(0).getBibliographicId());
-        }
-        searchResultRows.add(searchResultRow);
+        setBibData(requestItemEntity, searchResultRow, searchResultRows);
     }
 
     private void populateRequestResults(List<SearchResultRow> searchResultRows, RequestItemEntity requestItemEntity) {
-        SearchResultRow searchResultRow = new SearchResultRow();
-        searchResultRow.setRequestId(requestItemEntity.getId());
-        searchResultRow.setPatronBarcode(requestItemEntity.getPatronId());
-        searchResultRow.setRequestingInstitution(requestItemEntity.getInstitutionEntity().getInstitutionCode());
-        searchResultRow.setBarcode(requestItemEntity.getItemEntity().getBarcode());
-        searchResultRow.setOwningInstitution(requestItemEntity.getItemEntity().getInstitutionEntity().getInstitutionCode());
-        searchResultRow.setDeliveryLocation(requestItemEntity.getStopCode());
-        searchResultRow.setRequestType(requestItemEntity.getRequestTypeEntity().getRequestTypeCode());
-        searchResultRow.setRequestCreatedBy(requestItemEntity.getCreatedBy());
-        searchResultRow.setAvailability(requestItemEntity.getItemEntity().getItemStatusEntity().getStatusCode());
+        SearchResultRow searchResultRow = setSearchResultRow(requestItemEntity);
         searchResultRow.setShowItems(true);
+        searchResultRow.setRequestCreatedBy(requestItemEntity.getCreatedBy());
         if(StringUtils.isNotBlank(requestItemEntity.getEmailId())){
             searchResultRow.setPatronEmailId(securityUtil.getDecryptedValue(requestItemEntity.getEmailId()));
         }else {
             searchResultRow.setPatronEmailId(requestItemEntity.getEmailId());
         }
-        searchResultRow.setRequestNotes(requestItemEntity.getNotes());
-        searchResultRow.setCreatedDate(requestItemEntity.getCreatedDate());
-        searchResultRow.setLastUpdatedDate(requestItemEntity.getLastUpdatedDate());
-        searchResultRow.setStatus(requestItemEntity.getRequestStatusEntity().getRequestStatusDescription());
-        ItemEntity itemEntity = requestItemEntity.getItemEntity();
-        if (null != itemEntity && CollectionUtils.isNotEmpty(itemEntity.getBibliographicEntities())) {
-            searchResultRow.setBibId(itemEntity.getBibliographicEntities().get(0).getBibliographicId());
-        }
-        searchResultRows.add(searchResultRow);
+        searchResultRow.setPatronBarcode(requestItemEntity.getPatronId());
+        searchResultRow.setDeliveryLocation(requestItemEntity.getStopCode());
+        setBibData(requestItemEntity, searchResultRow, searchResultRows);
     }
 
     private Integer getPageNumberOnPageSizeChange(RequestForm requestForm) {
@@ -798,19 +703,19 @@ public class RequestController {
      * @return the string
      */
     @ResponseBody
-    @RequestMapping(value = "/request/refreshStatus", method = RequestMethod.GET)
+    @GetMapping(value = "/request/refreshStatus")
     public String refreshStatus(HttpServletRequest request) {
         return getRequestService().getRefreshedStatus(request);
     }
 
     private void setFormValuesToDisableSearchInstitution(@Valid @ModelAttribute("requestForm") RequestForm requestForm, UserDetailsForm userDetails, List<String> institutionList) {
         Optional<InstitutionEntity> institutionEntity = getInstitutionDetailsRepository().findById(userDetails.getLoginInstitutionId());
-        if(userDetails.isSuperAdmin() || userDetails.isRecapUser() || institutionEntity.get().getInstitutionCode().equalsIgnoreCase("HTC")){
+        if(userDetails.isSuperAdmin() || userDetails.isRecapUser() || ( (institutionEntity.isPresent()) && (institutionEntity.get().getInstitutionCode().equalsIgnoreCase("HTC")))){
             getRequestService().getInstitutionForSuperAdmin(institutionList);
             requestForm.setInstitutionList(institutionList);
         }else {
             requestForm.setDisableSearchInstitution(true);
-            if(institutionEntity != null) {
+            if(institutionEntity.isPresent()) {
                 requestForm.setInstitutionList(Arrays.asList(institutionEntity.get().getInstitutionCode()));
                 requestForm.setInstitution(institutionEntity.get().getInstitutionCode());
                 requestForm.setSearchInstitutionHdn(institutionEntity.get().getInstitutionCode());
@@ -818,11 +723,41 @@ public class RequestController {
         }
     }
 
-    private void disableRequestSearchInstitutionDropDown(@Valid @ModelAttribute("requestForm") RequestForm requestForm) {
-        if (requestForm.getInstitutionList().size() == 1){
-            requestForm.setDisableSearchInstitution(true);
-            requestForm.setInstitution(requestForm.getSearchInstitutionHdn());
+    private ModelAndView search(RequestForm requestForm, Model model) {
+        disableRequestSearchInstitutionDropDown(requestForm);
+        searchAndSetResults(requestForm);
+        model.addAttribute( RecapCommonConstants.TEMPLATE,  RecapCommonConstants.REQUEST);
+        return new ModelAndView(RecapConstants.VIEW_SEARCH_REQUESTS_SECTION, RecapConstants.REQUEST_FORM, requestForm);
+    }
+
+    private void setBibData(RequestItemEntity requestItemEntity, SearchResultRow searchResultRow, List<SearchResultRow> searchResultRows) {
+        ItemEntity itemEntity = requestItemEntity.getItemEntity();
+        if (null != itemEntity && CollectionUtils.isNotEmpty(itemEntity.getBibliographicEntities())) {
+            searchResultRow.setBibId(itemEntity.getBibliographicEntities().get(0).getBibliographicId());
         }
+        searchResultRows.add(searchResultRow);
+    }
+
+    private ModelAndView setRequestAttribute(RequestForm requestForm, Model model) {
+        model.addAttribute(RecapConstants.REQUEST_FORM, requestForm);
+        model.addAttribute( RecapCommonConstants.TEMPLATE,  RecapCommonConstants.REQUEST);
+        return new ModelAndView( RecapCommonConstants.REQUEST, RecapConstants.REQUEST_FORM, requestForm);
+    }
+    private void setFormValues(RequestForm requestForm,UserDetailsForm userDetails)
+    {
+        List<String> requestStatuses = new ArrayList<>();
+        List<String> institutionList = new ArrayList<>();
+        getRequestService().findAllRequestStatusExceptProcessing(requestStatuses);
+        requestForm.setRequestStatuses(requestStatuses);
+        setFormValuesToDisableSearchInstitution(requestForm, userDetails, institutionList);
+
+    }
+    private void setSearch(RequestForm requestForm, Model model)
+    {
+        disableRequestSearchInstitutionDropDown(requestForm);
+        requestForm.resetPageNumber();
+        searchAndSetResults(requestForm);
+        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.REQUEST);
     }
 }
 

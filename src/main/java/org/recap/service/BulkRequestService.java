@@ -87,7 +87,7 @@ public class BulkRequestService {
                 Integer userId = (Integer) session.getAttribute(RecapConstants.USER_ID);
                 Optional<UsersEntity> usersEntity = userDetailsRepository.findById(userId);
                 BulkRequestItemEntity bulkRequestItemEntity = new BulkRequestItemEntity();
-                bulkRequestItemEntity.setCreatedBy(usersEntity != null ? usersEntity.get().getLoginId() : "");
+                bulkRequestItemEntity.setCreatedBy(usersEntity.isPresent() ? usersEntity.get().getLoginId() : "");
                 bulkRequestItemEntity.setCreatedDate(new Date());
                 bulkRequestItemEntity.setLastUpdatedDate(new Date());
                 bulkRequestItemEntity.setEmailId(getEncryptedPatronEmailId(bulkRequestForm.getPatronEmailAddress()));
