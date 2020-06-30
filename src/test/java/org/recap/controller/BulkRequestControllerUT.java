@@ -134,12 +134,9 @@ public class BulkRequestControllerUT extends BaseTestCase {
     @Test
     public void createRequest() throws Exception{
         when(request.getSession(false)).thenReturn(session);
-        boolean value = true;
         BulkRequestForm bulkRequestForm = getBulkRequestForm();
-        HttpEntity<BulkRequestForm> httpEntity = new HttpEntity<>(bulkRequestForm, restHeaderService.getHttpHeaders());
-        //Mockito.when(new RestTemplate().exchange(scsbUrl + "/requestItem/patronValidationBulkRequest", HttpMethod.POST,httpEntity, Boolean.class)).thenCallRealMethod();
-       // ModelAndView modelAndView = bulkRequestController.createRequest(bulkRequestForm,file,model,request);
-       // assertNotNull(modelAndView);
+        ModelAndView modelAndView = bulkRequestController.createRequest(bulkRequestForm,file,model,request);
+        assertNotNull(modelAndView);
     }
     @Test
     public void loadCreateRequest(){

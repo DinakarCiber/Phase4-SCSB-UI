@@ -42,12 +42,13 @@ public class BulkRequestServiceUT extends BaseTestCase {
     String scsbShiro;
 
 
+
+
     @Test
     public void testProcessCreateBulkRequest(){
         BulkRequestForm bulkRequestForm = getBulkRequestForm();
-
-       // bulkRequestService.processCreateBulkRequest(bulkRequestForm,request);
-
+        when(request.getSession()).thenReturn(session);
+        //bulkRequestService.processCreateBulkRequest(bulkRequestForm,request);
     }
 
     @Test
@@ -77,7 +78,7 @@ public class BulkRequestServiceUT extends BaseTestCase {
     @Test
     public void testSaveUpadatedRequestStatus() throws Exception{
         BulkRequestForm bulkRequestForm = getBulkRequestForm();
-        //bulkRequestService.saveUpadatedRequestStatus(bulkRequestForm.getRequestId());
+        bulkRequestService.saveUpadatedRequestStatus(bulkRequestForm.getRequestId());
     }
 
 

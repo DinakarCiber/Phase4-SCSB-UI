@@ -34,13 +34,7 @@ import org.springframework.validation.support.BindingAwareModelMap;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.servlet.http.HttpSession;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Random;
-import java.util.Date;
+import java.util.*;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotEquals;
@@ -195,12 +189,12 @@ public class RequestServiceUT extends BaseTestCase {
         Mockito.when(requestServiceMocked.getItemDetailsRepository()).thenReturn(itemDetailsRepository);
         Mockito.when(requestServiceMocked.getUserAuthUtil()).thenReturn(userAuthUtil);
         when(request.getSession()).thenReturn(session);
-        UserDetailsForm userDetailsForm = getUserDetails();
+        UserDetailsForm userDetailsForm = getUserDetailsForm();
         Mockito.when(requestServiceMocked.populateItemForRequest(requestForm,request)).thenCallRealMethod();
         Mockito.when(requestServiceMocked.getItemDetailsRepository()).thenReturn(itemDetailsRepository);
         List<ItemEntity> itemEntityList=new ArrayList<>();
         ItemEntity itemEntity=new ItemEntity();
-        itemEntity.setCustomerCode("PA");
+        itemEntity.setCustomerCode("PG");
         itemEntityList.add(itemEntity);
         Mockito.when(requestServiceMocked.getRequestTypeDetailsRepository()).thenReturn(requestTypeDetailsRepository);
         Mockito.when(requestServiceMocked.getCustomerCodeDetailsRepository()).thenReturn(mockedCustomerCodeDetailsRepository);
@@ -234,22 +228,45 @@ public class RequestServiceUT extends BaseTestCase {
 
     @Test
     public void testSetFormDetailsForRequest() throws JSONException {
+        RequestForm requestForm = getRequestForm();
+        LinkedHashSet<String> requestedItemAvailabilty = new LinkedHashSet<>();
+        requestedItemAvailabilty.add("Available");
+        requestedItemAvailabilty.add("Not Available");
         UserDetailsForm userDetailsForm = getUserDetailsForm();
         Mockito.when(requestServiceMocked.getInstitutionDetailsRepository()).thenReturn(institutionDetailRepository);
         Mockito.when(requestServiceMocked.getRequestTypeDetailsRepository()).thenReturn(requestTypeDetailsRepository);
+        Mockito.when(requestServiceMocked.populateItemForRequest(requestForm,request)).thenReturn("test");
         Object barcode="123";
+        Mockito.when(((BindingAwareModelMap) model).get(RecapConstants.REQUESTED_ITEM_AVAILABILITY)).thenReturn(requestedItemAvailabilty);
         Mockito.when(((BindingAwareModelMap) model).get(RecapConstants.REQUESTED_BARCODE)).thenReturn(barcode);
         Mockito.when(requestServiceMocked.setFormDetailsForRequest(model,request,userDetailsForm)).thenCallRealMethod();
         Mockito.when(requestServiceMocked.setDefaultsToCreateRequest(userDetailsForm,model)).thenCallRealMethod();
-        RequestForm requestForm = requestServiceMocked.setFormDetailsForRequest(model, request, userDetailsForm);
-        Assert.notNull(requestForm);
+        RequestForm requestForm1 = requestServiceMocked.setFormDetailsForRequest(model, request, userDetailsForm);
+        Assert.notNull(requestForm1);
     }
 
     @Test
     public void testSetDefaultsToCreateRequest(){
+        LinkedHashSet<String> requestedItemAvailabilty = new LinkedHashSet<>();
+        requestedItemAvailabilty.add("Available");
+        requestedItemAvailabilty.add("Not Available");
         UserDetailsForm userDetailsForm = getUserDetailsForm();
         Mockito.when(requestServiceMocked.getInstitutionDetailsRepository()).thenReturn(institutionDetailRepository);
         Mockito.when(requestServiceMocked.getRequestTypeDetailsRepository()).thenReturn(requestTypeDetailsRepository);
+        Mockito.when(((BindingAwareModelMap) model).get(RecapConstants.REQUESTED_ITEM_AVAILABILITY)).thenReturn(requestedItemAvailabilty);
+        Mockito.when(requestServiceMocked.setDefaultsToCreateRequest(userDetailsForm,model)).thenCallRealMethod();
+        RequestForm requestForm = requestServiceMocked.setDefaultsToCreateRequest(userDetailsForm, model);
+        Assert.notNull(requestForm);
+    }
+    @Test
+    public void testSetDefaultsToCreateRequest1(){
+        LinkedHashSet<String> requestedItemAvailabilty = new LinkedHashSet<>();
+        requestedItemAvailabilty.add("Available");
+        UserDetailsForm userDetailsForm = getUserDetailsForm();
+        userDetailsForm.setSuperAdmin(true);
+        Mockito.when(requestServiceMocked.getInstitutionDetailsRepository()).thenReturn(institutionDetailRepository);
+        Mockito.when(requestServiceMocked.getRequestTypeDetailsRepository()).thenReturn(requestTypeDetailsRepository);
+        Mockito.when(((BindingAwareModelMap) model).get(RecapConstants.REQUESTED_ITEM_AVAILABILITY)).thenReturn(requestedItemAvailabilty);
         Mockito.when(requestServiceMocked.setDefaultsToCreateRequest(userDetailsForm,model)).thenCallRealMethod();
         RequestForm requestForm = requestServiceMocked.setDefaultsToCreateRequest(userDetailsForm, model);
         Assert.notNull(requestForm);
@@ -314,15 +331,6 @@ public class RequestServiceUT extends BaseTestCase {
 
         return bibliographicEntity;
 
-    }
-
-    private UserDetailsForm getUserDetails(){
-        UserDetailsForm userDetailsForm=new UserDetailsForm();
-        userDetailsForm.setLoginInstitutionId(2);
-        userDetailsForm.setSuperAdmin(false);
-        userDetailsForm.setRecapPermissionAllowed(false);
-        userDetailsForm.setRecapUser(false);
-        return userDetailsForm;
     }
 
     private ItemEntity getItemEntity() {

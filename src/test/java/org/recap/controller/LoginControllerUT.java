@@ -17,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpSession;
@@ -78,6 +79,12 @@ public class LoginControllerUT extends BaseControllerUT{
         assertNotNull(response);
         assertEquals(response,"login");
     }
+    @Test
+    public void home(){
+        String response = loginController.home(request,model,new UserForm());
+        assertNotNull(response);
+        assertEquals(response,"login");
+    }
 
     @Test
     public void logOutTest() throws Exception {
@@ -91,7 +98,7 @@ public class LoginControllerUT extends BaseControllerUT{
     public void createSessionTest() throws Exception{
         UserForm userForm = getUserForm();
         when(userAuthUtil.doAuthentication(token)).thenCallRealMethod();
-        when(restTemplate.postForObject(scsbShiro + RecapConstants.SCSB_SHIRO_AUTHENTICATE_URL, requestEntity, HashMap.class)).thenCallRealMethod();
+        when(restTemplate.postForObject(scsbShiro + RecapConstants.SCSB_SHIRO_AUTHENTICATE_URL, requestEntity, HashMap.class)).thenThrow(new RestClientException("Exception occured"));
         String response = loginController.createSession(userForm,request,model,error);
         assertNotNull(response);
         assertEquals(response,"login");

@@ -23,6 +23,7 @@ import org.recap.util.CollectionServiceUtil;
 import org.recap.util.MarcRecordViewUtil;
 import org.recap.util.SearchUtil;
 import org.recap.util.UserAuthUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.ui.Model;
@@ -68,6 +69,9 @@ public class CollectionControllerUT extends BaseControllerUT {
 
     @InjectMocks
     CollectionController collectionController;
+
+    @Autowired
+    CollectionController collectionController1;
 
     @Mock
     CollectionController getCollectionController;
@@ -131,18 +135,13 @@ public class CollectionControllerUT extends BaseControllerUT {
 
     @Test
     public void displayRecords() throws Exception {
-        SearchRecordsResponse searchRecordsResponse = new SearchRecordsResponse();
-        SearchResultRow searchResultRow = getSearchResultRow();
-        searchRecordsResponse.setSearchResultRows(Arrays.asList(searchResultRow));
         CollectionForm collectionForm = getCollectionForm();
         collectionForm.setErrorMessage("No results found.");
-        //Mockito.when(searchUtil.requestSearchResults(searchRecordsRequest)).thenReturn(searchRecordsResponse);
-        Mockito.when(searchUtil.requestSearchResults(searchRecordsRequest)).thenReturn(searchRecordsResponse);
-        Mockito.when(getCollectionController.displayRecords(collectionForm, bindingResult, model)).thenCallRealMethod();
-        /*ModelAndView modelAndView = getCollectionController.displayRecords(collectionForm, bindingResult, model);
+        ModelAndView modelAndView = collectionController1.displayRecords(collectionForm, bindingResult, model);
         assertNotNull(modelAndView);
-        assertEquals("searchRecords", modelAndView.getViewName());*/
+        assertEquals("searchRecords", modelAndView.getViewName());
     }
+
 
     @Test
     public void openMarcRecord() throws Exception {
@@ -161,6 +160,21 @@ public class CollectionControllerUT extends BaseControllerUT {
         ModelAndView modelAndView = getCollectionController.openMarcView(collectionForm, bindingResult, model,request);
         assertNotNull(modelAndView);
         assertEquals("collection :: #collectionUpdateModal", modelAndView.getViewName());
+    }
+
+    @Test
+    public void getMarcRecordViewUtil(){
+        MarcRecordViewUtil recordViewUtil = collectionController1.getMarcRecordViewUtil();
+        assertNotNull(recordViewUtil);
+    }
+    @Test
+    public void getUserAuthUtil1(){
+        UserAuthUtil userAuthUtil = collectionController1.getUserAuthUtil();
+        assertNotNull(userAuthUtil);
+    }
+    @Test
+    public void getCollectionServiceUtil(){
+        CollectionServiceUtil collectionServiceUtil = collectionController1.getCollectionServiceUtil();
     }
 
     @Test

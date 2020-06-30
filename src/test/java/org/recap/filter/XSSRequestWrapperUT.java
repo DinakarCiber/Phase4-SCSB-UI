@@ -23,7 +23,7 @@ public class XSSRequestWrapperUT extends BaseTestCase {
     @Test
     public void testGetParameterValues() throws Exception{
         String[] values;
-        String parameter = "test";
+        String parameter = "+-0123456789#";
         Mockito.doCallRealMethod().when(xssRequestWrapper).getParameterValues(parameter);
         /*values = xssRequestWrapper.getParameterValues(parameter);
         assertNotNull(values);*/
