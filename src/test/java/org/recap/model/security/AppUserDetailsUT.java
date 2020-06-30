@@ -19,16 +19,16 @@ public class AppUserDetailsUT extends BaseTestCase {
     @Test
     public void testAppUser(){
 
-        appUserDetails.setUserid("1");
+        appUserDetails.setUserId("1");
         appUserDetails.setRoles(Arrays.asList("Super Admin"));
         appUserDetails.setAuthorities(authorities);
-        appUserDetails.equals(appUserDetails.getUserid());
+        appUserDetails.equals(appUserDetails.getUserId());
         appUserDetails.hashCode();
         appUserDetails.toString();
 
-        appUserDetails.canEqual(appUserDetails.getUserid());
+
         assertNotNull(appUserDetails.getRoles());
-        assertNotNull(appUserDetails.getUserid());
+        assertNotNull(appUserDetails.getUserId());
         assertNotNull(appUserDetails.getUsername());
         assertNull(appUserDetails.getPassword());
         assertTrue(appUserDetails.isAccountNonExpired());

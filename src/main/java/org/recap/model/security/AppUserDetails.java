@@ -1,5 +1,7 @@
 package org.recap.model.security;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -10,11 +12,13 @@ import java.util.List;
 /**
  * Created by sheiks on 17/01/17.
  */
+@Getter
+@Setter
 public class AppUserDetails implements UserDetails {
 
     private static final long serialVersionUID = -4777124807325532850L;
 
-    private String userid;
+    private String userId;
 
     private Collection<? extends GrantedAuthority> authorities;
 
@@ -35,21 +39,12 @@ public class AppUserDetails implements UserDetails {
      */
     public AppUserDetails(String userid, Collection<? extends GrantedAuthority> authorities) {
         super();
-        this.userid = userid;
+        this.userId = userId;
         this.authorities = authorities;
         this.roles = new ArrayList<>();
         for (GrantedAuthority authority : authorities) {
             this.roles.add(authority.getAuthority());
         }
-    }
-
-    /**
-     * Gets userid.
-     *
-     * @return the userid
-     */
-    public String getUserid() {
-        return userid;
     }
 
     @Override
@@ -64,7 +59,7 @@ public class AppUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return userid;
+        return userId;
     }
 
     @Override
@@ -89,7 +84,7 @@ public class AppUserDetails implements UserDetails {
 
     @Override
     public String toString() {
-        return "UserDetails [userid=" + userid + ", authorities=" + roles.toString() + ", isAccountNonExpired()="
+        return "UserDetails [userId=" + userId + ", authorities=" + roles.toString() + ", isAccountNonExpired()="
                 + isAccountNonExpired() + ", isAccountNonLocked()=" + isAccountNonLocked()
                 + ", isCredentialsNonExpired()=" + isCredentialsNonExpired() + ", isEnabled()=" + isEnabled() + "]";
     }

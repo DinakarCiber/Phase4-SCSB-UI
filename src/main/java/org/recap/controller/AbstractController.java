@@ -1,6 +1,7 @@
 package org.recap.controller;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.recap.service.RestHeaderService;
 import org.recap.util.RequestServiceUtil;
 import org.recap.util.UserAuthUtil;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.client.RestTemplate;
 
 @Getter
+@Setter
 public class AbstractController {
 
     @Value("${scsb.url}")
