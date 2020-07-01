@@ -1,7 +1,6 @@
 package org.recap.controller;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.shiro.authc.UsernamePasswordToken;
 import org.recap.RecapCommonConstants;
 import org.recap.RecapConstants;
 import org.recap.model.jpa.BulkRequestItemEntity;
@@ -11,7 +10,6 @@ import org.recap.repository.jpa.BulkRequestDetailsRepository;
 import org.recap.repository.jpa.InstitutionDetailsRepository;
 import org.recap.security.UserManagementService;
 import org.recap.service.BulkRequestService;
-import org.recap.util.UserAuthUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

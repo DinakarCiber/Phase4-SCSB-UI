@@ -1,6 +1,5 @@
 package org.recap.controller;
 
-import org.apache.shiro.authc.UsernamePasswordToken;
 import org.recap.RecapCommonConstants;
 import org.recap.RecapConstants;
 import org.recap.model.jpa.PermissionEntity;
@@ -10,7 +9,6 @@ import org.recap.model.search.RolesSearchResult;
 import org.recap.repository.jpa.PermissionsDetailsRepository;
 import org.recap.repository.jpa.RolesDetailsRepositorty;
 import org.recap.security.UserManagementService;
-import org.recap.util.HelperUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,14 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.text.NumberFormat;
-import java.util.Date;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Optional;
-import java.util.StringTokenizer;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

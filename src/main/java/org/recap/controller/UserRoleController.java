@@ -556,14 +556,15 @@ public class UserRoleController extends AbstractController {
         userRoleForm.setTotalPageCount(usersEntities.getTotalPages());
     }
     private void setUserRoleFormRoleId(UserRoleForm userRoleForm,  Optional<UsersEntity> usersEntity) {
-        List<RoleEntity> roleEntityList = usersEntity.get().getUserRole();
-        List<Integer> roleIds = new ArrayList<>();
-        if (roleEntityList != null) {
-            for (RoleEntity roleEntity : roleEntityList) {
-                roleIds.add(roleEntity.getId());
+        if(usersEntity.isPresent()) {
+            List<RoleEntity> roleEntityList = usersEntity.get().getUserRole();
+            List<Integer> roleIds = new ArrayList<>();
+            if (roleEntityList != null) {
+                for (RoleEntity roleEntity : roleEntityList) {
+                    roleIds.add(roleEntity.getId());
+                }
+            }
+            userRoleForm.setEditSelectedForCreate(roleIds);
         }
     }
-    userRoleForm.setEditSelectedForCreate(roleIds);
-}
-
 }
