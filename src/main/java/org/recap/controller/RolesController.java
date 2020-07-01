@@ -118,7 +118,7 @@ public class RolesController extends AbstractController {
         boolean specialCharacterCheck = isSpecialCharacterCheck(rolesForm.getNewRoleName());
         if(!specialCharacterCheck){
             rolesForm.setErrorMessage(RecapConstants.SPECIAL_CHARACTERS_NOT_ALLOWED_CREATE);
-            rolesForm.setSelectedPermissionNames(getSeletedPermissionNames(rolesForm.getNewPermissionNames()));
+            rolesForm.setSelectedPermissionNames(getSelectedPermissionNames(rolesForm.getNewPermissionNames()));
         }
         else{
             HttpSession session = request.getSession(false);
@@ -155,7 +155,7 @@ public class RolesController extends AbstractController {
         rolesForm.setEditRoleName(roleName);
         rolesForm.setEditRoleDescription(roleDescription);
         rolesForm.setEditPermissionNames(htmlUnescapePermissionName);
-        rolesForm.setSelectedPermissionNames(getSeletedPermissionNames(htmlUnescapePermissionName));
+        rolesForm.setSelectedPermissionNames(getSelectedPermissionNames(htmlUnescapePermissionName));
         rolesForm.setShowIntial(false);
         return new ModelAndView(RecapConstants.ROLES, RecapConstants.ROLES_FORM, rolesForm);
     }
@@ -227,7 +227,7 @@ public class RolesController extends AbstractController {
         rolesForm.setRoleNameForDelete(roleName);
         rolesForm.setRoleDescriptionForDelete(roleDescription);
         rolesForm.setPermissionNamesForDelete(htmlUnescapePermissionName);
-        rolesForm.setSelectedPermissionNames(getSeletedPermissionNames(htmlUnescapePermissionName));
+        rolesForm.setSelectedPermissionNames(getSelectedPermissionNames(htmlUnescapePermissionName));
         rolesForm.setPageSize(pageSize);
         rolesForm.setPageNumber(pageNumber);
         rolesForm.setTotalPageCount(totalPageCount);
@@ -471,7 +471,7 @@ public class RolesController extends AbstractController {
         }
     }
 
-    private List<String> getSeletedPermissionNames(String permissionName) {
+    private List<String> getSelectedPermissionNames(String permissionName) {
         List<String> permissionNames = new ArrayList<>();
         if(!StringUtils.isEmpty(permissionName)){
             StringTokenizer stringTokenizer = new StringTokenizer(permissionName, ",");
@@ -500,7 +500,7 @@ public class RolesController extends AbstractController {
             permission.append(permissionEntity.getPermissionName());
             permission.append(", ");
         }
-        String permissionName = getSeletedPermissionNames(permission.toString()).toString().replaceAll("\\[", "").replaceAll("\\]", "");
+        String permissionName = getSelectedPermissionNames(permission.toString()).toString().replaceAll("\\[", "").replaceAll("\\]", "");
         rolesSearchResult.setPermissionName(permissionName);
         rolesSearchResult.setRolesName(roleEntity.getRoleName());
         rolesSearchResult.setRolesDescription(roleEntity.getRoleDescription());
@@ -530,8 +530,8 @@ public class RolesController extends AbstractController {
         }
         else if(StringUtils.isEmpty(rolesForm.getRoleName()) && !StringUtils.isEmpty(rolesForm.getPermissionNames())){
             Pageable pageable1 = PageRequest.of(rolesForm.getPageNumber(), rolesForm.getPageSize());
-            PermissionEntity pemissionEntity = permissionsRepository.findByPermissionName(rolesForm.getPermissionNames());
-            getResultsForNonEmptyRolePermissionName(rolesForm, rolesSearchResults, pageable1, pemissionEntity);
+            PermissionEntity permissionEntity = permissionsRepository.findByPermissionName(rolesForm.getPermissionNames());
+            getResultsForNonEmptyRolePermissionName(rolesForm, rolesSearchResults, pageable1, permissionEntity);
 
         }
 
@@ -595,10 +595,10 @@ public class RolesController extends AbstractController {
     }
 
     private void searchRolesEntity(RolesForm rolesForm, List<RoleEntity>  rolesEntityList, List<RolesSearchResult> rolesSearchResults, Page<RoleEntity>  rolesEntityListByPagination) {
-        rolesEntityList = rolesEntityListByPagination.getContent();
+        List<RoleEntity> rolesEntity = rolesEntityListByPagination.getContent();
         rolesForm.setTotalRecordCount(NumberFormat.getNumberInstance().format(rolesEntityListByPagination.getTotalElements()));
         rolesForm.setTotalPageCount(rolesEntityListByPagination.getTotalPages());
-        for(RoleEntity roleEntity : rolesEntityList){
+        for(RoleEntity roleEntity : rolesEntity){
             RolesSearchResult rolesSearchResult = getRolesSearchResult(roleEntity);
             rolesSearchResults.add(rolesSearchResult);
         }

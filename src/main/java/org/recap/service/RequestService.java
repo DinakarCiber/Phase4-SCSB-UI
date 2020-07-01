@@ -486,9 +486,9 @@ public class RequestService {
         RequestForm requestForm = new RequestForm();
         Boolean addOnlyRecall = false;
         Boolean addAllRequestType = false;
-        Object availabilty = ((BindingAwareModelMap) model).get(RecapConstants.REQUESTED_ITEM_AVAILABILITY);
-        if (availabilty != null){
-            HashSet<String> str = (HashSet<String>) availabilty;
+        Object availability = ((BindingAwareModelMap) model).get(RecapConstants.REQUESTED_ITEM_AVAILABILITY);
+        if (availability != null){
+            HashSet<String> str = (HashSet<String>) availability;
             for (String itemAvailability : str){
                 if(RecapCommonConstants.NOT_AVAILABLE.equalsIgnoreCase(itemAvailability)){
                     addOnlyRecall = true;

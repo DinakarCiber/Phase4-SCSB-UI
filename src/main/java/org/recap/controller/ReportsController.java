@@ -242,10 +242,10 @@ public class ReportsController extends  AbstractController {
      *
      * @param request     the request
      * @param reportsForm the reports form
-     * @return the institution for incompletereport
+     * @return the institution for incomplete report
      */
     @GetMapping(value = "/reports/getInstitutions")
-    public ModelAndView getInstitutionForIncompletereport(HttpServletRequest request, ReportsForm reportsForm) {
+    public ModelAndView getInstitutionForIncompleteReport(HttpServletRequest request, ReportsForm reportsForm) {
             List<String> instList = new ArrayList<>();
             List<InstitutionEntity> institutionCodeForSuperAdmin = institutionDetailsRepository.getInstitutionCodeForSuperAdmin();
             for (InstitutionEntity institutionEntity : institutionCodeForSuperAdmin) {
