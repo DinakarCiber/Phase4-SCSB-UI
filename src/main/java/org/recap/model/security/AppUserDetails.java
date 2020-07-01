@@ -34,10 +34,10 @@ public class AppUserDetails implements UserDetails {
     /**
      * Instantiates a new AppUserDetails object with arguments.
      *
-     * @param userid      the userid
+     * @param userId      the userId
      * @param authorities the authorities
      */
-    public AppUserDetails(String userid, Collection<? extends GrantedAuthority> authorities) {
+    public AppUserDetails(String userId, Collection<? extends GrantedAuthority> authorities) {
         super();
         this.userId = userId;
         this.authorities = authorities;
