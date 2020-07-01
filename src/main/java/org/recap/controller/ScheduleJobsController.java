@@ -10,12 +10,9 @@ import org.recap.model.search.ScheduleJobsForm;
 import org.recap.model.usermanagement.UserDetailsForm;
 import org.recap.repository.jpa.JobDetailsRepository;
 import org.recap.security.UserManagementService;
-import org.recap.service.RestHeaderService;
-import org.recap.util.UserAuthUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -39,43 +36,12 @@ import java.util.List;
  */
 
 @Controller
-public class ScheduleJobsController extends AuthenticationController {
+public class ScheduleJobsController extends AbstractController {
 
     private static final Logger logger = LoggerFactory.getLogger(ScheduleJobsController.class);
 
-
-    @Value("${scsb.url}")
-    public String scsbUrl;
-
-    @Autowired
-    private UserAuthUtil userAuthUtil;
-
     @Autowired
     private JobDetailsRepository jobDetailsRepository;
-
-    @Autowired
-    RestHeaderService restHeaderService;
-
-    public RestHeaderService getRestHeaderService(){
-        return restHeaderService;
-    }
-    /**
-     * Gets user auth util.
-     *
-     * @return the user auth util
-     */
-    public UserAuthUtil getUserAuthUtil() {
-        return userAuthUtil;
-    }
-
-    /**
-     * Sets user auth util.
-     *
-     * @param userAuthUtil the user auth util
-     */
-    public void setUserAuthUtil(UserAuthUtil userAuthUtil) {
-        this.userAuthUtil = userAuthUtil;
-    }
 
     /**
      * Gets rest template.

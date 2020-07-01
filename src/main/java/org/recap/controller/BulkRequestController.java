@@ -1,7 +1,6 @@
 package org.recap.controller;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.shiro.authc.UsernamePasswordToken;
 import org.recap.RecapCommonConstants;
 import org.recap.RecapConstants;
 import org.recap.model.jpa.BulkRequestItemEntity;
@@ -11,7 +10,6 @@ import org.recap.repository.jpa.BulkRequestDetailsRepository;
 import org.recap.repository.jpa.InstitutionDetailsRepository;
 import org.recap.security.UserManagementService;
 import org.recap.service.BulkRequestService;
-import org.recap.util.UserAuthUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,12 +37,9 @@ import java.util.stream.Collectors;
  * Created by akulak on 19/9/17.
  */
 @Controller
-public class BulkRequestController {
+public class BulkRequestController extends AbstractController{
 
     private static final Logger logger = LoggerFactory.getLogger(BulkRequestController.class);
-
-    @Autowired
-    private UserAuthUtil userAuthUtil;
 
     @Autowired
     private BulkRequestService bulkRequestService;
@@ -58,7 +53,7 @@ public class BulkRequestController {
     @GetMapping (path = "/bulkRequest")
     public String bulkRequest(Model model, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        boolean authenticated = userAuthUtil.authorizedUser(RecapConstants.SCSB_SHIRO_BULK_REQUEST_URL, (UsernamePasswordToken) session.getAttribute(RecapConstants.USER_TOKEN));
+        boolean authenticated = getUserAuthUtil().isAuthenticated(request, RecapConstants.SCSB_SHIRO_BULK_REQUEST_URL);
         if (authenticated) {
             BulkRequestForm bulkRequestForm = new BulkRequestForm();
             loadCreateRequestPage(bulkRequestForm);

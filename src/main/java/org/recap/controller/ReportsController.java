@@ -1,7 +1,5 @@
 package org.recap.controller;
 
-import org.apache.commons.compress.utils.IOUtils;
-import org.apache.shiro.authc.UsernamePasswordToken;
 import org.recap.RecapCommonConstants;
 import org.recap.RecapConstants;
 import org.recap.model.jpa.InstitutionEntity;
@@ -12,14 +10,13 @@ import org.recap.repository.jpa.InstitutionDetailsRepository;
 import org.recap.security.UserManagementService;
 import org.recap.util.HelperUtil;
 import org.recap.util.ReportsUtil;
-import org.recap.util.UserAuthUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
@@ -29,7 +26,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.File;
-import java.io.FileInputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -41,7 +37,7 @@ import java.util.List;
  * Created by rajeshbabuk on 13/10/16.
  */
 @Controller
-public class ReportsController {
+public class ReportsController extends  AbstractController {
 
     private static final Logger logger = LoggerFactory.getLogger(ReportsController.class);
 
@@ -49,28 +45,7 @@ public class ReportsController {
     private ReportsUtil reportsUtil;
 
     @Autowired
-    private UserAuthUtil userAuthUtil;
-
-    @Autowired
     private InstitutionDetailsRepository institutionDetailsRepository;
-
-    /**
-     * Gets user auth util.
-     *
-     * @return the user auth util
-     */
-    public UserAuthUtil getUserAuthUtil() {
-        return userAuthUtil;
-    }
-
-    /**
-     * Sets user auth util.
-     *
-     * @param userAuthUtil the user auth util
-     */
-    public void setUserAuthUtil(UserAuthUtil userAuthUtil) {
-        this.userAuthUtil = userAuthUtil;
-    }
 
     /**
      * Gets reports util.
@@ -91,13 +66,13 @@ public class ReportsController {
      @GetMapping(path = "/reports")
     public String reports(Model model, HttpServletRequest request) {
          HttpSession session=request.getSession(false);
-         boolean authenticated= HelperUtil.authenticate(session, getUserAuthUtil(), RecapConstants.SCSB_SHIRO_REPORT_URL);
-        if (authenticated) {
+         boolean authenticated = getUserAuthUtil().isAuthenticated(request, RecapConstants.SCSB_SHIRO_REPORT_URL);
+         if (authenticated) {
             ReportsForm reportsForm = new ReportsForm();
             model.addAttribute(RecapConstants.REPORTS_FORM, reportsForm);
             model.addAttribute(RecapCommonConstants.TEMPLATE, RecapCommonConstants.REPORTS);
             return RecapConstants.VIEW_SEARCH_RECORDS;
-        } else {
+         } else {
             return UserManagementService.unAuthorizedUser(session, "Reports", logger);
         }
 

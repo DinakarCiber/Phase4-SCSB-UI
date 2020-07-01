@@ -141,10 +141,6 @@ public class HelperUtil {
         return fileContent;
     }
 
-    public static boolean authenticate(HttpSession session, UserAuthUtil userAuthUtil, String url) {
-        return userAuthUtil.authorizedUser(url,(UsernamePasswordToken)session.getAttribute(RecapConstants.USER_TOKEN));
-    }
-
     public static void setCookieProperties(Cookie cookie) {
         cookie.setMaxAge(-1);
         cookie.setHttpOnly(false);

@@ -1,5 +1,6 @@
 package org.recap.controller;
 
+import lombok.Data;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jettison.json.JSONArray;
@@ -7,27 +8,22 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.recap.RecapCommonConstants;
 import org.recap.RecapConstants;
-import org.recap.model.jpa.CustomerCodeEntity;
-import org.recap.model.jpa.ItemEntity;
-import org.recap.model.jpa.InstitutionEntity;
-import org.recap.model.jpa.RequestItemEntity;
 import org.recap.model.CancelRequestResponse;
+import org.recap.model.jpa.CustomerCodeEntity;
+import org.recap.model.jpa.InstitutionEntity;
+import org.recap.model.jpa.ItemEntity;
+import org.recap.model.jpa.RequestItemEntity;
 import org.recap.model.request.ItemRequestInformation;
 import org.recap.model.request.ItemResponseInformation;
 import org.recap.model.request.ReplaceRequest;
 import org.recap.model.search.RequestForm;
 import org.recap.model.search.SearchResultRow;
 import org.recap.model.usermanagement.UserDetailsForm;
-import org.recap.repository.jpa.InstitutionDetailsRepository;
-import org.recap.repository.jpa.RequestTypeDetailsRepository;
 import org.recap.repository.jpa.CustomerCodeDetailsRepository;
-import org.recap.repository.jpa.ItemDetailsRepository;
+import org.recap.repository.jpa.InstitutionDetailsRepository;
 import org.recap.repository.jpa.RequestItemDetailsRepository;
-import org.recap.repository.jpa.RequestStatusDetailsRepository;
 import org.recap.security.UserManagementService;
 import org.recap.service.RequestService;
-import org.recap.util.HelperUtil;
-import org.recap.util.UserAuthUtil;
 import org.recap.util.SecurityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +40,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -52,19 +47,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.text.NumberFormat;
-import java.util.Collections;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Optional;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by rajeshbabuk on 13/10/16.
  */
 
 @Controller
+@Data
 public class RequestController extends  RecapController {
 
     private static final Logger logger = LoggerFactory.getLogger(RequestController.class);
@@ -74,22 +64,10 @@ public class RequestController extends  RecapController {
     private InstitutionDetailsRepository institutionDetailsRepository;
 
     @Autowired
-    private RequestTypeDetailsRepository requestTypeDetailsRepository;
-
-    @Autowired
     private CustomerCodeDetailsRepository customerCodeDetailsRepository;
 
     @Autowired
-    private ItemDetailsRepository itemDetailsRepository;
-
-    @Autowired
-    private RequestStatusDetailsRepository requestStatusDetailsRepository;
-
-    @Autowired
     private RequestItemDetailsRepository requestItemDetailsRepository;
-
-    @Autowired
-    private UserAuthUtil userAuthUtil;
 
     @Autowired
     private RequestService requestService;
@@ -97,88 +75,6 @@ public class RequestController extends  RecapController {
     @Autowired
     private SecurityUtil securityUtil;
 
-
-    /**
-     * Gets user auth util.
-     *
-     * @return the user auth util
-     */
-    public UserAuthUtil getUserAuthUtil() {
-        return userAuthUtil;
-    }
-
-    /**
-     * Gets institution details repository.
-     *
-     * @return the institution details repository
-     */
-    public InstitutionDetailsRepository getInstitutionDetailsRepository() {
-        return institutionDetailsRepository;
-    }
-
-    /**
-     * Gets request type details repository.
-     *
-     * @return the request type details repository
-     */
-    public RequestTypeDetailsRepository getRequestTypeDetailsRepository() {
-        return requestTypeDetailsRepository;
-    }
-
-    /**
-     * Gets customer code details repository.
-     *
-     * @return the customer code details repository
-     */
-    public CustomerCodeDetailsRepository getCustomerCodeDetailsRepository() {
-        return customerCodeDetailsRepository;
-    }
-
-    /**
-     * Gets item details repository.
-     *
-     * @return the item details repository
-     */
-    public ItemDetailsRepository getItemDetailsRepository() {
-        return itemDetailsRepository;
-    }
-
-
-    /**
-     * Gets request item details repository.
-     *
-     * @return the request item details repository
-     */
-    public RequestItemDetailsRepository getRequestItemDetailsRepository() {
-        return requestItemDetailsRepository;
-    }
-
-    /**
-     * Gets rest template.
-     *
-     * @return the rest template
-     */
-    public RestTemplate getRestTemplate() {
-        return new RestTemplate();
-    }
-
-    /**
-     * Gets request status details repository.
-     *
-     * @return the request status details repository
-     */
-    public RequestStatusDetailsRepository getRequestStatusDetailsRepository() {
-        return requestStatusDetailsRepository;
-    }
-
-    /**
-     * Gets request service.
-     *
-     * @return the request service
-     */
-    public RequestService getRequestService() {
-        return requestService;
-    }
 
     /**
      * Render the request UI page for the scsb application.
@@ -191,10 +87,10 @@ public class RequestController extends  RecapController {
     @GetMapping("/request")
     public String request(Model model, HttpServletRequest request) throws JSONException {
         HttpSession session=request.getSession(false);
-        boolean authenticated= HelperUtil.authenticate(session, getUserAuthUtil(), RecapConstants.SCSB_SHIRO_REQUEST_URL);
+        boolean authenticated = getUserAuthUtil().isAuthenticated(request, RecapConstants.SCSB_SHIRO_REQUEST_URL);
         if (authenticated) {
-            UserDetailsForm userDetailsForm = getUserDetails(session, RecapConstants.REQUEST_PRIVILEGE);
-            RequestForm requestForm = getRequestService().setFormDetailsForRequest(model, request, userDetailsForm);
+            UserDetailsForm userDetailsForm = getUserAuthUtil().getUserDetails(session, RecapConstants.REQUEST_PRIVILEGE);
+            RequestForm requestForm = requestService.setFormDetailsForRequest(model, request, userDetailsForm);
             model.addAttribute(RecapConstants.REQUEST_FORM, requestForm);
             model.addAttribute( RecapCommonConstants.TEMPLATE,  RecapCommonConstants.REQUEST);
             return RecapConstants.VIEW_SEARCH_RECORDS;
@@ -240,7 +136,7 @@ public class RequestController extends  RecapController {
                                        BindingResult result,
                                        Model model,HttpServletRequest request) {
         try {
-            UserDetailsForm userDetails = getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE);
+            UserDetailsForm userDetails = getUserAuthUtil().getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE);
             requestForm.resetPageNumber();
             requestForm.setPatronBarcode(patronBarcodeInRequest);
             setFormValues(requestForm, userDetails);
@@ -353,8 +249,8 @@ public class RequestController extends  RecapController {
     @ResponseBody
     @PostMapping(value = "/request", params = "action=loadCreateRequest")
     public ModelAndView loadCreateRequest(Model model, HttpServletRequest request) {
-        UserDetailsForm userDetailsForm = getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE);
-        RequestForm requestForm = getRequestService().setDefaultsToCreateRequest(userDetailsForm,model);
+        UserDetailsForm userDetailsForm = getUserAuthUtil().getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE);
+        RequestForm requestForm = requestService.setDefaultsToCreateRequest(userDetailsForm,model);
         return setRequestAttribute(requestForm, model);
     }
 
@@ -368,8 +264,8 @@ public class RequestController extends  RecapController {
     @ResponseBody
     @PostMapping(value = "/request", params = "action=loadCreateRequestForSamePatron")
     public ModelAndView loadCreateRequestForSamePatron(Model model, HttpServletRequest request) {
-        UserDetailsForm userDetailsForm = getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE);
-        RequestForm requestForm = getRequestService().setDefaultsToCreateRequest(userDetailsForm,model);
+        UserDetailsForm userDetailsForm = getUserAuthUtil().getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE);
+        RequestForm requestForm = requestService.setDefaultsToCreateRequest(userDetailsForm,model);
         requestForm.setOnChange("true");
         return setRequestAttribute(requestForm, model);
     }
@@ -384,7 +280,7 @@ public class RequestController extends  RecapController {
     @ResponseBody
     @PostMapping(value = "/request", params = "action=loadSearchRequest")
     public ModelAndView loadSearchRequest(Model model, HttpServletRequest request) {
-        UserDetailsForm userDetails = getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE);
+        UserDetailsForm userDetails = getUserAuthUtil().getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE);
         RequestForm requestForm = new RequestForm();
         setFormValues(requestForm, userDetails);
         return setRequestAttribute(requestForm, model);
@@ -406,7 +302,7 @@ public class RequestController extends  RecapController {
     public String populateItem(@Valid @ModelAttribute("requestForm") RequestForm requestForm,
                                BindingResult result,
                                Model model, HttpServletRequest request) throws JSONException {
-        return getRequestService().populateItemForRequest(requestForm, request);
+        return requestService.populateItemForRequest(requestForm, request);
     }
 
 
@@ -498,7 +394,7 @@ public class RequestController extends  RecapController {
             }
 
             if (StringUtils.isNotBlank(requestForm.getDeliveryLocationInRequest())) {
-                CustomerCodeEntity customerCodeEntity = getCustomerCodeDetailsRepository().findByCustomerCode(requestForm.getDeliveryLocationInRequest());
+                CustomerCodeEntity customerCodeEntity = customerCodeDetailsRepository.findByCustomerCode(requestForm.getDeliveryLocationInRequest());
                 if (null != customerCodeEntity) {
                     itemRequestInformation.setDeliveryLocation(customerCodeEntity.getCustomerCode());
                 }
@@ -557,7 +453,7 @@ public class RequestController extends  RecapController {
             CancelRequestResponse cancelRequestResponse = responseEntity.getBody();
             jsonObject.put(RecapCommonConstants.MESSAGE, cancelRequestResponse.getScreenMessage());
             jsonObject.put(RecapCommonConstants.STATUS, cancelRequestResponse.isSuccess());
-            Optional<RequestItemEntity> requestItemEntity = getRequestItemDetailsRepository().findById(requestForm.getRequestId());
+            Optional<RequestItemEntity> requestItemEntity = requestItemDetailsRepository.findById(requestForm.getRequestId());
             if (requestItemEntity.isPresent()) {
                 requestStatus = requestItemEntity.get().getRequestStatusEntity().getRequestStatusDescription();
                 requestNotes = requestItemEntity.get().getNotes();
@@ -705,13 +601,13 @@ public class RequestController extends  RecapController {
     @ResponseBody
     @GetMapping(value = "/request/refreshStatus")
     public String refreshStatus(HttpServletRequest request) {
-        return getRequestService().getRefreshedStatus(request);
+        return requestService.getRefreshedStatus(request);
     }
 
     private void setFormValuesToDisableSearchInstitution(@Valid @ModelAttribute("requestForm") RequestForm requestForm, UserDetailsForm userDetails, List<String> institutionList) {
-        Optional<InstitutionEntity> institutionEntity = getInstitutionDetailsRepository().findById(userDetails.getLoginInstitutionId());
+        Optional<InstitutionEntity> institutionEntity = institutionDetailsRepository.findById(userDetails.getLoginInstitutionId());
         if(userDetails.isSuperAdmin() || userDetails.isRecapUser() || ( (institutionEntity.isPresent()) && (institutionEntity.get().getInstitutionCode().equalsIgnoreCase("HTC")))){
-            getRequestService().getInstitutionForSuperAdmin(institutionList);
+            requestService.getInstitutionForSuperAdmin(institutionList);
             requestForm.setInstitutionList(institutionList);
         }else {
             requestForm.setDisableSearchInstitution(true);
@@ -747,7 +643,7 @@ public class RequestController extends  RecapController {
     {
         List<String> requestStatuses = new ArrayList<>();
         List<String> institutionList = new ArrayList<>();
-        getRequestService().findAllRequestStatusExceptProcessing(requestStatuses);
+        requestService.findAllRequestStatusExceptProcessing(requestStatuses);
         requestForm.setRequestStatuses(requestStatuses);
         setFormValuesToDisableSearchInstitution(requestForm, userDetails, institutionList);
 

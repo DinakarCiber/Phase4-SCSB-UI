@@ -13,6 +13,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,10 +55,10 @@ public class UserAuthUtil {
      * @param token      the token
      * @return the boolean
      */
-    public Boolean authorizedUser(String serviceURL, UsernamePasswordToken token)
+    public boolean authorizedUser(String serviceURL, UsernamePasswordToken token)
     {
 
-        Boolean statusResponse = false;
+        boolean statusResponse = false;
         try {
 
             RestTemplate restTemplate = new RestTemplate();
@@ -85,5 +86,29 @@ public class UserAuthUtil {
         userDetailsForm.setRecapPermissionAllowed((Boolean) session.getAttribute(recapPermission));
         return userDetailsForm;
     }
+
+    /**
+     * Checks whether the user session is authenticated to support the request.
+     * @param httpSession The current session.
+     * @param roleUrl  The role url.
+     * @return <code>true</code> if the user is successfully authenticated and
+     *        <code>false</code> if not
+     */
+    public boolean isAuthenticated(HttpSession httpSession, String roleUrl) {
+        return this.authorizedUser(roleUrl, (UsernamePasswordToken) httpSession.getAttribute(RecapConstants.USER_TOKEN));
+    }
+
+    /**
+     * Checks whether the request has a valid session to serve it..
+     * @param httpServletRequest The current request.
+     * @param roleUrl  The role url.
+     * @return <code>true</code> if the user is successfully authenticated and
+     *        <code>false</code> if not
+     */
+    public boolean isAuthenticated(HttpServletRequest httpServletRequest, String roleUrl) {
+        HttpSession httpSession = httpServletRequest.getSession(false);
+        return this.isAuthenticated(httpSession, roleUrl);
+    }
+
 
 }

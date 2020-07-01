@@ -2,7 +2,6 @@ package org.recap.controller;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.shiro.authc.UsernamePasswordToken;
 import org.recap.RecapCommonConstants;
 import org.recap.RecapConstants;
 import org.recap.model.jpa.InstitutionEntity;
@@ -18,16 +17,11 @@ import org.recap.util.SearchUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
@@ -41,12 +35,7 @@ import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Optional;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * Created by rajeshbabuk on 6/7/16.
@@ -56,9 +45,6 @@ import java.util.ArrayList;
 public class SearchRecordsController extends RecapController {
 
     private static final Logger logger = LoggerFactory.getLogger(SearchRecordsController.class);
-
-    @Value("${scsb.shiro}")
-    private String scsbShiro;
 
     @Autowired
     private SearchUtil searchUtil;
@@ -97,7 +83,7 @@ public class SearchRecordsController extends RecapController {
     @GetMapping("/search")
     public String searchRecords(Model model, HttpServletRequest request) {
         HttpSession session=request.getSession(false);
-        boolean authenticated=getUserAuthUtil().authorizedUser(RecapConstants.SCSB_SHIRO_SEARCH_URL,(UsernamePasswordToken)session.getAttribute(RecapConstants.USER_TOKEN));
+        boolean authenticated = getUserAuthUtil().isAuthenticated(request, RecapConstants.SCSB_SHIRO_SEARCH_URL);
         if(authenticated)
         {
             SearchRecordsRequest searchRecordsRequest = new SearchRecordsRequest();
@@ -240,7 +226,7 @@ public class SearchRecordsController extends RecapController {
                                        Model model,
                                        HttpServletRequest request,
                                        RedirectAttributes redirectAttributes) {
-        UserDetailsForm userDetailsForm = getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE);
+        UserDetailsForm userDetailsForm = getUserAuthUtil().getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE);
         processRequest(searchRecordsRequest, userDetailsForm, redirectAttributes);
         if (StringUtils.isNotBlank(searchRecordsRequest.getErrorMessage())) {
             searchRecordsRequest.setShowResults(true);
