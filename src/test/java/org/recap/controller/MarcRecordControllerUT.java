@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.recap.RecapCommonConstants;
-import org.recap.RecapConstants;
 import org.recap.model.jpa.BibliographicEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;

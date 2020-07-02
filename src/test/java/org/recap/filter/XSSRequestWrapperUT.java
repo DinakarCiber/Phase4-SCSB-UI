@@ -4,13 +4,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.recap.BaseTestCase;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.regex.Pattern;
-
-import static org.junit.Assert.assertNotNull;
 
 public class XSSRequestWrapperUT extends BaseTestCase {
 

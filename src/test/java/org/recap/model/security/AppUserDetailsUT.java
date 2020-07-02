@@ -8,7 +8,9 @@ import org.springframework.security.core.GrantedAuthority;
 import java.util.Arrays;
 import java.util.Collection;
 
-import static junit.framework.TestCase.*;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
 
 public class AppUserDetailsUT extends BaseTestCase {
 

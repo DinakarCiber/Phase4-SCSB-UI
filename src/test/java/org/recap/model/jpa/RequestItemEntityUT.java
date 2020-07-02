@@ -2,7 +2,6 @@ package org.recap.model.jpa;
 
 import org.junit.Test;
 import org.recap.BaseTestCase;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 
