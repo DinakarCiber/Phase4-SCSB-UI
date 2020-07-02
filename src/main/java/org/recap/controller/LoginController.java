@@ -225,8 +225,8 @@ public class LoginController extends AbstractController {
             if(session!=null) {
                 session.invalidate();
             }
-            return "redirect:/";
         }
+        return "redirect:/";
     }
 
     private void setValuesInSession(HttpSession session,Map<String,Object> authMap)
@@ -256,10 +256,10 @@ public class LoginController extends AbstractController {
         }
     }
 
-    private void  setSessionValues(HttpSession session, Map<String,Object> resultmap, UsernamePasswordToken token) {
+    private void  setSessionValues(HttpSession session, Map<String,Object> resultMap, UsernamePasswordToken token) {
         session.setAttribute(RecapConstants.USER_TOKEN, token);
-        session.setAttribute(RecapConstants.USER_AUTH,resultmap);
-        setValuesInSession(session,resultmap);
+        session.setAttribute(RecapConstants.USER_AUTH, resultMap);
+        setValuesInSession(session, resultMap);
     }
 
 }

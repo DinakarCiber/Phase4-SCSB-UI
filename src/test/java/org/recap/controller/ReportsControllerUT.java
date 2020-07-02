@@ -277,7 +277,7 @@ public class ReportsControllerUT extends BaseControllerUT {
     @Test
     public void getInstitutionForIncompletereport() throws Exception{
         ReportsForm reportsForm = new ReportsForm();
-        ModelAndView modelAndView = reportsControllerWired.getInstitutionForIncompletereport(request, reportsForm);
+        ModelAndView modelAndView = reportsControllerWired.getInstitutionForIncompleteReport(request, reportsForm);
         assertNotNull(modelAndView);
         List<String> incompleteShowByInst = reportsForm.getIncompleteShowByInst();
         assertNotNull(incompleteShowByInst);
