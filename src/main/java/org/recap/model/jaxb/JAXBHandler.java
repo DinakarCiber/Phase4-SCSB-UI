@@ -1,7 +1,6 @@
 package org.recap.model.jaxb;
 
 import org.recap.RecapCommonConstants;
-import org.recap.RecapConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

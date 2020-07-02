@@ -1,7 +1,6 @@
 package org.recap.util;
 
 import org.apache.commons.lang3.StringUtils;
-import org.recap.RecapCommonConstants;
 import org.recap.RecapConstants;
 import org.recap.model.jpa.InstitutionEntity;
 import org.recap.model.jpa.RequestItemEntity;

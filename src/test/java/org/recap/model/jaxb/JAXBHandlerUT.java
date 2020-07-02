@@ -9,9 +9,6 @@ import org.recap.RecapConstants;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-
-import static junit.framework.TestCase.assertNotNull;
 
 
 public class JAXBHandlerUT extends BaseTestCase {

@@ -1,6 +1,5 @@
 package org.recap.security;
 
-import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
 import org.jasig.cas.client.proxy.ProxyRetriever;
 import org.junit.Test;

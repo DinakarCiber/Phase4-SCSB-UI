@@ -10,7 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.ManyToMany;
 import java.util.List;
 
@@ -22,30 +21,13 @@ import java.util.List;
 @AttributeOverride(name = "id", column = @Column(name = "CUSTOMER_CODE_ID"))
 @Getter
 @Setter
-public class CustomerCodeEntity extends AbstractEntity<Integer> implements Comparable<CustomerCodeEntity> {
-
-    @Column(name = "CUSTOMER_CODE")
-    private String customerCode;
-
-    @Column(name = "DESCRIPTION")
-    private String description;
-
-    @Column(name = "OWNING_INST_ID")
-    private Integer owningInstitutionId;
+public class CustomerCodeEntity extends CustomerCodeAbstractEntity implements Comparable<CustomerCodeEntity> {
 
     @Column(name = "PWD_DELIVERY_RESTRICTIONS")
     private String pwdDeliveryRestrictions;
 
     @Column(name = "RECAP_DELIVERY_RESTRICTIONS")
     private String recapDeliveryRestrictions;
-
-    @Column(name = "DELIVERY_RESTRICTIONS")
-    private String deliveryRestrictions;
-
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "OWNING_INST_ID", insertable = false, updatable = false)
-    private InstitutionEntity institutionEntity;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "cross_partner_mapping_t", joinColumns = {
@@ -73,20 +55,20 @@ public class CustomerCodeEntity extends AbstractEntity<Integer> implements Compa
 
         if (id != null ? !id.equals(customerCodeEntity.id) : customerCodeEntity.id != null)
             return false;
-        if (customerCode != null ? !customerCode.equals(customerCodeEntity.customerCode) : customerCodeEntity.customerCode != null)
+        if (getCustomerCode() != null ? !getCustomerCode().equals(customerCodeEntity.getCustomerCode()) : customerCodeEntity.getCustomerCode() != null)
             return false;
-        if (description != null ? !description.equals(customerCodeEntity.description) : customerCodeEntity.description != null)
+        if (getDescription() != null ? !getDescription().equals(customerCodeEntity.getDescription()) : customerCodeEntity.getDescription() != null)
             return false;
-        return owningInstitutionId != null ? owningInstitutionId.equals(customerCodeEntity.owningInstitutionId) : customerCodeEntity.owningInstitutionId == null;
+        return getOwningInstitutionId() != null ? getOwningInstitutionId().equals(customerCodeEntity.getOwningInstitutionId()) : customerCodeEntity.getOwningInstitutionId() == null;
 
     }
 
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (customerCode != null ? customerCode.hashCode() : 0);
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + (owningInstitutionId != null ? owningInstitutionId.hashCode() : 0);
+        result = 31 * result + (getCustomerCode() != null ? getCustomerCode().hashCode() : 0);
+        result = 31 * result + (getDescription() != null ? getDescription().hashCode() : 0);
+        result = 31 * result + (getOwningInstitutionId() != null ? getOwningInstitutionId().hashCode() : 0);
         return result;
     }
 }

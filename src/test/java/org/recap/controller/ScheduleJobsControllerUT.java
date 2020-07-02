@@ -3,11 +3,8 @@ package org.recap.controller;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.recap.RecapCommonConstants;
 import org.recap.RecapConstants;
 import org.recap.model.jpa.JobEntity;
-import org.recap.model.jpa.RequestItemEntity;
-import org.recap.model.request.ReplaceRequest;
 import org.recap.model.schedule.ScheduleJobResponse;
 import org.recap.model.search.ScheduleJobsForm;
 import org.recap.model.usermanagement.UserDetailsForm;
@@ -16,20 +13,15 @@ import org.recap.service.RestHeaderService;
 import org.recap.util.UserAuthUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Collections;
+import java.util.Date;
 
-import java.util.*;
-
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 

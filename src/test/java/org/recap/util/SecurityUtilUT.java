@@ -4,8 +4,6 @@ import org.junit.Test;
 import org.recap.BaseTestCase;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.security.Key;
-
 import static org.junit.Assert.assertNotNull;
 
 public class SecurityUtilUT extends BaseTestCase {

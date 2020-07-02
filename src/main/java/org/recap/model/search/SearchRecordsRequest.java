@@ -1,7 +1,6 @@
 package org.recap.model.search;
 
 import org.recap.RecapCommonConstants;
-import org.recap.RecapConstants;
 
 import java.io.Serializable;
 import java.util.ArrayList;

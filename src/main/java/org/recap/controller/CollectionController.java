@@ -6,7 +6,12 @@ import org.marc4j.MarcException;
 import org.recap.RecapCommonConstants;
 import org.recap.RecapConstants;
 import org.recap.model.jpa.RequestItemEntity;
-import org.recap.model.search.*;
+import org.recap.model.search.BibliographicMarcForm;
+import org.recap.model.search.CollectionForm;
+import org.recap.model.search.SearchItemResultRow;
+import org.recap.model.search.SearchRecordsRequest;
+import org.recap.model.search.SearchRecordsResponse;
+import org.recap.model.search.SearchResultRow;
 import org.recap.model.usermanagement.UserDetailsForm;
 import org.recap.repository.jpa.RequestItemDetailsRepository;
 import org.recap.security.UserManagementService;
@@ -28,7 +33,12 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by rajeshbabuk on 12/10/16.

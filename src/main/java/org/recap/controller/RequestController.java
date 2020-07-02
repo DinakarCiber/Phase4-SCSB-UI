@@ -1,6 +1,8 @@
 package org.recap.controller;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jettison.json.JSONArray;
@@ -47,14 +49,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.text.NumberFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Created by rajeshbabuk on 13/10/16.
  */
 
 @Controller
-@Data
+@Getter
+@Setter
 public class RequestController extends  RecapController {
 
     private static final Logger logger = LoggerFactory.getLogger(RequestController.class);

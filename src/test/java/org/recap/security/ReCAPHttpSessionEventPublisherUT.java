@@ -3,7 +3,6 @@ package org.recap.security;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.recap.BaseTestCase;
 import org.recap.RecapConstants;
 import org.recap.util.HelperUtil;
@@ -14,13 +13,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
-
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
-
-import static org.mockito.Mockito.when;
 
 public class ReCAPHttpSessionEventPublisherUT extends BaseTestCase {
     @Mock

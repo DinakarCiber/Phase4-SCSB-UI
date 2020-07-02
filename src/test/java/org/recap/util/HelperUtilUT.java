@@ -5,7 +5,6 @@ import org.mockito.Mock;
 import org.recap.BaseTestCase;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 
 import javax.servlet.http.HttpServletRequest;
 
