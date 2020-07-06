@@ -1,23 +1,41 @@
 package org.recap.controller;
 
+import org.apache.shiro.authc.UsernamePasswordToken;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.recap.BaseTestCase;
-import org.recap.model.search.BulkRequestForm;
-import org.recap.model.search.BulkSearchResultRow;
+import org.recap.RecapCommonConstants;
+import org.recap.RecapConstants;
+import org.recap.model.jpa.InstitutionEntity;
+import org.recap.model.request.ItemRequestInformation;
+import org.recap.model.search.*;
+import org.recap.model.usermanagement.UserDetailsForm;
+import org.recap.repository.jpa.InstitutionDetailsRepository;
+import org.recap.service.BulkRequestService;
 import org.recap.service.RestHeaderService;
+import org.recap.util.SearchUtil;
+import org.recap.util.UserAuthUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
+import org.springframework.validation.support.BindingAwareModelMap;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.Arrays;
-import java.util.Date;
 
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 
@@ -45,7 +63,12 @@ public class BulkRequestControllerUT extends BaseTestCase {
     BulkRequestController bulkRequestController;
 
     @Mock
+    BulkRequestController mockedBulkRequest;
+
+    @Mock
     MultipartFile file;
+
+
 
     @Test
     public void testBulkRequest() throws Exception{

@@ -163,7 +163,7 @@ public class RecapConstants {
 
     public static final String USER_ISAUTHENTICATED ="true";
 
-    public static final String USER_ID="userId";
+    public static final String USER_ID="id";
 
     public static final String USER_INSTITUTION="userInstitution";
 

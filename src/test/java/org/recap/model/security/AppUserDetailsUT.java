@@ -8,9 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import java.util.Arrays;
 import java.util.Collection;
 
-import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.assertNull;
-import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.*;
 
 public class AppUserDetailsUT extends BaseTestCase {
 
@@ -21,17 +19,7 @@ public class AppUserDetailsUT extends BaseTestCase {
     @Test
     public void testAppUser(){
 
-        appUserDetails.setUserId("1");
-        appUserDetails.setRoles(Arrays.asList("Super Admin"));
-        appUserDetails.setAuthorities(authorities);
-        appUserDetails.equals(appUserDetails.getUserId());
-        appUserDetails.hashCode();
-        appUserDetails.toString();
-
-
-        assertNotNull(appUserDetails.getRoles());
-        assertNotNull(appUserDetails.getUserId());
-        assertNotNull(appUserDetails.getUsername());
+        assertNull(appUserDetails.getUsername());
         assertNull(appUserDetails.getPassword());
         assertTrue(appUserDetails.isAccountNonExpired());
         assertTrue(appUserDetails.isCredentialsNonExpired());
