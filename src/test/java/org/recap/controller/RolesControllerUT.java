@@ -2,12 +2,14 @@ package org.recap.controller;
 
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.recap.BaseTestCase;
 import org.recap.RecapConstants;
 import org.recap.model.search.RolesForm;
 import org.recap.model.search.RolesSearchResult;
 import org.recap.repository.jpa.PermissionsDetailsRepository;
 import org.recap.repository.jpa.RolesDetailsRepositorty;
+import org.recap.util.UserAuthUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -49,8 +51,35 @@ public class RolesControllerUT extends BaseTestCase {
     @Mock
     HttpSession session;
 
+    @Mock
+    RolesController mockedrolesController;
+
+    @Mock
+    UserAuthUtil userAuthUtil;
+
     @Test
-    public void testRoles(){
+    public void testRoles() throws Exception{
+
+        when(request.getSession(false)).thenReturn(session);
+        Mockito.when(mockedrolesController.getUserAuthUtil()).thenReturn(userAuthUtil);
+        Mockito.when(mockedrolesController.getUserAuthUtil().isAuthenticated(request, RecapConstants.SCSB_SHIRO_ROLE_URL)).thenReturn(true);
+        Mockito.doCallRealMethod().when(mockedrolesController).roles(model,request);
+        String response = mockedrolesController.roles(model,request);
+        assertNotNull(response);
+    }
+    @Test
+    public void testRoles2() throws Exception{
+
+        when(request.getSession(false)).thenReturn(session);
+        Mockito.when(mockedrolesController.getUserAuthUtil()).thenReturn(userAuthUtil);
+        Mockito.when(mockedrolesController.getUserAuthUtil().isAuthenticated(request, RecapConstants.SCSB_SHIRO_ROLE_URL)).thenReturn(false);
+        Mockito.doCallRealMethod().when(mockedrolesController).roles(model,request);
+        String response = mockedrolesController.roles(model,request);
+        assertNotNull(response);
+    }
+
+    @Test
+    public void testSearch(){
         RolesForm rolesForm = new RolesForm();
         rolesForm.setRoleName("SuperAdmin");
         rolesForm.setPermissionNames("Create User");
@@ -83,7 +112,19 @@ public class RolesControllerUT extends BaseTestCase {
     @Test
     public void newRole() throws Exception{
         when(request.getSession(false)).thenReturn(session);
-        when(session.getAttribute(RecapConstants.USER_NAME)).thenReturn("SuperAdmin");
+        when(session.getAttribute(RecapConstants.USER_NAME)).thenReturn("userName");
+        RolesForm rolesForm = new RolesForm();
+        rolesForm.setNewRoleName("test@");
+        rolesForm.setNewRoleDescription("test Description");
+        rolesForm.setNewPermissionNames("CreateUser");
+        ModelAndView modelAndView = rolesController.newRole(rolesForm,model,request);
+        assertNotNull(modelAndView);
+        assertEquals("roles",modelAndView.getViewName());
+    }
+    @Test
+    public void newRole1() throws Exception{
+        when(request.getSession(false)).thenReturn(session);
+        when(session.getAttribute(RecapConstants.USER_NAME)).thenReturn("userName");
         RolesForm rolesForm = new RolesForm();
         rolesForm.setNewRoleName("test");
         rolesForm.setNewRoleDescription("test Description");

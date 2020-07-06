@@ -3,6 +3,7 @@ package org.recap.repository.jpa;
 import org.junit.Test;
 import org.recap.BaseTestCase;
 import org.recap.RecapCommonConstants;
+import org.recap.RecapConstants;
 import org.recap.model.jpa.JobEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 
