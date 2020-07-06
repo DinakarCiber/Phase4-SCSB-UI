@@ -76,14 +76,14 @@
                             </div>
                             <div id="search-filter" class="row collapse" style="padding-top: 10px; padding-bottom: 15px;">
                                 <div class="col-xs-2" style="margin-top: 50px;">
-                                    <div class="checkbox allfacet">
+                                    <div class="allfacet">
                                         <label>
                                             <input type="checkbox" id="selectAllFacets"
-                                                   name="selectAllFacets" value="" th:checked="*{selectAllFacets}"
+                                                   name="selectAllFacets" value="" th:field="*{selectAllFacets}"
                                                    th:onclick="'javascript:selectOrDeselectFacets()'" class="facetCheckBox">
-                                            <span class="cr margin-top-15"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
+                                            <span class="cr margin-top-15"></span>
                                             </input>
-                                            <span class="facet-text">Select / Unselect All Facets   </span>
+                                            <span class="facet-text">&nbsp;Select / Unselect All Facets   </span>
                                         </label>
                                     </div>
                                 </div>
@@ -95,66 +95,66 @@
                                         <div class="row">
                                             <div class="col-xs-6">
                                                 <h4>Owning Institution</h4>
-                                                <div class="row">
-                                                    <div class="checkbox">
+                                                <div class="row padding-left-15">
+                                                    <div>
                                                         <label>
                                                             <input type="checkbox" id="owningInstitutionNYPL"
                                                                    name="owningInstitutionNYPL" value="NYPL"
-                                                                   th:checked="*{owningInstitutions}" class="facetCheckBox">
-                                                            <span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
+                                                                   th:field="*{owningInstitutions}" class="facetCheckBox">
+                                                            <span class="cr"></span>
                                                             </input>
-                                                            NYPL
+                                                            &nbsp;NYPL
                                                         </label>
                                                     </div>
-                                                    <div class="checkbox">
+                                                    <div>
                                                         <label>
                                                             <input type="checkbox" id="owningInstitutionCUL"
                                                                    name="owningInstitutionCUL" value="CUL"
-                                                                   th:checked="*{owningInstitutions}" class="facetCheckBox">
-                                                            <span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
+                                                                   th:field="*{owningInstitutions}" class="facetCheckBox">
+                                                            <span class="cr"></span>
                                                             </input>
-                                                            Columbia
+                                                            &nbsp;Columbia
                                                         </label>
                                                     </div>
-                                                    <div class="checkbox">
+                                                    <div>
                                                         <label>
                                                             <input type="checkbox" id="owningInstitutionPUL"
                                                                    name="owningInstitutionPUL" value="PUL"
-                                                                   th:checked="*{owningInstitutions}" class="facetCheckBox">
-                                                            <span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
+                                                                   th:field="*{owningInstitutions}" class="facetCheckBox">
+                                                            <span class="cr"></span>
                                                             </input>
-                                                            Princeton
+                                                            &nbsp;Princeton
                                                         </label>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-xs-6">
                                                 <h4>Material Type</h4>
-                                                <div class="checkbox">
+                                                <div>
                                                     <label>
                                                         <input type="checkbox" id="monograph" name="monograph"
-                                                               value="Monograph" th:checked="*{materialTypes}" class="facetCheckBox">
-                                                        <span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
+                                                               value="Monograph" th:field="*{materialTypes}" class="facetCheckBox">
+                                                        <span class="cr"></span>
                                                         </input>
-                                                        Monograph
+                                                        &nbsp;Monograph
                                                     </label>
                                                 </div>
-                                                <div class="checkbox">
+                                                <div>
                                                     <label>
                                                         <input type="checkbox" id="serials" name="serials"
-                                                                   value="Serial" th:checked="*{materialTypes}" class="facetCheckBox">
-                                                        <span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
+                                                                   value="Serial" th:field="*{materialTypes}" class="facetCheckBox">
+                                                        <span class="cr"></span>
                                                         </input>
-                                                        Serials
+                                                        &nbsp;Serials
                                                     </label>
                                                 </div>
-                                                <div class="checkbox">
+                                                <div>
                                                     <label>
                                                         <input type="checkbox" id="others" name="others" value="Other"
-                                                                   th:checked="*{materialTypes}" class="facetCheckBox">
-                                                        <span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
+                                                                   th:field="*{materialTypes}" class="facetCheckBox">
+                                                        <span class="cr"></span>
                                                         </input>
-                                                        Others
+                                                        &nbsp;Others
                                                     </label>
                                                 </div>
                                             </div>
@@ -170,84 +170,84 @@
                                     <div class="row">
                                         <div class="col-xs-4">
                                             <h4>Collection Group</h4>
-                                            <div class="row">
-                                                <div class="checkbox">
+                                            <div class="row padding-left-15">
+                                                <div>
                                                     <label>
                                                         <input type="checkbox" id="shared" name="shared" value="Shared"
-                                                               th:checked="*{collectionGroupDesignations}" class="facetCheckBox">
-                                                        <span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
+                                                               th:field="*{collectionGroupDesignations}" class="facetCheckBox">
+                                                        <span class="cr"></span>
                                                         </input>
-                                                        Shared
+                                                        &nbsp;Shared
                                                     </label>
                                                 </div>
-                                                <div class="checkbox">
+                                                <div>
                                                     <label>
                                                         <input type="checkbox" id="private" name="private" value="Private"
-                                                               th:checked="*{collectionGroupDesignations}" class="facetCheckBox">
-                                                        <span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
+                                                               th:field="*{collectionGroupDesignations}" class="facetCheckBox">
+                                                        <span class="cr"></span>
                                                         </input>
-                                                        Private
+                                                        &nbsp;Private
                                                     </label>
                                                 </div>
-                                                <div class="checkbox">
+                                                <div>
                                                     <label>
                                                         <input type="checkbox" id="open" name="open" value="Open"
-                                                               th:checked="*{collectionGroupDesignations}" class="facetCheckBox">
-                                                        <span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
+                                                               th:field="*{collectionGroupDesignations}" class="facetCheckBox">
+                                                        <span class="cr"></span>
                                                         </input>
-                                                        Open
+                                                        &nbsp;Open
                                                     </label>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-xs-4">
                                             <h4>Availability</h4>
-                                            <div class="checkbox">
+                                            <div>
                                                 <label>
                                                     <input type="checkbox" id="available" name="available"
-                                                           value="Available" th:checked="*{availability}" class="facetCheckBox">
-                                                    <span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
+                                                           value="Available" th:field="*{availability}" class="facetCheckBox">
+                                                    <span class="cr"></span>
                                                     </input>
-                                                    In ReCAP
+                                                    &nbsp;In ReCAP
                                                 </label>
                                             </div>
-                                            <div class="checkbox">
+                                            <div>
                                                 <label>
                                                     <input type="checkbox" id="notAvailable" name="notAvailable"
-                                                           value="NotAvailable" th:checked="*{availability}" class="facetCheckBox">
-                                                    <span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
+                                                           value="NotAvailable" th:field="*{availability}" class="facetCheckBox">
+                                                    <span class="cr"></span>
                                                     </input>
-                                                    Out
+                                                    &nbsp;Out
                                                 </label>
                                             </div>
                                         </div>
                                         <div class="col-xs-4">
                                             <h4>Use Restriction</h4>
-                                            <div class="checkbox">
+                                            <div>
                                                 <label>
                                                     <input type="checkbox" id="noRestriction" name="noRestriction"
-                                                           value="NoRestrictions" th:checked="*{useRestrictions}" class="facetCheckBox">
-                                                    <span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
+                                                           value="NoRestrictions" th:field="*{useRestrictions}" class="facetCheckBox">
+                                                    <span class="cr"></span>
                                                     </input>
-                                                    No Restriction
+                                                    &nbsp;No Restriction
                                                 </label>
                                             </div>
-                                            <div class="checkbox">
+                                            <div>
                                                 <label>
                                                     <input type="checkbox" id="inLibraryUse" name="inLibraryUse"
-                                                           value="InLibraryUse" th:checked="*{useRestrictions}" class="facetCheckBox">
-                                                    <span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
+                                                           value="InLibraryUse" th:field="*{useRestrictions}" class="facetCheckBox">
+                                                    <span class="cr"></span>
                                                     </input>
-                                                    In Library Use
+                                                    &nbsp;In Library Use
                                                 </label>
                                             </div>
-                                            <div class="checkbox">
+                                            <div>
                                                 <label>
                                                     <input type="checkbox" id="supervisedUse" name="supervisedUse"
-                                                           value="SupervisedUse" th:checked="*{useRestrictions}" class="facetCheckBox">
-                                                    <span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
+                                                           value="SupervisedUse" th:field="*{useRestrictions}" class="facetCheckBox">
+                                                    <span class="cr"></span>
                                                     </input>
-                                                    Supervised Use
+                                                    &nbsp;Supervised Use
                                                 </label>
                                             </div>
                                         </div>
@@ -315,14 +315,14 @@
                                         <thead class="tablesorter-headerRow">
                                             <tr id="mainRow" class="parentRow">
                                                 <th width="7%" align="center" class="text-center" data-sorter="false">
-                                                    <div class="checkbox table-header-checkbox">
+                                                    <div class="table-header-checkbox">
                                                         <label class="text-center">
                                                             Select All
                                                             <span class="clearfix"></span>
                                                             <input type="checkbox" id="selectAll" name="selectAll" class="outerSelectAllCBClass"
-                                                                   th:checked="*{selectAll}"
+                                                                   th:field="*{selectAll}"
                                                                    th:onclick="'javascript:selectAllParentRows();enableExportSelectedRecordButton()'">
-                                                            <span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
+                                                            <span class="cr"></span>
                                                             </input>
                                                         </label>
                                                     </div>
@@ -348,19 +348,19 @@
                                                 <input type="hidden" th:field="*{searchResultRows[__${searchResultStat.index}__].showItems}"/>
                                                 <input type="hidden" th:value="false" data-th-id="'showItemsInput-'+ ${searchResultStat.index}" name="showItemsInput" />
                                                 <td data-th-id="'searchResultsDataPlus-'+ ${searchResultStat.index}" align="center">
-                                                    <div class="checkbox table-body-checkbox" th:unless="${searchResult.showItems}">
+                                                    <div class="table-body-checkbox" th:unless="${searchResult.showItems}">
                                                         <label>
                                                             <input type="checkbox" id="selected" name="selected" class="selectOuterCBClass"
                                                                    th:unless="${searchResult.showItems}"
-                                                                   th:checked="*{searchResultRows[__${searchResultStat.index}__].selected}"
+                                                                   th:field="*{searchResultRows[__${searchResultStat.index}__].selected}"
                                                                    th:style="${searchResult.availability == 'Available' || searchResult.availability == 'Not Available'} ? 'margin-left: 5px;' : 'margin-left: 25px;'"
                                                                    onclick="enableExportSelectedRecordButton()">
-                                                            <span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
+                                                            <span class="cr"></span>
                                                             </input>
                                                         </label>
                                                     </div>
                                                     <div>
-                                                        <a style="margin-left: 20px;" class="btn" th:if="${searchResult.showItems}" data-toggle="collapse" th:attr="data-target='.row' + ${searchResultStat.index}" th:onclick="'javascript:showItems('+${searchResultStat.index}+')'">
+                                                        <a class="btn" th:if="${searchResult.showItems}" data-toggle="collapse" th:attr="data-target='.row' + ${searchResultStat.index}" th:onclick="'javascript:showItems('+${searchResultStat.index}+')'">
                                                             <i data-th-id="'showItemsIcon-'+ ${searchResultStat.index}" name="showItemsIcon" class="fa fa-plus-circle" aria-hidden="true" style="font-size: 25px;"></i>
                                                         </a>
                                                     </div>
@@ -418,15 +418,15 @@
                                                             <th></th>
                                                             <th></th>
                                                             <th data-th-id="'searchItemResultsSelectHead-' + ${searchResultStat.index}" style="background-color: grey; color: white; width: 20px;" width="7%" align="center" class="text-center" data-sorter="false">
-                                                                <div class="checkbox table-header-checkbox">
+                                                                <div class="table-header-checkbox">
                                                                     <label class="text-center">
                                                                         Select All
                                                                         <span class="clearfix"></span>
                                                                         <input data-th-id="'selectAllItems-' + ${searchResultStat.index}" type="checkbox" id="selectAllItems" name="selectAllItems"
                                                                                class="innerSelectAllCBClass"
-                                                                               th:checked="*{searchResultRows[__${searchResultStat.index}__].selectAllItems}"
+                                                                               th:field="*{searchResultRows[__${searchResultStat.index}__].selectAllItems}"
                                                                                th:onclick="'javascript:selectAllChildRows('+${searchResultStat.index}+');enableExportSelectedRecordButton()'">
-                                                                        <span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
+                                                                        <span class="cr"></span>
                                                                         </input>
                                                                     </label>
                                                                 </div>
@@ -442,14 +442,14 @@
                                                             <td></td>
                                                             <td></td>
                                                             <td data-th-id="'searchItemResultsDataPlus-'+ ${searchItemResultStat.index}">
-                                                                <div class="checkbox table-body-checkbox" style="margin-left: 40px;">
+                                                                <div class="table-body-checkbox" style="margin-left: 40px;">
                                                                     <label>
                                                                         <input type="checkbox" id="selectedItem" name="selectedItem" class="selectInnerCBClass"
                                                                                th:value="${searchItemResult.selectedItem}"
-                                                                               th:checked="*{searchResultRows[__${searchResultStat.index}__].searchItemResultRows[__${searchItemResultStat.index}__].selectedItem}"
-                                                                               th:style="${searchItemResult.availability == 'Available' || searchItemResult.availability == 'Not Available'} ? 'margin-left: 5px;' : 'margin-left: 25px;'"
+                                                                               th:field="*{searchResultRows[__${searchResultStat.index}__].searchItemResultRows[__${searchItemResultStat.index}__].selectedItem}"
+                                                                               th:style="${searchItemResult.availability == 'Available' || searchItemResult.availability == 'Not Available'} ? 'margin-left: 10px;' : 'margin-left: 25px;'"
                                                                                onclick="enableExportSelectedRecordButton()">
-                                                                        <span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
+                                                                        <span class="cr"></span>
                                                                         </input>
                                                                     </label>
                                                                 </div>
