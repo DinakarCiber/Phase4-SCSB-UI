@@ -202,6 +202,8 @@ public class RecapConstants {
     public static final String REQUESTED_ITEM_TITLE = "itemTitle";
     public static final String REQUESTED_ITEM_OWNING_INSTITUTION = "itemOwningInstitution";
 
+    public static final String OWNING_INSTITUTION = "owningInstitution";
+
     public static final String ADMIN = "ROLE_ADMIN";
     public static final String USER = "ROLE_USER";
     public static final String ROLE_ANONYMOUS = "ROLE_ANONYMOUS";
