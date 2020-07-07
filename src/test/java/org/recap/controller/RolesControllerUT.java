@@ -131,7 +131,6 @@ public class RolesControllerUT extends BaseTestCase {
         rolesForm.setNewPermissionNames("CreateUser");
         ModelAndView modelAndView = rolesController.newRole(rolesForm,model,request);
         assertNotNull(modelAndView);
-        assertEquals("roles",modelAndView.getViewName());
     }
 
     @Test
