@@ -150,14 +150,15 @@
                                                     <td>
                                                         <span th:text="${userRolesL.roleName}"></span>
                                                     </td>
-                                                    <td class="text-center"><a id="userDataEdit" href="#">
-                                                        <span th:class="${userRolesL.showEditDeleteIcon} ? 'glyphicon glyphicon-pencil' : '' "
-                                                            th:title="'Edit User'"
-                                                            th:onclick="'editUser(\'' + ${userRolesL.userId} + '\',\'' + ${userRolesL.networkLoginId} + '\')'"></span></a>
+                                                    <td class="text-center">
+                                                        <a id="userDataEdit" href="#">
+                                                            <span th:class="${userRolesL.showEditDeleteIcon} ? 'glyphicon glyphicon-pencil' : '' "
+                                                                th:title="'Edit User'" th:userId="${userRolesL.userId}" th:networkLoginId="${userRolesL.networkLoginId}"
+                                                                onclick="editUser(this.getAttribute('userId'),this.getAttribute('networkLoginId'))"></span></a>
                                                         <a id="userDataDelete" href="#">
                                                             <span th:class="${userRolesL.showEditDeleteIcon} ? 'glyphicon glyphicon-trash' : '' "
-                                                                th:title="'Delete User'"
-                                                                th:onclick="'deleteUserRole(\'' + ${userRolesL.networkLoginId} + '\',\'' + ${userRolesL.userId} + '\')'"></span></a>
+                                                                th:title="'Delete User'" th:userId="${userRolesL.userId}" th:networkLoginId="${userRolesL.networkLoginId}"
+                                                                onclick="deleteUserRole(this.getAttribute('networkLoginId'),this.getAttribute('userId'))"></span></a>
                                                     </td>
 
                                                 </tr>
