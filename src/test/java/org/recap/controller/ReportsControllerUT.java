@@ -89,12 +89,22 @@ public class ReportsControllerUT extends BaseControllerUT {
     @Test
     public void reports() throws Exception{
         when(request.getSession(false)).thenReturn(session);
-        Mockito.when(getUserAuthUtil().authorizedUser(RecapConstants.SCSB_SHIRO_REPORT_URL,(UsernamePasswordToken)session.getAttribute(RecapConstants.USER_TOKEN))).thenReturn(true);
+        Mockito.when(getUserAuthUtil().isAuthenticated(request, RecapConstants.SCSB_SHIRO_REPORT_URL)).thenReturn(false);
         Mockito.when(reportsController.getUserAuthUtil()).thenReturn(userAuthUtil);
         Mockito.when(reportsController.reports(model,request)).thenCallRealMethod();
         String response = reportsController.reports(model,request);
         assertNotNull(response);
-//        assertEquals("searchRecords",response);
+        assertEquals("redirect:/",response);
+    }
+    @Test
+    public void reports2() throws Exception{
+        when(request.getSession(false)).thenReturn(session);
+        Mockito.when(getUserAuthUtil().isAuthenticated(request, RecapConstants.SCSB_SHIRO_REPORT_URL)).thenReturn(true);
+        Mockito.when(reportsController.getUserAuthUtil()).thenReturn(userAuthUtil);
+        Mockito.when(reportsController.reports(model,request)).thenCallRealMethod();
+        String response = reportsController.reports(model,request);
+        assertNotNull(response);
+        assertEquals("searchRecords",response);
     }
 
     @Test

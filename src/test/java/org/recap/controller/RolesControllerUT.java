@@ -126,7 +126,7 @@ public class RolesControllerUT extends BaseTestCase {
         when(request.getSession(false)).thenReturn(session);
         when(session.getAttribute(RecapConstants.USER_NAME)).thenReturn("userName");
         RolesForm rolesForm = new RolesForm();
-        rolesForm.setNewRoleName("test");
+        rolesForm.setNewRoleName("test2");
         rolesForm.setNewRoleDescription("test Description");
         rolesForm.setNewPermissionNames("CreateUser");
         ModelAndView modelAndView = rolesController.newRole(rolesForm,model,request);
