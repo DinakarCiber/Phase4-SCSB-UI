@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -60,7 +61,7 @@ public class ScheduleJobsController extends AbstractController {
      * @param request the request
      * @return the string
      */
-    @RequestMapping("/jobs")
+    @RequestMapping(value = "/jobs", method = { RequestMethod.GET, RequestMethod.POST })
     public String displayJobs(Model model, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         ScheduleJobsForm scheduleJobsForm = new ScheduleJobsForm();
