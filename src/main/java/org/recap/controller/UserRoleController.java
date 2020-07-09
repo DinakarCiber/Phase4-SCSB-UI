@@ -57,7 +57,13 @@ public class UserRoleController extends AbstractController {
         return userDetailsRepository;
     }
 
+    public UserRoleService getUserRoleService() {
+        return userRoleService;
+    }
 
+    public UserManagementService getUserManagementService() {
+        return userManagementService;
+    }
 
     /**
      * Render the users UI page for the scsb application.
@@ -292,7 +298,7 @@ public class UserRoleController extends AbstractController {
             getAndSetRolesAndInstitutions(userRoleForm, userDetailsForm);
         Object userName = session.getAttribute(RecapConstants.USER_NAME);
         userRoleForm.setCreatedBy(String.valueOf(userName));
-        UsersEntity usersEntity = userRoleService.saveNewUserToDB(userRoleForm);
+        UsersEntity usersEntity = getUserRoleService().saveNewUserToDB(userRoleForm);
         if (usersEntity != null) {
             userRoleForm.setShowCreateSuccess(true);
             userRoleForm.setAllowCreateEdit(true);
@@ -375,7 +381,7 @@ public class UserRoleController extends AbstractController {
         userRoleForm.setUserId(userId);
         Object userName = session.getAttribute(RecapConstants.USER_NAME);
         userRoleForm.setLastUpdatedBy(String.valueOf(userName));
-        UsersEntity usersEntity = userRoleService.saveEditedUserToDB(userId, networkLoginId, userDescription, institutionId, roleIds, userEmailId,userRoleForm);
+        UsersEntity usersEntity = getUserRoleService().saveEditedUserToDB(userId, networkLoginId, userDescription, institutionId, roleIds, userEmailId,userRoleForm);
         if (usersEntity != null) {
             userRoleForm.setShowEditSuccess(true);
             userRoleForm.setEditNetworkLoginId(usersEntity.getLoginId());
@@ -435,8 +441,8 @@ public class UserRoleController extends AbstractController {
         HttpSession session = request.getSession(false);
         Integer userId = (Integer) session.getAttribute(RecapConstants.USER_ID);
         UserDetailsForm userDetailsForm = getUserAuthUtil().getUserDetails(session, RecapConstants.BARCODE_RESTRICTED_PRIVILEGE);
-        List<Object> institutions = userRoleService.getInstitutions(userDetailsForm.isSuperAdmin(), userDetailsForm.getLoginInstitutionId());
-        List<Object> roles = userRoleService.getRoles(userManagementService.getSuperAdminRoleId(), userDetailsForm.isSuperAdmin());
+        List<Object> institutions = getUserRoleService().getInstitutions(userDetailsForm.isSuperAdmin(), userDetailsForm.getLoginInstitutionId());
+        List<Object> roles = getUserRoleService().getRoles(getUserManagementService().getSuperAdminRoleId(), userDetailsForm.isSuperAdmin());
         userRoleForm.setUserId(userId);
         userRoleForm.setInstitutionId(userDetailsForm.getLoginInstitutionId());
         userRoleForm.setRoles(roles);
@@ -450,19 +456,19 @@ public class UserRoleController extends AbstractController {
     private void searchAndSetResult(UserRoleForm userRoleForm, boolean superAdmin, Integer userId,HttpServletRequest request) {
         if (StringUtils.isBlank(userRoleForm.getSearchNetworkId()) && StringUtils.isBlank(userRoleForm.getUserEmailId())) {
             logger.debug("Search All Users");
-            Page<UsersEntity> usersEntities = userRoleService.searchUsers(userRoleForm, superAdmin);
+            Page<UsersEntity> usersEntities = getUserRoleService().searchUsers(userRoleForm, superAdmin);
             setUserRoleFormValues(userRoleForm, usersEntities, userId, request);
         } else if (StringUtils.isNotBlank(userRoleForm.getSearchNetworkId()) && StringUtils.isBlank(userRoleForm.getUserEmailId())) {
             logger.debug("Search Users By NetworkId :" + userRoleForm.getSearchNetworkId());
-            Page<UsersEntity> usersEntities = userRoleService.searchByNetworkId(userRoleForm, superAdmin);
+            Page<UsersEntity> usersEntities = getUserRoleService().searchByNetworkId(userRoleForm, superAdmin);
             getUsersInformation(userRoleForm, superAdmin, userId, usersEntities,RecapConstants.NETWORK_LOGIN_ID_DOES_NOT_EXIST,request);
         } else if (StringUtils.isBlank(userRoleForm.getSearchNetworkId()) && StringUtils.isNotBlank(userRoleForm.getUserEmailId())) {
             logger.debug("Search Users by Email Id:" + userRoleForm.getUserEmailId());
-            Page<UsersEntity> usersEntities = userRoleService.searchByUserEmailId(userRoleForm, superAdmin);
+            Page<UsersEntity> usersEntities = getUserRoleService().searchByUserEmailId(userRoleForm, superAdmin);
             getUsersInformation(userRoleForm, superAdmin, userId, usersEntities, RecapConstants.EMAILID_ID_DOES_NOT_EXIST,request);
         } else if (StringUtils.isNotBlank(userRoleForm.getSearchNetworkId()) && StringUtils.isNotBlank(userRoleForm.getUserEmailId())) {
             logger.debug("Search Users by Network Id : " + userRoleForm.getSearchNetworkId() + " and Email Id : " + userRoleForm.getUserEmailId());
-            Page<UsersEntity> usersEntities = userRoleService.searchByNetworkIdAndUserEmailId(userRoleForm, superAdmin);
+            Page<UsersEntity> usersEntities = getUserRoleService().searchByNetworkIdAndUserEmailId(userRoleForm, superAdmin);
             getUsersInformation(userRoleForm, superAdmin, userId, usersEntities,RecapConstants.NETWORK_LOGIN_ID_AND_EMAILID_ID_DOES_NOT_EXIST,request);
         } else {
             userRoleForm.setShowResults(false);
@@ -543,8 +549,8 @@ public class UserRoleController extends AbstractController {
     }
 
     private void setUserRoleForm(UserRoleForm userRoleForm, UserDetailsForm userDetailsForm) {
-        List<Object> roles = userRoleService.getRoles(userManagementService.getSuperAdminRoleId(),userDetailsForm.isSuperAdmin());
-        List<Object> institutions = userRoleService.getInstitutions(userDetailsForm.isSuperAdmin(), userDetailsForm.getLoginInstitutionId());
+        List<Object> roles = getUserRoleService().getRoles(getUserManagementService().getSuperAdminRoleId(),userDetailsForm.isSuperAdmin());
+        List<Object> institutions = getUserRoleService().getInstitutions(userDetailsForm.isSuperAdmin(), userDetailsForm.getLoginInstitutionId());
         userRoleForm.setRoles(roles);
         userRoleForm.setInstitutions(institutions);
     }
