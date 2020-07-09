@@ -146,7 +146,7 @@ public class ReportsControllerUT extends BaseControllerUT {
     @Test
     public void accessionDeaccessionReports() throws Exception {
         ReportsForm reportsForm = new ReportsForm();
-        reportsForm.setRequestType(RecapCommonConstants.REPORTS_REQUEST);
+        reportsForm.setRequestType(RecapCommonConstants.REPORTS_ACCESSION_DEACCESSION);
         reportsForm.setRequestFromDate("11/01/2016");
         reportsForm.setRequestToDate("12/01/2016");
         reportsForm.setShowBy(RecapCommonConstants.REPORTS_ACCESSION_DEACCESSION);
@@ -172,7 +172,35 @@ public class ReportsControllerUT extends BaseControllerUT {
         assertNotNull(reportsForm.isShowRequestTypeShow());
         assertNotNull(reportsForm.isShowDeaccessionInformationTable());
     }
-
+    @Test
+    public void CollectionGroupDesignation() throws Exception {
+        ReportsForm reportsForm = new ReportsForm();
+        reportsForm.setRequestType("CollectionGroupDesignation");
+        reportsForm.setRequestFromDate("11/01/2016");
+        reportsForm.setRequestToDate("12/01/2016");
+        reportsForm.setShowBy(RecapCommonConstants.REPORTS_ACCESSION_DEACCESSION);
+        reportsForm.setShowNoteILBD(true);
+        reportsForm.setShowNotePartners(true);
+        reportsForm.setReportRequestType(new ArrayList<>());
+        reportsForm.setOwningInstitutions(Arrays.asList("PUL"));
+        reportsForm.setCollectionGroupDesignations(Arrays.asList("Shared"));
+        reportsForm.setShowRequestTypeShow(true);
+        reportsForm.setShowDeaccessionInformationTable(true);
+        reportsForm.setDeaccessionOwnInst("CUL");
+        reportsForm.setShowNoteRequestType(true);
+        String fromDate = reportsForm.getAccessionDeaccessionFromDate();
+        String toDate = reportsForm.getAccessionDeaccessionToDate();
+        ModelAndView modelAndView = reportsControllerWired.reportCounts(reportsForm,model);
+        reportsUtil.populateAccessionDeaccessionItemCounts(reportsForm);
+        assertNotNull(modelAndView);
+        assertEquals("reports", modelAndView.getViewName());
+        assertNotNull(reportsForm.isShowNoteILBD());
+        assertNotNull(reportsForm.isShowNotePartners());
+        assertNotNull(reportsForm.isShowNoteRequestType());
+        assertNotNull(reportsForm.getReportRequestType());
+        assertNotNull(reportsForm.isShowRequestTypeShow());
+        assertNotNull(reportsForm.isShowDeaccessionInformationTable());
+    }
 
     @Test
     public void cgdCounts() throws Exception {
@@ -297,17 +325,17 @@ public class ReportsControllerUT extends BaseControllerUT {
         assertEquals("reports :: #IncompleteReporttableview",modelAndView.getViewName());
     }
 
-   /* @Test
+    @Test
     public void getInstitutionForIncompletereport() throws Exception{
         ReportsForm reportsForm = new ReportsForm();
-        ModelAndView modelAndView = reportsControllerWired.getInstitutionForIncompletereport(request, reportsForm);
+        ModelAndView modelAndView = reportsControllerWired.getInstitutionForIncompleteReport(request,reportsForm);
         assertNotNull(modelAndView);
         List<String> incompleteShowByInst = reportsForm.getIncompleteShowByInst();
         assertNotNull(incompleteShowByInst);
         boolean instutions = incompleteShowByInst.containsAll(Arrays.asList("PUL", "CUL", "NYPL"));
         assertEquals(true,instutions);
         assertEquals("reports :: #incompleteShowBy",modelAndView.getViewName());
-    }*/
+    }
 
     @Test
     public void incompleteReportPageSizeChange() throws Exception{
