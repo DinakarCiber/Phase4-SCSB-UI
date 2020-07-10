@@ -161,31 +161,12 @@ public class RequestControllerUT extends BaseControllerUT {
     public void request() throws Exception{
         Mockito.when(request.getSession(false)).thenReturn(session);
         Mockito.when(requestController.getRequestService()).thenReturn(requestService);
-        Mockito.when(requestController.getItemRequestInformation()).thenReturn(itemRequestInformation);
         Mockito.when(requestController.getUserAuthUtil()).thenReturn(userAuthUtil);
         Mockito.when(requestController.getUserAuthUtil().isAuthenticated(request, RecapConstants.SCSB_SHIRO_REQUEST_URL)).thenReturn(false);
-        Mockito.when(requestController.getInstitutionDetailsRepository()).thenReturn(institutionDetailsRepository);
-        Mockito.when(requestController.getCustomerCodeDetailsRepository()).thenReturn(customerCodeDetailsRepository);
         UserDetailsForm userDetailsForm = getUserDetails();
-        Mockito.when(requestController.getUserAuthUtil().getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE)).thenReturn(userDetailsForm);
-        Mockito.when(requestService.setDefaultsToCreateRequest(userDetailsForm,model)).thenCallRealMethod();
-        InstitutionEntity institutionEntity = new InstitutionEntity();
-        institutionEntity.setInstitutionCode("CUL");
-        institutionEntity.setId(2);
-        List<InstitutionEntity> institutionEntityList = new ArrayList<>();
-        institutionEntityList.add(institutionEntity);
-      //  Mockito.when(requestService.getInstitutionDetailsRepository()).thenReturn(institutionDetailsRepository);
-//        Mockito.when(requestController.getRequestService().getInstitutionDetailsRepository().findAll()).thenReturn(Arrays.asList(institutionEntity));
- //       Mockito.when(requestService.getRequestTypeDetailsRepository()).thenReturn(requestTypeDetailsRepository);
-        Mockito.when(requestService.setFormDetailsForRequest(model,request,userDetailsForm)).thenReturn(new RequestForm());
-        Mockito.when(requestServiceUtil.searchRequests(getRequestForm())).thenCallRealMethod();
-        Mockito.when(institutionDetailsRepository.findByInstitutionCode(institutionEntity.getInstitutionCode())).thenReturn(institutionEntity);
-        when(institutionDetailsRepository.findAll()).thenReturn(Collections.EMPTY_LIST);
-        when(requestTypeDetailsRepository.findAll()).thenReturn(Collections.EMPTY_LIST);
-        when(customerCodeDetailsRepository.findAll()).thenReturn(Collections.EMPTY_LIST);
-        when(((BindingAwareModelMap) model).get("requestedBarcode")).thenReturn("test");
-        when(requestController.populateItem(new RequestForm(), null, model,request)).thenReturn("");
-        when(requestController.request(model,request)).thenCallRealMethod();
+        Mockito.when(requestController.getRequestService().setDefaultsToCreateRequest(userDetailsForm,model)).thenCallRealMethod();
+       // Mockito.when(requestController.getRequestService().setFormDetailsForRequest(model,request,userDetailsForm)).thenCallRealMethod();
+        Mockito.when(requestController.request(model,request)).thenCallRealMethod();
         String response = requestController.request(model,request);
         assertNotNull(response);
 //        assertEquals("searchRecords",response);
@@ -200,10 +181,6 @@ public class RequestControllerUT extends BaseControllerUT {
         institutionEntity.setInstitutionCode("PUL");
         institutionEntity.setInstitutionName("Princeton");
         when(requestController.getRequestServiceUtil()).thenReturn(requestServiceUtil);
-        //when(requestController.getRequestServiceUtil().searchRequests(requestForm)).thenCallRealMethod();
-       // Mockito.when(institutionDetailsRepository.findByInstitutionCode(institution)).thenReturn(institutionEntity);
-      /*  Mockito.when(requestServiceUtil.searchRequests(requestForm)).thenCallRealMethod();
-        when(requestController.searchRequests(requestForm, bindingResult, model)).thenCallRealMethod();*/
         ModelAndView modelAndView = requestControllerWired.searchRequests(requestForm, bindingResult, model);
         assertNotNull(modelAndView);
         assertEquals("request :: #searchRequestsSection", modelAndView.getViewName());
@@ -273,62 +250,32 @@ public class RequestControllerUT extends BaseControllerUT {
     @Test
     public void loadCreateRequest() throws Exception {
         when(request.getSession(false)).thenReturn(session);
-        Mockito.when(requestController.getInstitutionDetailsRepository()).thenReturn(institutionDetailsRepository);
-        Mockito.when(requestController.getCustomerCodeDetailsRepository()).thenReturn(customerCodeDetailsRepository);
         Mockito.when(requestController.getUserAuthUtil()).thenReturn(userAuthUtil);
         Mockito.when(requestController.getRequestService()).thenReturn(requestService);
         UserDetailsForm userDetailsForm = getUserDetails();
         Mockito.when(requestController.getUserAuthUtil().getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE)).thenReturn(userDetailsForm);
-        InstitutionEntity institutionEntity = new InstitutionEntity();
-        institutionEntity.setInstitutionCode("CUL");
-        institutionEntity.setId(2);
         RequestForm requestForm = getRequestForm();
-        List<InstitutionEntity> institutionEntityList = new ArrayList<>();
-        institutionEntityList.add(institutionEntity);
-        when(requestController.getUserAuthUtil().getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE)).thenReturn(getUserDetails());
-        Mockito.when(requestService.setDefaultsToCreateRequest(userDetailsForm,model)).thenReturn(requestForm);
-//        Mockito.when(requestService.getInstitutionDetailsRepository()).thenReturn(institutionDetailsRepository);
-//        Mockito.when(requestController.getRequestService().getInstitutionDetailsRepository().findAll()).thenReturn(Arrays.asList(institutionEntity));
-//        Mockito.when(requestService.getRequestTypeDetailsRepository()).thenReturn(requestTypeDetailsRepository);
-        when(institutionDetailsRepository.findAll()).thenReturn(Collections.EMPTY_LIST);
-        when(requestTypeDetailsRepository.findAll()).thenReturn(Collections.EMPTY_LIST);
-        when(customerCodeDetailsRepository.findAll()).thenReturn(Collections.EMPTY_LIST);
-        when(userAuthUtil.getUserDetails(request.getSession(),RecapConstants.REQUEST_ITEM_PRIVILEGE)).thenReturn(getUserDetails());
+        Mockito.when(requestController.getRequestService().setDefaultsToCreateRequest(userDetailsForm,model)).thenCallRealMethod();
         when(requestController.loadCreateRequest(model,request)).thenCallRealMethod();
-        when(request.getSession()).thenReturn(session);
-        /*ModelAndView modelAndView = requestController.loadCreateRequest(model,request);
+        ModelAndView modelAndView = requestController.loadCreateRequest(model,request);
         assertNotNull(modelAndView);
-        assertEquals("request", modelAndView.getViewName());*/
+        assertEquals("request", modelAndView.getViewName());
     }
 
     @Test
     public void testLoadCreateRequestForSamePatron(){
 
-        Mockito.when(requestController.getInstitutionDetailsRepository()).thenReturn(institutionDetailsRepository);
-        Mockito.when(requestController.getCustomerCodeDetailsRepository()).thenReturn(customerCodeDetailsRepository);
+        when(request.getSession(false)).thenReturn(session);
         Mockito.when(requestController.getUserAuthUtil()).thenReturn(userAuthUtil);
         Mockito.when(requestController.getRequestService()).thenReturn(requestService);
         UserDetailsForm userDetailsForm = getUserDetails();
         Mockito.when(requestController.getUserAuthUtil().getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE)).thenReturn(userDetailsForm);
-        InstitutionEntity institutionEntity = new InstitutionEntity();
-        institutionEntity.setInstitutionCode("CUL");
-        institutionEntity.setId(2);
-        List<InstitutionEntity> institutionEntityList = new ArrayList<>();
-        institutionEntityList.add(institutionEntity);
-        Mockito.when(requestServiceMocked.setDefaultsToCreateRequest(userDetailsForm,model)).thenReturn(new RequestForm());
-        Mockito.when(requestServiceMocked.getInstitutionDetailsRepository()).thenReturn(institutionDetailsRepository);
-        Mockito.when(requestServiceMocked.getInstitutionDetailsRepository().findAll()).thenReturn(Arrays.asList(institutionEntity));
-        Mockito.when(requestServiceMocked.getRequestTypeDetailsRepository()).thenReturn(requestTypeDetailsRepository);
-
-        when(institutionDetailsRepository.findAll()).thenReturn(Collections.EMPTY_LIST);
-        when(requestTypeDetailsRepository.findAll()).thenReturn(Collections.EMPTY_LIST);
-        when(customerCodeDetailsRepository.findAll()).thenReturn(Collections.EMPTY_LIST);
-        Mockito.when(requestController.getUserAuthUtil().getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE)).thenReturn(userDetailsForm);
+        RequestForm requestForm = getRequestForm();
+        Mockito.when(requestController.getRequestService().setDefaultsToCreateRequest(userDetailsForm,model)).thenCallRealMethod();
         when(requestController.loadCreateRequestForSamePatron(model,request)).thenCallRealMethod();
-        when(request.getSession()).thenReturn(session);
-//        ModelAndView modelAndView = requestController.loadCreateRequestForSamePatron(model,request);
- //       assertNotNull(modelAndView);
-  //      assertEquals("request", modelAndView.getViewName());
+        ModelAndView modelAndView = requestController.loadCreateRequestForSamePatron(model,request);
+        assertNotNull(modelAndView);
+        assertEquals("request", modelAndView.getViewName());
     }
 
     @Test
@@ -355,8 +302,6 @@ public class RequestControllerUT extends BaseControllerUT {
         List<String> requestStatusCodeList = getRequestStatusCodeList();
         List<String> institutionCodeList = getInstitutionCodeList();
         Mockito.when(requestController.getInstitutionDetailsRepository()).thenReturn(institutionDetailsRepository);
-//        Mockito.doCallRealMethod().when(requestService).findAllRequestStatusExceptProcessing(requestStatusCodeList);
- //       Mockito.doCallRealMethod().when(requestService).getInstitutionForSuperAdmin(institutionCodeList);
         Mockito.when(requestController.getUserAuthUtil()).thenReturn(userAuthUtil);
         Mockito.when(requestController.getUserAuthUtil().getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE)).thenReturn(userDetailsForm);
         Mockito.when(requestController.getInstitutionDetailsRepository()).thenReturn(institutionDetailsRepository);
@@ -385,26 +330,18 @@ public class RequestControllerUT extends BaseControllerUT {
         requestForm.setItemBarcodeInRequest(barcode);
         List<ItemEntity> itemEntityArrayList;
         itemEntityArrayList = bibliographicEntity.getItemEntities();
-      //  Mockito.when(requestController.getCustomerCodeDetailsRepository()).thenReturn(customerCodeDetailsRepository);
-      //  Mockito.when(requestController.getItemDetailsRepository().findByBarcodeAndCatalogingStatusAndIsDeletedFalse(barcode, RecapCommonConstants.COMPLETE_STATUS)).thenReturn( bibliographicEntity.getItemEntities());
-       // Mockito.when(requestController.getCustomerCodeDetailsRepository().findByCustomerCodeAndRecapDeliveryRestrictionLikeEDD(customerCode)).thenReturn(customerCodeEntity);
         Mockito.when(requestController.getUserAuthUtil()).thenReturn(userAuthUtil);
         when(request.getSession()).thenReturn(session);
         Mockito.when(requestController.getRequestService()).thenReturn(requestService);
         UserDetailsForm userDetailsForm = getUserDetails();
         Mockito.when(requestController.getUserAuthUtil().getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE)).thenReturn(userDetailsForm);
-//        Mockito.when(requestService.populateItemForRequest(requestForm,request)).thenReturn("test");
         Mockito.when(requestController.getUserAuthUtil().getUserDetails(request.getSession(),RecapConstants.REQUEST_PRIVILEGE)).thenReturn(getUserDetails());
-//        Mockito.when(requestService.getItemDetailsRepository()).thenReturn(itemDetailsRepository);
-//        Mockito.when(requestService.getRequestTypeDetailsRepository()).thenReturn(requestTypeDetailsRepository);
         List<RequestTypeEntity> requestTypeEntityList=new ArrayList<>();
         RequestTypeEntity requestTypeEntity = new RequestTypeEntity();
         requestTypeEntity.setRequestTypeCode("RETRIEVAL");
         requestTypeEntity.setRequestTypeDesc("RETRIEVAL");
         requestTypeEntity.setId(1);
         requestTypeEntityList.add(requestTypeEntity);
-//        Mockito.when(requestService.getRequestTypeDetailsRepository().findAllExceptBorrowDirect()).thenReturn(Arrays.asList(requestTypeEntity));
-  //      Mockito.when(requestService.getRequestTypeDetailsRepository().findAllExceptEDDAndBorrowDirect()).thenReturn(Arrays.asList(requestTypeEntity));
         when(requestController.populateItem(requestForm, bindingResult, model,request)).thenCallRealMethod();
        /* String response = requestController.populateItem(requestForm, bindingResult, model,request);
         assertNotNull(response);*/
@@ -568,26 +505,18 @@ public class RequestControllerUT extends BaseControllerUT {
         List<String> institutionCodeList = getInstitutionCodeList();
         List<String> requestStatuses = new ArrayList<>();
         Mockito.when(requestController.getInstitutionDetailsRepository()).thenReturn(institutionDetailsRepository);
-        //Mockito.when(requestServiceMocked.findAllRequestStatusExceptProcessing(requestStatusCodeList)).thenCallRealMethod();
         Mockito.doCallRealMethod().when(requestServiceMocked).getInstitutionForSuperAdmin(institutionCodeList);
         Mockito.doNothing().when(requestServiceMocked).findAllRequestStatusExceptProcessing(requestStatuses);
         Mockito.when(requestController.getUserAuthUtil()).thenReturn(userAuthUtil);
         Mockito.when(requestController.getUserAuthUtil().getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE)).thenReturn(userDetailsForm);
-       /* doAnswer(new Answer() {
-            public Object answer(InvocationOnMock invocation){
-                Object[] args = invocation.getArguments();
-                Mock mock = (Mock) invocation.getMock();
-                return null;
-            }
-        }).when(requestService).findAllRequestStatusExceptProcessing();*/
         Mockito.when(requestController.getInstitutionDetailsRepository()).thenReturn(institutionDetailsRepository);
         Mockito.when(requestController.getInstitutionDetailsRepository().findById(userDetailsForm.getLoginInstitutionId())).thenReturn(Optional.of(institutionEntity));
         Mockito.when(requestStatusDetailsRepository.findAll()).thenReturn(Arrays.asList(requestStatusEntity));
         Mockito.when(requestController.getInstitutionDetailsRepository().getInstitutionCodeForSuperAdmin()).thenReturn(Arrays.asList(institutionEntity));
         Mockito.when(requestController.loadSearchRequest(model,request)).thenCallRealMethod();
-//        ModelAndView modelAndView = requestController.loadSearchRequest(model,request);
- //       assertNotNull(modelAndView);
- //       assertEquals(modelAndView.getViewName(),"request");
+        ModelAndView modelAndView = requestController.loadSearchRequest(model,request);
+        assertNotNull(modelAndView);
+        assertEquals(modelAndView.getViewName(),"request");
     }
 
 
