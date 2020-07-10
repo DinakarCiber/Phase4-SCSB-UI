@@ -4,6 +4,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.util.Assert;
 import org.codehaus.jettison.json.JSONException;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.Test;
 import org.marc4j.marc.Record;
 import org.mockito.Mock;
@@ -108,19 +110,37 @@ public class RequestServiceUT extends BaseTestCase {
     public void testDeliveryLocations() throws Exception{
         RequestForm requestForm = getRequestForm2();
         ItemEntity itemEntity = getItemEntity();
-        UserDetailsForm userDetailsForm = getUserDetailsForm(false);
+        UserDetailsForm userDetailsForm = getUserDetailsForm(true);
         Map<String, String> deliveryLocationsMap = new HashMap<>();
-        //requestService.processCustomerAndDeliveryCodes(requestForm,deliveryLocationsMap,userDetailsForm,itemEntity,1);
+        requestService.processCustomerAndDeliveryCodes(requestForm,deliveryLocationsMap,userDetailsForm,itemEntity,1);
         List<String> deliveryLocationList = new ArrayList<>();
         for(String deliveryLocation : deliveryLocationsMap.keySet()){
             deliveryLocationList.add(deliveryLocation);
         }
         deliveryLocations.putAll(deliveryLocationsMap);
         CustomerCodeEntity CustomerCode = customerCodeDetailsRepository.findByCustomerCode(itemEntity.getCustomerCode());
-      /*//  String deliveryRestrictions = CustomerCode.getDeliveryRestrictions();
+        String deliveryRestrictions = CustomerCode.getDeliveryRestrictions();
         String[] splitDeliveryLocation = StringUtils.split(deliveryRestrictions, ",");
         String[] deliveryRestrictionsArray = Arrays.stream(splitDeliveryLocation).map(String::trim).toArray(String[]::new);
-        assertNotNull(deliveryRestrictionsArray);*/
+        assertNotNull(deliveryRestrictionsArray);
+    }
+    @Test
+    public void testDeliveryLocationsWithSameInstitutions() throws Exception{
+        RequestForm requestForm = getRequestForm();
+        ItemEntity itemEntity = getItemEntity();
+        UserDetailsForm userDetailsForm = getUserDetailsForm(true);
+        Map<String, String> deliveryLocationsMap = new HashMap<>();
+        requestService.processCustomerAndDeliveryCodes(requestForm,deliveryLocationsMap,userDetailsForm,itemEntity,1);
+        List<String> deliveryLocationList = new ArrayList<>();
+        for(String deliveryLocation : deliveryLocationsMap.keySet()){
+            deliveryLocationList.add(deliveryLocation);
+        }
+        deliveryLocations.putAll(deliveryLocationsMap);
+        CustomerCodeEntity CustomerCode = customerCodeDetailsRepository.findByCustomerCode(itemEntity.getCustomerCode());
+        String deliveryRestrictions = CustomerCode.getDeliveryRestrictions();
+        String[] splitDeliveryLocation = StringUtils.split(deliveryRestrictions, ",");
+        String[] deliveryRestrictionsArray = Arrays.stream(splitDeliveryLocation).map(String::trim).toArray(String[]::new);
+        assertNotNull(deliveryRestrictionsArray);
     }
     @Test
     public void testSortDeliveryLocations() throws Exception{
@@ -270,19 +290,34 @@ public class RequestServiceUT extends BaseTestCase {
     }
 
     @Test
-    public void testSetFormDetailsForRequest() throws JSONException {
+    public void testSetFormDetailsForRequest() throws Exception {
         RequestForm requestForm = getRequestForm();
         LinkedHashSet<String> requestedItemAvailabilty = new LinkedHashSet<>();
+        JSONObject json = new JSONObject();
+        JSONObject jsonObject = new JSONObject();
+        JSONObject jsonObject1 = new JSONObject();
+        JSONArray array = new JSONArray();
+        jsonObject.put("1","PA");
+        jsonObject.put("2","PB");
+        array.put("RECALL");
+        array.put("RETRIEVE");
+        json.put("error", "No Error");
+        json.put("noPermissionErrorMessage", "No");
+        json.put("itemTitle", "testName");
+        json.put("itemOwningInstitution", "CUL");
+        json.put("deliveryLocation",jsonObject);
+        json.put("requestTypes",array);
+        String message = json.toString();
         requestedItemAvailabilty.add("Available");
         requestedItemAvailabilty.add("Not Available");
         UserDetailsForm userDetailsForm = getUserDetailsForm();
         Mockito.when(requestServiceMocked.getInstitutionDetailsRepository()).thenReturn(institutionDetailRepository);
         Mockito.when(requestServiceMocked.getRequestTypeDetailsRepository()).thenReturn(requestTypeDetailsRepository);
-        Mockito.when(requestServiceMocked.populateItemForRequest(requestForm,request)).thenReturn("test");
         Object barcode="123";
         Mockito.when(((BindingAwareModelMap) model).get(RecapConstants.REQUESTED_ITEM_AVAILABILITY)).thenReturn(requestedItemAvailabilty);
         Mockito.when(((BindingAwareModelMap) model).get(RecapConstants.REQUESTED_BARCODE)).thenReturn(barcode);
         Mockito.when(requestServiceMocked.setFormDetailsForRequest(model,request,userDetailsForm)).thenCallRealMethod();
+        Mockito.doReturn(message).when(requestServiceMocked).populateItemForRequest(requestForm,request);
         Mockito.when(requestServiceMocked.setDefaultsToCreateRequest(userDetailsForm,model)).thenCallRealMethod();
         RequestForm requestForm1 = requestServiceMocked.setFormDetailsForRequest(model, request, userDetailsForm);
         Assert.notNull(requestForm1);
@@ -401,7 +436,7 @@ public class RequestServiceUT extends BaseTestCase {
         itemEntity.setBarcode("123");
         itemEntity.setCallNumber("x.12321");
         itemEntity.setCallNumberType("1");
-        itemEntity.setCustomerCode("123");
+        itemEntity.setCustomerCode("PA");
         itemEntity.setCreatedDate(new Date());
         itemEntity.setCreatedBy("tst");
         itemEntity.setLastUpdatedBy("tst");

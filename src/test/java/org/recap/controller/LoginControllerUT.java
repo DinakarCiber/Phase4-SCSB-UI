@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.ui.Model;
@@ -24,10 +25,12 @@ import javax.servlet.http.HttpSession;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 /**
@@ -37,6 +40,8 @@ public class LoginControllerUT extends BaseControllerUT{
 
     @Autowired
     LoginController loginController;
+    @Mock
+    LoginController loginControllerMocked;
 
     @Mock
     HttpSession session;
@@ -58,6 +63,10 @@ public class LoginControllerUT extends BaseControllerUT{
 
     @Mock
     private UsernamePasswordToken token;
+
+
+    @Mock
+    SecurityContext securityContext;
 
     @Mock
     private RestTemplate restTemplate;
@@ -104,20 +113,59 @@ public class LoginControllerUT extends BaseControllerUT{
         assertNotNull(response);
         assertEquals(response,"login");
     }
+    @Test
+    public void createSessionTestEmptyUserForm() throws Exception{
+        UserForm userForm = new UserForm();
+//        UsernamePasswordToken token=new UsernamePasswordToken(userForm.getUsername()+ RecapConstants.TOKEN_SPLITER +userForm.getInstitution(),userForm.getPassword(),true);
+        //when(userAuthUtil.doAuthentication(token)).thenCallRealMethod();
+       // when(restTemplate.postForObject(scsbShiro + RecapConstants.SCSB_SHIRO_AUTHENTICATE_URL, requestEntity, HashMap.class)).thenThrow(new RestClientException("Exception occured"));
+        String response = loginController.createSession(userForm,request,model,error);
+        assertNotNull(response);
+        assertEquals(response,"login");
+    }
 
     @Test
+    public void createSessionAuthenticationException() throws Exception{
+        UserForm userForm = getUserForm();
+        Map<String,Object> resultMap = new HashMap<>();
+        resultMap.put("isAuthenticated",true);
+        UsernamePasswordToken token=new UsernamePasswordToken(userForm.getUsername()+ RecapConstants.TOKEN_SPLITER +userForm.getInstitution(),userForm.getPassword(),true);
+        when(loginControllerMocked.getUserAuthUtil()).thenReturn(userAuthUtil);
+        Mockito.when(loginControllerMocked.getUserAuthUtil().doAuthentication(token)).thenThrow(new Exception());
+        //when(restTemplate.postForObject(scsbShiro + RecapConstants.SCSB_SHIRO_AUTHENTICATE_URL, requestEntity, HashMap.class)).thenThrow(new RestClientException("Exception occured"));
+        Mockito.doCallRealMethod().when(loginControllerMocked).createSession(userForm,request,model,error);
+//        String response = loginControllerMocked.createSession(userForm,request,model,error);
+  //      assertNotNull(response);
+    //    assertEquals(response,"login");
+    }
+    @Test
     public void testLogin(){
+        when(request.getSession()).thenReturn(session);
         when(request.getSession(false)).thenReturn(session);
         when(request.getSession(true)).thenReturn(session);
-        Mockito.when(session.getId()).thenReturn("23");
+        Mockito.when(request.getSession().getId()).thenReturn("66");
+//        when(securityContextHolder.getContext()).thenReturn(securityContext);
+        when(securityContext.getAuthentication()).thenReturn(auth);
+        when(auth.getName()).thenReturn("john");
+        UserForm userForm = new UserForm();
+        userForm.setInstitution("CUL");
+        userForm.setUsername("john");
+        String response = loginController.login(userForm,request,model,error);
+        assertNotNull(response);
+    }
+    @Test
+    public void testLoginException(){
+        when(request.getSession()).thenReturn(session);
+        when(request.getSession(false)).thenReturn(session);
+        when(request.getSession(true)).thenReturn(session);
+        Mockito.when(request.getSession().getId()).thenReturn("23");
         Mockito.when(auth.getName()).thenReturn("john");
         UserForm userForm = new UserForm();
         userForm.setInstitution("PUL");
         userForm.setUsername("john");
-        //String response = loginController.login(userForm,request,model,error);
-        //assertNotNull(response);
+        String response = loginController.login(userForm,request,model,error);
+        assertNotNull(response);
     }
-
 
     private void usersSessionAttributes() throws Exception {
         when(request.getSession()).thenReturn(session);

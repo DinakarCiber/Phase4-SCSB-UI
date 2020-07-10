@@ -36,16 +36,35 @@ public class CustomUserDetailsServiceUT extends BaseTestCase{
 
         Set<String> admins = new HashSet<>();
         admins.add("admin");
-        CustomUserDetailsService customUserDetailsService1 = new CustomUserDetailsService(admins);
+        customUserDetailsService = new CustomUserDetailsService(admins);
         Map<String, Object> attributes = new HashMap<>();
         attributes.put("a", Arrays.asList("CN=role_a1,OU=roles,DC=spring,DC=io", "CN=role_a2,OU=roles,DC=spring,DC=io"));
         attributes.put("b", "b");
         attributes.put("c", "c");
         attributes.put("d", null);
         attributes.put("someother", "unused");
-        Mockito.when(assertion.getPrincipal()).thenReturn(principal);
         Mockito.when(principal.getAttributes()).thenReturn(attributes);
         Mockito.when(principal.getName()).thenReturn("admin");
+        Mockito.when(assertion.getPrincipal()).thenReturn(principal);
+        CasAssertionAuthenticationToken token = new CasAssertionAuthenticationToken(assertion, "ticket");
+        UserDetails userDetails = customUserDetailsService.loadUserDetails(token);
+        assertNotNull(userDetails);
+    }
+    @Test
+    public void testLoadUserDetailsWithoutAdmin() throws Exception{
+
+        /*Set<String> admins = new HashSet<>();
+        admins.add("admin");*/
+        //customUserDetailsService = new CustomUserDetailsService(admins);
+        Map<String, Object> attributes = new HashMap<>();
+        attributes.put("a", Arrays.asList("CN=role_a1,OU=roles,DC=spring,DC=io", "CN=role_a2,OU=roles,DC=spring,DC=io"));
+        attributes.put("b", "b");
+        attributes.put("c", "c");
+        attributes.put("d", null);
+        attributes.put("someother", "unused");
+        Mockito.when(principal.getAttributes()).thenReturn(attributes);
+        Mockito.when(principal.getName()).thenReturn("admin");
+        Mockito.when(assertion.getPrincipal()).thenReturn(principal);
         CasAssertionAuthenticationToken token = new CasAssertionAuthenticationToken(assertion, "ticket");
         UserDetails userDetails = customUserDetailsService.loadUserDetails(token);
         assertNotNull(userDetails);

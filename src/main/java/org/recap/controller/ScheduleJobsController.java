@@ -53,6 +53,10 @@ public class ScheduleJobsController extends AbstractController {
         return new RestTemplate();
     }
 
+    public JobDetailsRepository getJobDetailsRepository() {
+        return jobDetailsRepository;
+    }
+
 
     /**
      * Gets all the jobs information from scsb database and display them as rows in the jobs UI page.
@@ -67,7 +71,7 @@ public class ScheduleJobsController extends AbstractController {
         ScheduleJobsForm scheduleJobsForm = new ScheduleJobsForm();
         UserDetailsForm userDetailsForm = getUserAuthUtil().getUserDetails(session, RecapConstants.BARCODE_RESTRICTED_PRIVILEGE);
         if (userDetailsForm.isSuperAdmin()) {
-            List<JobEntity> jobEntities = jobDetailsRepository.findAll();
+            List<JobEntity> jobEntities = getJobDetailsRepository().findAll();
             scheduleJobsForm.setJobEntities(jobEntities);
         } else {
             return UserManagementService.unAuthorizedUser(session, RecapCommonConstants.SEARCH, logger);
