@@ -9,6 +9,11 @@ import ch.qos.logback.classic.spi.IThrowableProxy;
 import net.logstash.logback.composite.JsonWritingUtils;
 import net.logstash.logback.composite.loggingevent.StackTraceJsonProvider;
 
+/**
+ * Created by rathin maheswaran on 9/7/2020.
+ * 
+ * This class is a Custom Provider used for better stack trace readability.
+ */
 public class CustomStackTraceJsonProvider extends StackTraceJsonProvider {
 
 	public CustomStackTraceJsonProvider() {
