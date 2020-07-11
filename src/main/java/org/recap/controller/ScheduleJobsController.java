@@ -19,10 +19,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -52,6 +53,10 @@ public class ScheduleJobsController extends AbstractController {
         return new RestTemplate();
     }
 
+    public JobDetailsRepository getJobDetailsRepository() {
+        return jobDetailsRepository;
+    }
+
 
     /**
      * Gets all the jobs information from scsb database and display them as rows in the jobs UI page.
@@ -60,13 +65,13 @@ public class ScheduleJobsController extends AbstractController {
      * @param request the request
      * @return the string
      */
-    @GetMapping("/jobs")
+    @RequestMapping(value = "/jobs", method = { RequestMethod.GET, RequestMethod.POST })
     public String displayJobs(Model model, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         ScheduleJobsForm scheduleJobsForm = new ScheduleJobsForm();
         UserDetailsForm userDetailsForm = getUserAuthUtil().getUserDetails(session, RecapConstants.BARCODE_RESTRICTED_PRIVILEGE);
         if (userDetailsForm.isSuperAdmin()) {
-            List<JobEntity> jobEntities = jobDetailsRepository.findAll();
+            List<JobEntity> jobEntities = getJobDetailsRepository().findAll();
             scheduleJobsForm.setJobEntities(jobEntities);
         } else {
             return UserManagementService.unAuthorizedUser(session, RecapCommonConstants.SEARCH, logger);

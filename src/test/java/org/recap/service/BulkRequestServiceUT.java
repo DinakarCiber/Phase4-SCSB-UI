@@ -48,7 +48,7 @@ public class BulkRequestServiceUT extends BaseTestCase {
     public void testProcessCreateBulkRequest(){
         BulkRequestForm bulkRequestForm = getBulkRequestForm();
         when(request.getSession()).thenReturn(session);
-        //bulkRequestService.processCreateBulkRequest(bulkRequestForm,request);
+        bulkRequestService.processCreateBulkRequest(bulkRequestForm,request);
     }
 
     @Test

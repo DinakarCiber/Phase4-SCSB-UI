@@ -117,7 +117,7 @@ public class CollectionServiceUtil {
 
             UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getScsbUrl() + RecapConstants.SCSB_UPDATE_CGD_URL)
                     .queryParam(RecapCommonConstants.CGD_UPDATE_ITEM_BARCODE, bibliographicMarcForm.getBarcode())
-                    .queryParam(RecapCommonConstants.OWNING_INSTITUTION, bibliographicMarcForm.getOwningInstitution())
+                    .queryParam(RecapConstants.OWNING_INSTITUTION, bibliographicMarcForm.getOwningInstitution())
                     .queryParam(RecapCommonConstants.OLD_CGD, bibliographicMarcForm.getCollectionGroupDesignation())
                     .queryParam(RecapCommonConstants.NEW_CGD, bibliographicMarcForm.getNewCollectionGroupDesignation())
                     .queryParam(RecapCommonConstants.CGD_CHANGE_NOTES, bibliographicMarcForm.getCgdChangeNotes())

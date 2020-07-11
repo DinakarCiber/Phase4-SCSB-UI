@@ -31,7 +31,7 @@
                                         th:each="job,jobStat : ${scheduleJobsForm.jobEntities}">
                                         <input data-th-id="'scheduleJobsRowJobId-'+ ${jobStat.index}"
                                                name="scheduleJobsRowJobId" type="hidden"
-                                               th:field="${scheduleJobsForm.jobEntities[__${jobStat.index}__].jobId}"/>
+                                               th:field="${scheduleJobsForm.jobEntities[__${jobStat.index}__].id}"/>
                                         <td>
                                             <input type="hidden" data-th-id="'scheduleJobsRowJobName-'+ ${jobStat.index}"
                                                    th:field="${scheduleJobsForm.jobEntities[__${jobStat.index}__].jobName}"/>

@@ -147,6 +147,4 @@ public class MarcRecordControllerUT extends BaseControllerUT {
 
     }
 
-
-
 }

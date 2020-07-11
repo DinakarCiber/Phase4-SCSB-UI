@@ -9,12 +9,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.recap.RecapCommonConstants;
 import org.recap.RecapConstants;
-import org.recap.model.jpa.BibliographicEntity;
-import org.recap.model.jpa.ItemEntity;
-import org.recap.model.jpa.InstitutionEntity;
-import org.recap.model.jpa.RequestItemEntity;
-import org.recap.model.jpa.RequestTypeEntity;
-import org.recap.model.jpa.RequestStatusEntity;
+import org.recap.model.jpa.*;
 import org.recap.model.search.*;
 import org.recap.model.usermanagement.UserDetailsForm;
 import org.recap.model.usermanagement.UserForm;
@@ -101,6 +96,10 @@ public class CollectionControllerUT extends BaseControllerUT {
         return userAuthUtil;
     }
 
+    public SearchUtil getSearchUtil(){
+        return searchUtil;
+    }
+
     public void setUserAuthUtil(UserAuthUtil userAuthUtil) {
         this.userAuthUtil = userAuthUtil;
     }
@@ -124,19 +123,34 @@ public class CollectionControllerUT extends BaseControllerUT {
     @Test
     public void collection() throws Exception{
         when(request.getSession(false)).thenReturn(session);
-        Mockito.when(getUserAuthUtil().authorizedUser(RecapConstants.SCSB_SHIRO_COLLECTION_URL,(UsernamePasswordToken)session.getAttribute(RecapConstants.USER_TOKEN))).thenReturn(true);
+        Mockito.when(getUserAuthUtil().isAuthenticated(request, RecapConstants.SCSB_SHIRO_COLLECTION_URL)).thenReturn(true);
         Mockito.when(getCollectionController.getUserAuthUtil()).thenReturn(userAuthUtil);
-        Mockito.when(getCollectionController.collection(model,request)).thenCallRealMethod();
-        Mockito.when(searchUtil.requestSearchResults(searchRecordsRequest)).thenReturn(searchRecordsResponse);
+        Mockito.when(getSearchUtil().requestSearchResults(searchRecordsRequest)).thenReturn(searchRecordsResponse);
+        Mockito.doCallRealMethod().when(getCollectionController).collection(model,request);
         String response = getCollectionController.collection(model,request);
         assertNotNull(response);
         assertEquals("searchRecords",response);
     }
 
     @Test
+    public void collection2() throws Exception{
+        when(request.getSession(false)).thenReturn(session);
+        Mockito.when(getUserAuthUtil().isAuthenticated(request, RecapConstants.SCSB_SHIRO_COLLECTION_URL)).thenReturn(false);
+        Mockito.when(getCollectionController.getUserAuthUtil()).thenReturn(userAuthUtil);
+        Mockito.when(getCollectionController.collection(model,request)).thenCallRealMethod();
+        Mockito.when(searchUtil.requestSearchResults(searchRecordsRequest)).thenReturn(searchRecordsResponse);
+        String response = getCollectionController.collection(model,request);
+        assertNotNull(response);
+    }
+
+    @Test
     public void displayRecords() throws Exception {
+        SearchRecordsRequest searchRecordsRequest = getSearchRecordsRequest();
+        SearchRecordsResponse searchRecordsResponse = getSearchRecordsResponse();
         CollectionForm collectionForm = getCollectionForm();
         collectionForm.setErrorMessage("No results found.");
+        Mockito.when(getSearchUtil().requestSearchResults(searchRecordsRequest)).thenReturn(searchRecordsResponse);
+        Mockito.doCallRealMethod().when(getCollectionController).displayRecords(collectionForm,bindingResult,model);
         ModelAndView modelAndView = collectionController1.displayRecords(collectionForm, bindingResult, model);
         assertNotNull(modelAndView);
         assertEquals("searchRecords", modelAndView.getViewName());
@@ -146,17 +160,20 @@ public class CollectionControllerUT extends BaseControllerUT {
     @Test
     public void openMarcRecord() throws Exception {
         CollectionForm collectionForm = new CollectionForm();
+        collectionForm.setBibId(1);
+        collectionForm.setItemId(1);
+        BibliographicMarcForm bibliographicMarcForm = getBibilographicMarcForm();
         UserDetailsForm userDetailsForm= new UserDetailsForm();
         userDetailsForm.setSuperAdmin(false);
         userDetailsForm.setLoginInstitutionId(2);
         userDetailsForm.setRecapUser(false);
         when(request.getSession(false)).thenReturn(session);
         usersSessionAttributes();
-        Mockito.when(getUserAuthUtil().getUserDetails(request.getSession(false),RecapConstants.BARCODE_RESTRICTED_PRIVILEGE)).thenReturn(userDetailsForm);
         Mockito.when(getCollectionController.getUserAuthUtil()).thenReturn(userAuthUtil);
+        Mockito.when(getCollectionController.getUserAuthUtil().getUserDetails(request.getSession(false), RecapConstants.BARCODE_RESTRICTED_PRIVILEGE)).thenReturn(userDetailsForm);
         Mockito.when(getCollectionController.getMarcRecordViewUtil()).thenReturn(marcRecordViewUtil);
+        Mockito.when(getCollectionController.getMarcRecordViewUtil().buildBibliographicMarcForm(collectionForm.getBibId(), collectionForm.getItemId(),userDetailsForm)).thenReturn(bibliographicMarcForm);
         Mockito.when(getCollectionController.openMarcView(collectionForm, bindingResult, model,request)).thenCallRealMethod();
-        Mockito.when(marcRecordViewUtil.buildBibliographicMarcForm(collectionForm.getBibId(), collectionForm.getItemId(),userDetailsForm)).thenReturn(new BibliographicMarcForm());
         ModelAndView modelAndView = getCollectionController.openMarcView(collectionForm, bindingResult, model,request);
         assertNotNull(modelAndView);
         assertEquals("collection :: #collectionUpdateModal", modelAndView.getViewName());
@@ -172,6 +189,7 @@ public class CollectionControllerUT extends BaseControllerUT {
         UserAuthUtil userAuthUtil = collectionController1.getUserAuthUtil();
         assertNotNull(userAuthUtil);
     }
+
     @Test
     public void getCollectionServiceUtil(){
         CollectionServiceUtil collectionServiceUtil = collectionController1.getCollectionServiceUtil();
@@ -222,6 +240,27 @@ public class CollectionControllerUT extends BaseControllerUT {
         String itemBarcode = "123";
         CollectionForm collectionForm = getCollectionForm();
         collectionForm.setBarcode(itemBarcode);
+        collectionForm.setCollectionAction("Update CGD");
+        when(getRequestItemDetailsRepository().findByItemBarcodeAndRequestStaCode(itemBarcode, RecapCommonConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED)).thenReturn(getMockRequestItemEntity());
+        ModelAndView modelAndView = collectionController.checkCrossInstitutionBorrowed(collectionForm, bindingResult, model);
+        assertNotNull(modelAndView);
+        assertEquals("collection :: #itemDetailsSection", modelAndView.getViewName());
+        assertNotNull(collectionForm.getErrorMessage());
+        assertNotNull(collectionForm.getItemBarcodes());
+        assertNotNull(collectionForm.isShowResults());
+        assertNotNull(collectionForm.isSelectAll());
+        assertNotNull(collectionForm.getBarcodesNotFoundErrorMessage());
+        assertNotNull(collectionForm.getIgnoredBarcodesErrorMessage());
+        assertNotNull(collectionForm.getSearchResultRows());
+        assertNotNull(collectionForm.isShowModal());
+    }
+
+    @Test
+    public void checkCrossInstitutionBorrowed2() throws Exception {
+        String itemBarcode = "123";
+        CollectionForm collectionForm = getCollectionForm();
+        collectionForm.setBarcode(itemBarcode);
+        collectionForm.setCollectionAction("Deaccession");
         when(getRequestItemDetailsRepository().findByItemBarcodeAndRequestStaCode(itemBarcode, RecapCommonConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED)).thenReturn(getMockRequestItemEntity());
         ModelAndView modelAndView = collectionController.checkCrossInstitutionBorrowed(collectionForm, bindingResult, model);
         assertNotNull(modelAndView);
@@ -245,7 +284,8 @@ public class CollectionControllerUT extends BaseControllerUT {
         collectionForm.setSelectAll(false);
         collectionForm.setBarcodesNotFoundErrorMessage("test");
         collectionForm.setIgnoredBarcodesErrorMessage("test");
-        collectionForm.setSearchResultRows(new ArrayList<>());
+        SearchResultRow searchResultRow = getSearchResultRow();
+        collectionForm.setSearchResultRows(Arrays.asList(searchResultRow));
         collectionForm.setShowModal(false);
         return collectionForm;
     }
@@ -311,5 +351,78 @@ public class CollectionControllerUT extends BaseControllerUT {
         searchResultRow.setCreatedDate(new Date());
         searchResultRow.setAuthor("test");
         return searchResultRow;
+    }
+    private BibliographicMarcForm getBibilographicMarcForm(){
+        BibliographicMarcForm bibliographicMarcForm = new BibliographicMarcForm();
+        bibliographicMarcForm.setTitle("test");
+        bibliographicMarcForm.setAuthor("test");
+        bibliographicMarcForm.setPublisher("test");
+        bibliographicMarcForm.setPublishedDate(new Date().toString());
+        bibliographicMarcForm.setOwningInstitution("PUL");
+        bibliographicMarcForm.setCallNumber("123");
+        bibliographicMarcForm.setMonographCollectionGroupDesignation("Complete");
+        bibliographicMarcForm.setTag000("TAG000");
+        bibliographicMarcForm.setControlNumber001("TAG001");
+        bibliographicMarcForm.setControlNumber005("TAG005");
+        bibliographicMarcForm.setControlNumber008("TAG008");
+        BibDataField bibDataField = new BibDataField();
+        bibDataField.setDataFieldValue("test");
+        bibDataField.setDataFieldTag("TAG001");
+        bibDataField.setIndicator1('y');
+        bibDataField.setIndicator2('N');
+        bibliographicMarcForm.setBibDataFields(Arrays.asList(bibDataField));
+        bibliographicMarcForm.setAvailability("AVAILABLE");
+        bibliographicMarcForm.setBarcode("12345");
+        bibliographicMarcForm.setLocationCode("PA");
+        bibliographicMarcForm.setUseRestriction("Allowed");
+        bibliographicMarcForm.setCollectionGroupDesignation("Complete");
+        bibliographicMarcForm.setNewCollectionGroupDesignation("Pending");
+        bibliographicMarcForm.setCgdChangeNotes("CGDCHANGE#002");
+        bibliographicMarcForm.setCustomerCode("3456");
+        bibliographicMarcForm.setDeaccessionType("DENIED");
+        bibliographicMarcForm.setDeaccessionNotes("test");
+        CustomerCodeEntity customerCodeEntity = new CustomerCodeEntity();
+        customerCodeEntity.setDeliveryRestrictions("No");
+        bibliographicMarcForm.setDeliveryLocations(Arrays.asList(customerCodeEntity));
+        bibliographicMarcForm.setDeliveryLocation("PA");
+        bibliographicMarcForm.setShared(true);
+        bibliographicMarcForm.setSubmitted(true);
+        bibliographicMarcForm.setMessage("SUCCESS");
+        bibliographicMarcForm.setErrorMessage("ERROR");
+        bibliographicMarcForm.setWarningMessage("WARN");
+        bibliographicMarcForm.setCollectionAction("ACTIVE");
+        bibliographicMarcForm.setAllowEdit(true);
+        return bibliographicMarcForm;
+    }
+
+    private SearchRecordsRequest getSearchRecordsRequest(){
+        SearchRecordsRequest searchRecordsRequest = new SearchRecordsRequest();
+        searchRecordsRequest.setFieldValue("23456");
+        searchRecordsRequest.setFieldValue("BARCODE");
+        searchRecordsRequest.setPageNumber(20);
+        searchRecordsRequest.setSearchResultRows(Arrays.asList(getSearchResultRow()));
+        searchRecordsRequest.setCatalogingStatus("Complete");
+        searchRecordsRequest.setDeleted(false);
+        searchRecordsRequest.setErrorMessage("ERROR");
+        searchRecordsRequest.setTotalPageCount(1);
+        return searchRecordsRequest;
+    }
+    private SearchRecordsResponse getSearchRecordsResponse(){
+        SearchRecordsResponse searchRecordsResponse = new SearchRecordsResponse();
+        SearchResultRow searchResultRow1 = new SearchResultRow();
+        searchResultRow1.setTitle("Title1");
+        searchResultRow1.setAuthor("Author1");
+        searchResultRow1.setPublisher("publisher1");
+        searchResultRow1.setOwningInstitution("NYPL");
+        searchResultRow1.setCollectionGroupDesignation("Shared");
+        searchResultRow1.setSelected(true);
+        searchRecordsResponse.setSearchResultRows(Arrays.asList(searchResultRow1));
+        searchRecordsResponse.setTotalPageCount(2);
+        searchRecordsResponse.setTotalBibRecordsCount("1");
+        searchRecordsResponse.setTotalItemRecordsCount("1");
+        searchRecordsResponse.setTotalRecordsCount("1");
+        searchRecordsResponse.setShowTotalCount(false);
+        searchRecordsResponse.setErrorMessage("test");
+        return searchRecordsResponse;
     }
 }

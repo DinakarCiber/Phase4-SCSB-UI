@@ -63,7 +63,12 @@ public class BulkRequestControllerUT extends BaseTestCase {
     BulkRequestController bulkRequestController;
 
     @Mock
+    BulkRequestController mockedBulkRequest;
+
+    @Mock
     MultipartFile file;
+
+
 
     @Test
     public void testBulkRequest() throws Exception{

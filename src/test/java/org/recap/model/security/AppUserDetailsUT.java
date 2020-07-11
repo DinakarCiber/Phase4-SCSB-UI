@@ -5,6 +5,7 @@ import org.recap.BaseTestCase;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -18,19 +19,12 @@ public class AppUserDetailsUT extends BaseTestCase {
     //AppUserDetails appUserDetails1 = new AppUserDetails(userId,authorities);
     @Test
     public void testAppUser(){
-
         appUserDetails.setUserId("1");
-        appUserDetails.setRoles(Arrays.asList("Super Admin"));
-        appUserDetails.setAuthorities(authorities);
-        appUserDetails.equals(appUserDetails.getUserId());
-        appUserDetails.hashCode();
-        appUserDetails.toString();
-
-
-        assertNotNull(appUserDetails.getRoles());
-        assertNotNull(appUserDetails.getUserId());
+        appUserDetails.setRoles(new ArrayList<>());
         assertNotNull(appUserDetails.getUsername());
         assertNull(appUserDetails.getPassword());
+        assertNotNull(appUserDetails.toString());
+        assertNull(appUserDetails.getAuthorities());
         assertTrue(appUserDetails.isAccountNonExpired());
         assertTrue(appUserDetails.isCredentialsNonExpired());
         assertTrue(appUserDetails.isAccountNonLocked());

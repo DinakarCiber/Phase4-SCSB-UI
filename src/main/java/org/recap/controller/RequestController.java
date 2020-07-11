@@ -1,6 +1,8 @@
 package org.recap.controller;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jettison.json.JSONArray;
@@ -19,6 +21,7 @@ import org.recap.model.request.ReplaceRequest;
 import org.recap.model.search.RequestForm;
 import org.recap.model.search.SearchResultRow;
 import org.recap.model.usermanagement.UserDetailsForm;
+import org.recap.model.usermanagement.UserRoleService;
 import org.recap.repository.jpa.CustomerCodeDetailsRepository;
 import org.recap.repository.jpa.InstitutionDetailsRepository;
 import org.recap.repository.jpa.RequestItemDetailsRepository;
@@ -47,14 +50,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.text.NumberFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Created by rajeshbabuk on 13/10/16.
  */
 
 @Controller
-@Data
+@Getter
+@Setter
 public class RequestController extends  RecapController {
 
     private static final Logger logger = LoggerFactory.getLogger(RequestController.class);
@@ -75,7 +85,12 @@ public class RequestController extends  RecapController {
     @Autowired
     private SecurityUtil securityUtil;
 
-
+    public RequestService getRequestService() {
+        return requestService;
+    }
+    public InstitutionDetailsRepository getInstitutionDetailsRepository() {
+        return institutionDetailsRepository;
+    }
     /**
      * Render the request UI page for the scsb application.
      *
@@ -90,7 +105,7 @@ public class RequestController extends  RecapController {
         boolean authenticated = getUserAuthUtil().isAuthenticated(request, RecapConstants.SCSB_SHIRO_REQUEST_URL);
         if (authenticated) {
             UserDetailsForm userDetailsForm = getUserAuthUtil().getUserDetails(session, RecapConstants.REQUEST_PRIVILEGE);
-            RequestForm requestForm = requestService.setFormDetailsForRequest(model, request, userDetailsForm);
+            RequestForm requestForm = getRequestService().setFormDetailsForRequest(model, request, userDetailsForm);
             model.addAttribute(RecapConstants.REQUEST_FORM, requestForm);
             model.addAttribute( RecapCommonConstants.TEMPLATE,  RecapCommonConstants.REQUEST);
             return RecapConstants.VIEW_SEARCH_RECORDS;
@@ -250,7 +265,7 @@ public class RequestController extends  RecapController {
     @PostMapping(value = "/request", params = "action=loadCreateRequest")
     public ModelAndView loadCreateRequest(Model model, HttpServletRequest request) {
         UserDetailsForm userDetailsForm = getUserAuthUtil().getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE);
-        RequestForm requestForm = requestService.setDefaultsToCreateRequest(userDetailsForm,model);
+        RequestForm requestForm = getRequestService().setDefaultsToCreateRequest(userDetailsForm,model);
         return setRequestAttribute(requestForm, model);
     }
 
@@ -265,7 +280,7 @@ public class RequestController extends  RecapController {
     @PostMapping(value = "/request", params = "action=loadCreateRequestForSamePatron")
     public ModelAndView loadCreateRequestForSamePatron(Model model, HttpServletRequest request) {
         UserDetailsForm userDetailsForm = getUserAuthUtil().getUserDetails(request.getSession(false), RecapConstants.REQUEST_PRIVILEGE);
-        RequestForm requestForm = requestService.setDefaultsToCreateRequest(userDetailsForm,model);
+        RequestForm requestForm = getRequestService().setDefaultsToCreateRequest(userDetailsForm,model);
         requestForm.setOnChange("true");
         return setRequestAttribute(requestForm, model);
     }
@@ -605,9 +620,9 @@ public class RequestController extends  RecapController {
     }
 
     private void setFormValuesToDisableSearchInstitution(@Valid @ModelAttribute("requestForm") RequestForm requestForm, UserDetailsForm userDetails, List<String> institutionList) {
-        Optional<InstitutionEntity> institutionEntity = institutionDetailsRepository.findById(userDetails.getLoginInstitutionId());
+        Optional<InstitutionEntity> institutionEntity = getInstitutionDetailsRepository().findById(userDetails.getLoginInstitutionId());
         if(userDetails.isSuperAdmin() || userDetails.isRecapUser() || ( (institutionEntity.isPresent()) && (institutionEntity.get().getInstitutionCode().equalsIgnoreCase("HTC")))){
-            requestService.getInstitutionForSuperAdmin(institutionList);
+            getRequestService().getInstitutionForSuperAdmin(institutionList);
             requestForm.setInstitutionList(institutionList);
         }else {
             requestForm.setDisableSearchInstitution(true);
@@ -643,7 +658,7 @@ public class RequestController extends  RecapController {
     {
         List<String> requestStatuses = new ArrayList<>();
         List<String> institutionList = new ArrayList<>();
-        requestService.findAllRequestStatusExceptProcessing(requestStatuses);
+        getRequestService().findAllRequestStatusExceptProcessing(requestStatuses);
         requestForm.setRequestStatuses(requestStatuses);
         setFormValuesToDisableSearchInstitution(requestForm, userDetails, institutionList);
 

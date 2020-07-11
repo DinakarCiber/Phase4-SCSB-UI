@@ -279,7 +279,7 @@
                         </div>
                         <div class="buscador-principal">
                             <div th:if="${requestForm.submitted}" id="successTextIdForRequest" class="text-success">
-                                Your request was received and will be processed.To track the request's status, please <a href="#" th:onclick="'goToSearchRequest(\'' + ${requestForm.patronBarcodeInRequest}+ '\')'"><b><u>click here</u></b></a><br />
+                                Your request was received and will be processed.To track the request's status, please <a href="#" th:data1="${requestForm.patronBarcodeInRequest}" onclick="goToSearchRequest(this.getAttribute('data1'))"><b><u>click here</u></b></a><br />
                                 To create another request for the same patron, please <a href="#" onclick="loadCreateRequestForSamePatron()"><b><u>click here</u></b></a><br />
                                 To create another request for a different patron, please <a href="#" onclick="loadCreateRequest()"><b><u>click here</u></b></a>
                             </div>

@@ -5,7 +5,6 @@ import org.recap.RecapConstants;
 import org.recap.model.reports.ReportsRequest;
 import org.recap.model.reports.ReportsResponse;
 import org.recap.model.search.ReportsForm;
-import org.recap.spring.SwaggerAPIProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;

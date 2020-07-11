@@ -163,7 +163,7 @@ public class RecapConstants {
 
     public static final String USER_ISAUTHENTICATED ="true";
 
-    public static final String USER_ID="userId";
+    public static final String USER_ID="id";
 
     public static final String USER_INSTITUTION="userInstitution";
 
@@ -201,6 +201,8 @@ public class RecapConstants {
     public static final String REQUESTED_BARCODE = "requestedBarcode";
     public static final String REQUESTED_ITEM_TITLE = "itemTitle";
     public static final String REQUESTED_ITEM_OWNING_INSTITUTION = "itemOwningInstitution";
+
+    public static final String OWNING_INSTITUTION = "owningInstitution";
 
     public static final String ADMIN = "ROLE_ADMIN";
     public static final String USER = "ROLE_USER";
