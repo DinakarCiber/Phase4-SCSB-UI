@@ -289,12 +289,12 @@ public class RecapConstants {
     public static final String APP_MONITORING = "monitoring";
     public static final String MONITORING_FORM = "monitoringForm";
 
-    public static final String SCSB_UI = "SCSB UI";
-    public static final String SCSB_AUTH = "SCSB AUTH";
-    public static final String SCSB_GATEWAY = "SCSB GATEWAY";
-    public static final String SCSB_DOC = "SCSB DOC";
-    public static final String SCSB_CIRC = "SCSB CIRC";
-    public static final String SCSB_BATCH = "SCSB BATCH SCHEDULER";
+    public static final String SCSB_UI = "scsb_ui";
+    public static final String SCSB_AUTH = "scsb_auth";
+    public static final String SCSB_GATEWAY = "scsb_gateway";
+    public static final String SCSB_DOC = "scsb_doc";
+    public static final String SCSB_CIRC = "scsb_circ";
+    public static final String SCSB_BATCH = "scsb_batch_scheduler";
 
     private RecapConstants(){
         //Do nothing
