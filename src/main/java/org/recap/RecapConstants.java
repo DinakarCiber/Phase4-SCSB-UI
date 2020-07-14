@@ -286,6 +286,16 @@ public class RecapConstants {
     public static final String EXCEPTION = "EXCEPTION";
     public static final String REQUESTS_PLACED_ON_SCH = "REQUESTS PLACED ON SCH";
 
+    public static final String APP_MONITORING = "monitoring";
+    public static final String MONITORING_FORM = "monitoringForm";
+
+    public static final String SCSB_UI = "scsb_ui";
+    public static final String SCSB_AUTH = "scsb_auth";
+    public static final String SCSB_GATEWAY = "scsb_gateway";
+    public static final String SCSB_DOC = "scsb_doc";
+    public static final String SCSB_CIRC = "scsb_circ";
+    public static final String SCSB_BATCH = "scsb_batch_scheduler";
+
     private RecapConstants(){
         //Do nothing
     }
