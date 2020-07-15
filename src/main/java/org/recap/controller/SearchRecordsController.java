@@ -338,7 +338,7 @@ public class SearchRecordsController extends RecapController {
         Set<String> barcodes = new HashSet<>();
         Set<String> itemTitles = new HashSet<>();
         Set<String> itemOwningInstitutions = new HashSet<>();
-        Set<String> itemAvailabilty = new HashSet<>();
+        Set<String> itemAvailability = new HashSet<>();
         for (SearchResultRow searchResultRow : searchResultRows) {
             if (searchResultRow.isSelected()) {
                 if (RecapCommonConstants.PRIVATE.equals(searchResultRow.getCollectionGroupDesignation()) && !userDetailsForm.isSuperAdmin() && !userDetailsForm.isRecapUser() && StringUtils.isNotBlank(userInstitution) && !userInstitution.equals(searchResultRow.getOwningInstitution())) {
@@ -346,7 +346,7 @@ public class SearchRecordsController extends RecapController {
                 } else if (!userDetailsForm.isRecapPermissionAllowed()) {
                     searchRecordsRequest.setErrorMessage(RecapConstants.REQUEST_ERROR_USER_NOT_PERMITTED);
                 } else {
-                    processBarcodesForSearchResultRow(barcodes, itemTitles, itemOwningInstitutions, searchResultRow,itemAvailabilty);
+                    processBarcodesForSearchResultRow(barcodes, itemTitles, itemOwningInstitutions, searchResultRow,itemAvailability);
                 }
             } else if (!CollectionUtils.isEmpty(searchResultRow.getSearchItemResultRows())) {
                 for (SearchItemResultRow searchItemResultRow : searchResultRow.getSearchItemResultRows()) {
@@ -356,7 +356,7 @@ public class SearchRecordsController extends RecapController {
                         } else if (!userDetailsForm.isRecapPermissionAllowed()) {
                             searchRecordsRequest.setErrorMessage(RecapConstants.REQUEST_ERROR_USER_NOT_PERMITTED);
                         } else {
-                            processBarcodeForSearchItemResultRow(barcodes, itemTitles, itemOwningInstitutions, searchItemResultRow, searchResultRow,itemAvailabilty);
+                            processBarcodeForSearchItemResultRow(barcodes, itemTitles, itemOwningInstitutions, searchItemResultRow, searchResultRow,itemAvailability);
                         }
                     }
                 }
@@ -365,7 +365,7 @@ public class SearchRecordsController extends RecapController {
         redirectAttributes.addFlashAttribute(RecapConstants.REQUESTED_BARCODE, StringUtils.join(barcodes, ","));
         redirectAttributes.addFlashAttribute(RecapConstants.REQUESTED_ITEM_TITLE, StringUtils.join(itemTitles, " || "));
         redirectAttributes.addFlashAttribute(RecapConstants.REQUESTED_ITEM_OWNING_INSTITUTION, StringUtils.join(itemOwningInstitutions, ","));
-        redirectAttributes.addFlashAttribute(RecapConstants.REQUESTED_ITEM_AVAILABILITY,itemAvailabilty);
+        redirectAttributes.addFlashAttribute(RecapConstants.REQUESTED_ITEM_AVAILABILITY,itemAvailability);
     }
 
     private void processBarcodeForSearchItemResultRow(Set<String> barcodes, Set<String> titles, Set<String> itemInstitutions, SearchItemResultRow searchItemResultRow, SearchResultRow searchResultRow,Set<String> itemAvailabilty) {
