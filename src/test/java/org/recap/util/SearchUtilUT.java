@@ -39,7 +39,8 @@ public class SearchUtilUT extends BaseTestCase {
     @Mock
     private HelperUtil helperUtil;
 
-
+    @Mock
+    BindingAwareModelMap model;
     private String scsbUrl;
 
     @Before
@@ -65,32 +66,12 @@ public class SearchUtilUT extends BaseTestCase {
 
     @Test
     public void test_method_searchRecord_should_return_ModelAndView() throws Exception {
-        BindingAwareModelMap model = new BindingAwareModelMap();
         SearchRecordsRequest searchRecordsRequest = new SearchRecordsRequest();
-
         SearchRecordsResponse searchRecordsResponses = new SearchRecordsResponse();
         searchRecordsResponses.setSearchResultRows(buildSearchResultRow(5));
-
         ModelAndView view = new ModelAndView();
-        Mockito.when(
-                restTemplate.exchange(
-                        ArgumentMatchers.anyString(),
-                        ArgumentMatchers.any(HttpMethod.class),
-                        ArgumentMatchers.any(),
-                        ArgumentMatchers.<Class<SearchRecordsResponse>>any()))
-                .thenReturn(ResponseEntity.ok().body(searchRecordsResponses));
-
-        Mockito.when(searchUtil.searchRecord(searchRecordsRequest, model))
-                .thenReturn(view);
-
-        Mockito.when(searchUtil.requestSearchResults(searchRecordsRequest))
-                .thenReturn(searchRecordsResponses);
-
         ModelAndView modelAndView = searchUtil.searchRecord(searchRecordsRequest,model);
-        Assert.assertEquals(view, modelAndView);
-
-
-
+        assertNotNull( modelAndView);
 
     }
 
