@@ -6,16 +6,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.*;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.recap.BaseTestCase;
 import org.recap.model.search.SearchRecordsRequest;
 import org.recap.model.search.SearchRecordsResponse;
 import org.recap.model.search.SearchResultRow;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+
+import org.recap.spring.ApplicationContextProvider;
+import org.springframework.context.ApplicationContext;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.support.BindingAwareModelMap;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
@@ -23,29 +21,25 @@ import java.util.List;
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.spy;
+
 
 /**
  * Created by rajeshbabuk on 3/1/17.
  */
 @RunWith(MockitoJUnitRunner.class)
-
-public class SearchUtilUT extends BaseTestCase {
+public class SearchUtilUT {
 
     @InjectMocks
-    private SearchUtil searchUtil = new SearchUtil();
-    @Mock
-    private RestTemplate restTemplate = new RestTemplate();
-    @Mock
-    private HelperUtil helperUtil;
+    private SearchUtil searchUtil;
 
     @Mock
-    BindingAwareModelMap model;
-    private String scsbUrl;
+    ApplicationContext applicationContext;
 
     @Before
     public void setUp() {
+        MockitoAnnotations.initMocks(this);
         ReflectionTestUtils.setField(searchUtil, "scsbUrl", "http://localhost:9090");
+        ApplicationContextProvider.getInstance().setApplicationContext(applicationContext);
     }
 
     @Test
@@ -63,18 +57,15 @@ public class SearchUtilUT extends BaseTestCase {
         assertNotNull(searchResultRows);
     }
 
-
     @Test
     public void test_method_searchRecord_should_return_ModelAndView() throws Exception {
+        BindingAwareModelMap model = new BindingAwareModelMap();
         SearchRecordsRequest searchRecordsRequest = new SearchRecordsRequest();
         SearchRecordsResponse searchRecordsResponses = new SearchRecordsResponse();
         searchRecordsResponses.setSearchResultRows(buildSearchResultRow(5));
-        ModelAndView view = new ModelAndView();
         ModelAndView modelAndView = searchUtil.searchRecord(searchRecordsRequest,model);
-        assertNotNull( modelAndView);
-
+        Assert.assertNotNull(modelAndView);
     }
-
 
     public List<SearchResultRow> buildSearchResultRow(int count) {
         if(count > 25) {
@@ -96,24 +87,11 @@ public class SearchUtilUT extends BaseTestCase {
             searchResultRows.add(resultRow);
         }
         return searchResultRows;
-
-
-/*
-        SearchItemResultRow itemResultRow = new SearchItemResultRow();
-        itemResultRow.setCallNumber("K22.U83");
-        itemResultRow.setChronologyAndEnum("v.7(1979-80");
-        itemResultRow.setCustomerCode("PA");
-        itemResultRow.setBarcode("329090");
-        itemResultRow.setAvailability("Available");
-        itemResultRow.setUseRestriction("No Restrictions");
-        */
-
     }
 
     public int randomBarCodeGenerator() {
         Random randomNumGen  = new  Random();
         return randomNumGen.nextInt(2000 + 1) + 3000;
     }
-
 
 }
