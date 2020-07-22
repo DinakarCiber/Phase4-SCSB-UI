@@ -20,6 +20,7 @@ public class ReCAPSimpleUrlLogoutSuccessHandlerUT extends BaseTestCase {
 
     @Mock
     HttpServletRequest httpServletRequest;
+
     @Mock
     HttpSession session;
 
@@ -35,7 +36,7 @@ public class ReCAPSimpleUrlLogoutSuccessHandlerUT extends BaseTestCase {
     }
     @Test
     public void determineTargetUrl(){
-        Mockito.doCallRealMethod().when(reCAPSimpleUrlLogoutSuccessHandler).determineTargetUrl(httpServletRequest,httpServletResponse);
+        Mockito.when(reCAPSimpleUrlLogoutSuccessHandler.determineTargetUrl(httpServletRequest,httpServletResponse)).thenCallRealMethod();
         reCAPSimpleUrlLogoutSuccessHandler.determineTargetUrl(httpServletRequest,httpServletResponse);
     }
 }
