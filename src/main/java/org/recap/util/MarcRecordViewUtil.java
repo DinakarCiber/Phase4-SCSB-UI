@@ -106,27 +106,16 @@ public class MarcRecordViewUtil {
                                         bibliographicMarcForm.setDeaccessionType(RecapCommonConstants.PERMANENT_WITHDRAWAL_INDIRECT);
                                     }
                                 }
-                                CustomerCodeEntity customerCodeEntity = customerCodeDetailsRepository.findByCustomerCode(bibliographicMarcForm.getCustomerCode());
-                                if (null != customerCodeEntity && StringUtils.isNotBlank(customerCodeEntity.getPwdDeliveryRestrictions())) {
-                                    String pwdDeliveryRestrictions = customerCodeEntity.getPwdDeliveryRestrictions();
-                                    String[] pwdDeliveryRestrictionsArray= StringUtils.split(pwdDeliveryRestrictions,",");
-                                    String[] pwdDeliveryRestrictionsTrimmed = Arrays.stream(pwdDeliveryRestrictionsArray).map(String::trim).toArray(String[]::new);
-                                    List<CustomerCodeEntity> deliveryLocations = new ArrayList<>();
-                                    List<CustomerCodeEntity> customerCodeEntities = customerCodeDetailsRepository.findByCustomerCodeIn(Arrays.asList(pwdDeliveryRestrictionsTrimmed));
-                                    if (CollectionUtils.isNotEmpty(customerCodeEntities)) {
-                                        deliveryLocations.addAll(customerCodeEntities);
-                                    }
-                                    Collections.sort(deliveryLocations);
-                                    bibliographicMarcForm.setDeliveryLocations(deliveryLocations);
-                                }
                             }
-                        }
-                        if (null == bibliographicMarcForm.getItemId()) {
-                            bibliographicMarcForm.setErrorMessage(RecapConstants.RECORD_NOT_AVAILABLE);
+                            List<CustomerCodeEntity> deliveryLocations = getDeliveryLocationsList(bibliographicMarcForm.getCustomerCode());
+                            bibliographicMarcForm.setDeliveryLocations(deliveryLocations);
                         }
                     }
+                    if (null == bibliographicMarcForm.getItemId()) {
+                        bibliographicMarcForm.setErrorMessage(RecapConstants.RECORD_NOT_AVAILABLE);
+                    }
                 }
-        }
+            }
         return bibliographicMarcForm;
     }
 
@@ -174,5 +163,23 @@ public class MarcRecordViewUtil {
         }
         Collections.sort(bibDataFields);
         return bibDataFields;
+    }
+
+
+    public List<CustomerCodeEntity> getDeliveryLocationsList(String customerCode) {
+        CustomerCodeEntity customerCodeEntity = customerCodeDetailsRepository.findByCustomerCode(customerCode);
+        List<CustomerCodeEntity> deliveryLocations = new ArrayList<>();
+        if (null != customerCodeEntity && StringUtils.isNotBlank(customerCodeEntity.getPwdDeliveryRestrictions())) {
+            String pwdDeliveryRestrictions = customerCodeEntity.getPwdDeliveryRestrictions();
+            String[] pwdDeliveryRestrictionsArray = StringUtils.split(pwdDeliveryRestrictions, ",");
+            String[] pwdDeliveryRestrictionsTrimmed = Arrays.stream(pwdDeliveryRestrictionsArray).map(String::trim).toArray(String[]::new);
+            List<CustomerCodeEntity> customerCodeEntities = customerCodeDetailsRepository.findByCustomerCodeIn(Arrays.asList(pwdDeliveryRestrictionsTrimmed));
+            if (CollectionUtils.isNotEmpty(customerCodeEntities)) {
+                System.out.println("customerCodeEntities.size() " + customerCodeEntities.size());
+                deliveryLocations.addAll(customerCodeEntities);
+            }
+            Collections.sort(deliveryLocations);
+        }
+        return deliveryLocations;
     }
 }
