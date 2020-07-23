@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.marc4j.MarcException;
 import org.recap.RecapCommonConstants;
 import org.recap.RecapConstants;
+import org.recap.model.jpa.CustomerCodeEntity;
 import org.recap.model.jpa.RequestItemEntity;
 import org.recap.model.search.BibliographicMarcForm;
 import org.recap.model.search.CollectionForm;
@@ -24,9 +25,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -44,7 +45,7 @@ import java.util.Set;
  * Created by rajeshbabuk on 12/10/16.
  */
 @Controller
-public class CollectionController extends AuthenticationController {
+public class CollectionController extends AbstractController {
 
     private static final Logger logger = LoggerFactory.getLogger(CollectionController.class);
 
@@ -97,7 +98,7 @@ public class CollectionController extends AuthenticationController {
      * @return the string
      */
 
-    @GetMapping (path = "/collection")
+    @RequestMapping(path = "/collection")
     public String collection(Model model,HttpServletRequest request) {
         HttpSession session=request.getSession(false);
         boolean authenticated = getUserAuthUtil().isAuthenticated(request, RecapConstants.SCSB_SHIRO_COLLECTION_URL);
@@ -197,6 +198,8 @@ public class CollectionController extends AuthenticationController {
                                        Model model) throws Exception {
         String itemBarcode = collectionForm.getBarcode();
         String warningMessage = null;
+        List<CustomerCodeEntity> deliveryLocations = marcRecordViewUtil.getDeliveryLocationsList(collectionForm.getCustomerCode());
+        collectionForm.setDeliveryLocations(deliveryLocations);
         RequestItemEntity activeRetrievalRequest = getRequestItemDetailsRepository().findByItemBarcodeAndRequestStaCode(itemBarcode, RecapCommonConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED);
         RequestItemEntity activeRecallRequest = getRequestItemDetailsRepository().findByItemBarcodeAndRequestStaCode(itemBarcode, RecapCommonConstants.REQUEST_STATUS_RECALLED);
         if (null != activeRetrievalRequest && null != activeRecallRequest) {
