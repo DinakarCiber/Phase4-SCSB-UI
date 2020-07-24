@@ -8,7 +8,10 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.recap.BaseTestCase;
 import org.recap.RecapConstants;
+import org.recap.util.UserAuthUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,9 +20,12 @@ import javax.servlet.http.HttpSession;
 import static org.junit.Assert.assertNotNull;
 
 
-public class ReCAPSimpleUrlLogoutSuccessHandlerUT extends BaseTestCase {
-    @InjectMocks
-    ReCAPSimpleUrlLogoutSuccessHandler reCAPSimpleUrlLogoutSuccessHandler;
+
+public class ReCAPSimpleUrlLogoutSuccessHandlerUT extends BaseTestCase{
+
+
+    @Autowired
+    UserAuthUtil userAuthUtil;
 
     @Mock
     HttpServletResponse httpServletResponse;
@@ -27,22 +33,14 @@ public class ReCAPSimpleUrlLogoutSuccessHandlerUT extends BaseTestCase {
     @Mock
     HttpServletRequest httpServletRequest;
 
-    @Mock
-    HttpSession session;
 
     @Mock
     Authentication authentication;
 
     @Test
     public void onLogoutSuccess() throws Exception{
-        Mockito.when(httpServletRequest.getSession()).thenReturn(session);
-        Mockito.when(httpServletRequest.getAttribute(RecapConstants.USER_TOKEN)).thenReturn("token");
-        Mockito.doCallRealMethod().when(reCAPSimpleUrlLogoutSuccessHandler).onLogoutSuccess(httpServletRequest,httpServletResponse,authentication);
-       // reCAPSimpleUrlLogoutSuccessHandler.onLogoutSuccess(httpServletRequest,httpServletResponse,authentication);
+        ReCAPSimpleUrlLogoutSuccessHandler reCAPSimpleUrlLogoutSuccessHandler = new ReCAPSimpleUrlLogoutSuccessHandler(userAuthUtil);
+        reCAPSimpleUrlLogoutSuccessHandler.onLogoutSuccess(httpServletRequest,httpServletResponse,authentication);
     }
-    @Test
-    public void determineTargetUrl(){
-        String result =  reCAPSimpleUrlLogoutSuccessHandler.determineTargetUrl(httpServletRequest,httpServletResponse);
-        assertNotNull(result);
-    }
+
 }
