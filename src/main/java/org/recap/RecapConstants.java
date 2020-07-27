@@ -258,6 +258,8 @@ public class RecapConstants {
     public static final String USER_AUTH_ERRORMSG="authErrorMsg";
     public static final String USER_NAME="userName";
     public static final String ROLE_FOR_SUPER_ADMIN="isRoleAllowed";
+    public static final String MONITORING = "isMonitoring";
+    public static final String LOGGING = "isLogging";
     public static final String TOKEN_SPLITER=":";
 
     public static final String OCLC_NUMBER_PATTERN="[^0-9]";
@@ -288,7 +290,10 @@ public class RecapConstants {
 
     public static final String APP_MONITORING = "monitoring";
     public static final String MONITORING_FORM = "monitoringForm";
-
+    public static final String APP_LOGGING = "logging";
+    public static final String LOGGING_FORM = "loggingForm";
+    public static final String LOGGING_URL = "http://localhost:5601/app/kibana#/discover/57f427e0-c4cd-11ea-b053-1f1f5849d048";
+    public static final String MONITORING_URL = "http://localhost:5601/login";
     public static final String SCSB_UI = "scsb_ui";
     public static final String SCSB_AUTH = "scsb_auth";
     public static final String SCSB_GATEWAY = "scsb_gateway";

@@ -4161,6 +4161,13 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .tab-content > .active {
   display: block;
 }
+.tab-hyp-head {
+  display: inline;
+}
+.tab-hyp {
+ display: inline;
+ float: right;
+ }
 .nav-tabs .dropdown-menu {
   margin-top: -1px;
   border-top-left-radius: 0;
@@ -4216,6 +4223,9 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
     padding-right: 0;
     padding-left: 0;
   }
+}
+#mn-rw-1{
+text-align: center;
 }
 .navbar-fixed-top .navbar-collapse,
 .navbar-fixed-bottom .navbar-collapse {

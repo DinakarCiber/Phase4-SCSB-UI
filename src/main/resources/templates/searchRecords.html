@@ -50,8 +50,11 @@
                     <li th:if="${session.isSuperAdmin}" role="presentation" th:classappend="${#httpServletRequest.getRequestURI() == '/jobs' ? 'active':''}">
                         <a href="/jobs" aria-controls="jobs" class="tab-users"><span class="icons"></span><span>Jobs</span></a>
                     </li>
-                    <li th:if="${session.isSuperAdmin || session.isUserRoleAllowed}" role="presentation" th:classappend="${#httpServletRequest.getRequestURI() == '/monitoring' ? 'active':''}">
+                    <li th:if="${session.isMonitoring}" role="presentation" th:classappend="${#httpServletRequest.getRequestURI() == '/monitoring' ? 'active':''}">
                         <a href="/monitoring" aria-controls="monitoring" class="tab-users"><span class="icons"></span><span>Monitoring</span></a>
+                    </li>
+                    <li th:if="${session.isLogging}" role="presentation" th:classappend="${#httpServletRequest.getRequestURI() == '/logging' ? 'active':''}">
+                        <a href="/logging" aria-controls="logging" class="tab-users"><span class="icons"></span><span>Logging</span></a>
                     </li>
                 </ul>
                 <div class="tab-content">
