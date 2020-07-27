@@ -7,10 +7,11 @@
 <body>
 <div id="monitoringContentId" name="monitoringContentName" th:fragment="content"
      xmlns:th="http://www.thymeleaf.org">
+    <div class="tab-hyp-head"></div>
     <div class="tab-hyp">
         <a th:href="${@environment.getProperty('monitoring.url')}" target="_blank">Monitoring</a>
     </div>
-    <iframe th:src="${@environment.getProperty('embed_monitoring.url')}" name="iFrame" scrolling="Yes" height="500px" width="100%" style="border: none;"></iframe>
+    <iframe th:src="${@environment.getProperty('embed_monitoring.url')}" name="iFrame" scrolling="Yes" height="650px" width="100%" style="border: none;"></iframe>
 </div>
 </body>
 </html>
