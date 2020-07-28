@@ -8,15 +8,20 @@
 <body>
 <div id="monitoringContentId" name="monitoringContentName" th:fragment="content"
      xmlns:th="http://www.thymeleaf.org">
-    <div class="tab-hyp-head"><a target="_blank" th:href="${@environment.getProperty('embed.monitoring.aws.url')}">AWS
-        Metrics</a></div>
+    <div class="tab-hyp-head"><a th:href="${@environment.getProperty('embed.monitoring.scsb.url')}" target="iFrame" >SCSB
+        Application Metrics</a></div>
     <div class="bar-hyp-head">|</div>
     <div class="tab-hyp">
-        <a target="_blank" th:href="${@environment.getProperty('embed.monitoring.docker.url')}">Docker Metrics</a>
+        <a th:href="${@environment.getProperty('embed.monitoring.docker.url')}" target="iFrame">SCSB Docker Container
+            Metrics</a>
     </div>
-    <iframe height="650px" name="iFrame" scrolling="Yes"
-            style="border: none;" th:src="${@environment.getProperty('embed.monitoring.scsb.url')}"
-            width="100%"></iframe>
+    <div class="bar-hyp-head">|</div>
+    <div class="tab-hyp-head-ls">
+        <a th:href="${@environment.getProperty('embed.monitoring.aws.url')}" target="iFrame">SCSB Server Metrics</a>
+    </div>
+    <iframe height="650px" name="iFrame" id ="iFrame"
+            scrolling="Yes" style="border: none;"
+            th:src="${@environment.getProperty('embed.monitoring.scsb.url')}" width="100%"></iframe>
 </div>
 </body>
 </html>
