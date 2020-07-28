@@ -33,18 +33,28 @@ public class MonitoringController extends AbstractController {
      * @return the string
      */
     @GetMapping("/monitoring")
-    public String monitoring(Model model) {
-        Monitoring monitoring = new Monitoring();
-        model.addAttribute(RecapConstants.MONITORING_FORM, monitoring);
-        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.APP_MONITORING);
-        return RecapConstants.VIEW_SEARCH_RECORDS;
+    public String monitoring(Model model, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        boolean authenticated = getUserAuthUtil().isAuthenticated(request, RecapConstants.SCSB_SHIRO_MONITORING_URL);
+        if (authenticated) {
+            Monitoring monitoring = new Monitoring();
+            model.addAttribute(RecapConstants.MONITORING_FORM, monitoring);
+            model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.APP_MONITORING);
+            return RecapConstants.VIEW_SEARCH_RECORDS;
+        }
+        return UserManagementService.unAuthorizedUser(session, "Monitoring", logger);
     }
 
     @GetMapping("/logging")
-    public String logging(Model model) {
-        Monitoring monitoring = new Monitoring();
-        model.addAttribute(RecapConstants.LOGGING_FORM, monitoring);
-        model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.APP_LOGGING);
-        return RecapConstants.VIEW_SEARCH_RECORDS;
+    public String logging(Model model,HttpServletRequest request) {
+        boolean authenticated = getUserAuthUtil().isAuthenticated(request, RecapConstants.SCSB_SHIRO_LOGGING_URL);
+        HttpSession session = request.getSession(false);
+        if (authenticated) {
+            Monitoring monitoring = new Monitoring();
+            model.addAttribute(RecapConstants.LOGGING_FORM, monitoring);
+            model.addAttribute(RecapCommonConstants.TEMPLATE, RecapConstants.APP_LOGGING);
+            return RecapConstants.VIEW_SEARCH_RECORDS;
+        }
+        return UserManagementService.unAuthorizedUser(session, "Logging", logger);
     }
 }
