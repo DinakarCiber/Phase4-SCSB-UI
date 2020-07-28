@@ -31,7 +31,7 @@ public class MonitoringUtil {
 
     private Monitoring build(String key) {
         Monitoring monitoring = new Monitoring();
-        monitoring.setProjectName(key);
+        //monitoring.setProjectName(key);
         monitoring.setMonitoringUrl(monitoringConfiguration.getUrl().get(key));
         monitoring.setLoggingUrl(monitoringConfiguration.getLogging().getUrl().get(key));
         return monitoring;
