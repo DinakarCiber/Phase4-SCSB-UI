@@ -288,6 +288,10 @@ public class RecapConstants {
 
     public static final String APP_MONITORING = "monitoring";
     public static final String MONITORING_FORM = "monitoringForm";
+    public static final String APP_LOGGING = "logging";
+    public static final String LOGGING_FORM = "loggingForm";
+    public static final String MONITORING = "isMonitoring";
+    public static final String LOGGING = "isLogging";
 
     public static final String SCSB_UI = "scsb_ui";
     public static final String SCSB_AUTH = "scsb_auth";

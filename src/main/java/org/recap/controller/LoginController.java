@@ -87,6 +87,7 @@ public class LoginController extends AbstractController {
      *
      * @param userForm the user form
      * @param request  the request
+     * @param request  the request
      * @param model    the model
      * @param error    the error
      * @return the view name
@@ -247,6 +248,8 @@ public class LoginController extends AbstractController {
         session.setAttribute(RecapConstants.DEACCESSION_PRIVILEGE, authMap.get(RecapConstants.DEACCESSION_PRIVILEGE));
         session.setAttribute(RecapCommonConstants.BULK_REQUEST_PRIVILEGE, authMap.get(RecapCommonConstants.BULK_REQUEST_PRIVILEGE));
         session.setAttribute(RecapCommonConstants.RESUBMIT_REQUEST_PRIVILEGE, authMap.get(RecapCommonConstants.RESUBMIT_REQUEST_PRIVILEGE));
+        session.setAttribute(RecapConstants.MONITORING, authMap.get(RecapConstants.MONITORING));
+        session.setAttribute(RecapConstants.LOGGING, authMap.get(RecapConstants.LOGGING));
         Object isSuperAdmin = session.getAttribute(RecapConstants.SUPER_ADMIN_USER);
         if((boolean)isSuperAdmin){
             session.setAttribute(RecapConstants.ROLE_FOR_SUPER_ADMIN,true);
