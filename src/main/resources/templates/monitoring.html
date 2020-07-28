@@ -1,18 +1,23 @@
 <!-- Monitoring Tab Start -->
 <!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
 <html>
 <head>
-    <link rel="stylesheet" type="text/css" href="lib/Bootstrap/css/bootstrap.css"/>
+    <link href="lib/Bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="monitoringContentId" name="monitoringContentName" th:fragment="content"
      xmlns:th="http://www.thymeleaf.org">
-    <div class="tab-hyp-head"></div>
+    <div class="tab-hyp-head"><a target="_blank" th:href="${@environment.getProperty('embed.monitoring.aws.url')}">AWS
+        Metrics</a></div>
+    <div class="bar-hyp-head">|</div>
     <div class="tab-hyp">
-        <a th:href="${@environment.getProperty('monitoring.url')}" target="_blank">Monitoring</a>
+        <a target="_blank" th:href="${@environment.getProperty('embed.monitoring.docker.url')}">Docker Metrics</a>
     </div>
-    <iframe th:src="${@environment.getProperty('embed_monitoring.url')}" name="iFrame" scrolling="Yes" height="650px" width="100%" style="border: none;"></iframe>
+    <iframe height="650px" name="iFrame" scrolling="Yes"
+            style="border: none;" th:src="${@environment.getProperty('embed.monitoring.scsb.url')}"
+            width="100%"></iframe>
 </div>
 </body>
 </html>
-<!-- Schedule Jobs Tab End -->
+<!-- MOnitoring Tab End -->

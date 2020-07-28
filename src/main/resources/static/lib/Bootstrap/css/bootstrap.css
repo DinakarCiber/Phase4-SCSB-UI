@@ -4161,12 +4161,37 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .tab-content > .active {
   display: block;
 }
+.bar-hyp-head{
+  display: inline;
+  float: right;
+  padding-right: 5px;
+  padding-left: 5px;
+  color: black;
+}
+.bar-hyp-head-lc{
+  display: inline;
+  float: left;
+  padding-right: 5px;
+  padding-left: 5px;
+  color: black;
+}
+.tb-dc-lk{
+  display: inline;
+  float: left;
+}
+.tb-aw-lk{
+  display: inline;
+  float: left;
+}
 .tab-hyp-head {
   display: inline;
+  float: right;
+  padding-right: 10px;
 }
+
 .tab-hyp {
- display: inline;
- float: right;
+  display: inline;
+  float: right;
  }
 .nav-tabs .dropdown-menu {
   margin-top: -1px;
