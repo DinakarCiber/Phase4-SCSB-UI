@@ -47,7 +47,7 @@ dependencies {
 		}
 	}*/
 	// compile fileTree(dir: System.properties["dir"], include: System.properties["commonjar"])
-	compile fileTree(dir: '/data/commonjar', include: '*1.8.jar')
+	compile fileTree(dir: System.properties["dir"], include:  System.properties["commonjar"])
 	implementation('commons-beanutils:commons-beanutils:1.9.4')
 	implementation('org.springframework.boot:spring-boot-starter-data-jpa')
 	implementation("org.springframework.boot:spring-boot-starter-data-rest")
