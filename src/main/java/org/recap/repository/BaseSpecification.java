@@ -37,6 +37,7 @@ public abstract class BaseSpecification<T> implements Specification<T> {
     //create a new predicate list
     List<Predicate> predicates = new ArrayList<>();
 
+
     //add add criteria to predicates
     list.forEach(criteria -> {
       if (criteria.getOperation().equals(SearchOperation.GREATER_THAN)) {
