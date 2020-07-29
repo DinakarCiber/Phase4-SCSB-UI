@@ -27,12 +27,13 @@ test {
 	systemProperties = System.properties
 }
 
-jar {
+bootJar {
 	archiveBaseName = 'Phase4-SCSB-UI'
 	archiveVersion = '0.0.1-SNAPSHOT'
+	layered()
 }
-sourceCompatibility = 1.11
-targetCompatibility = 1.11
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
 
 repositories {
 	mavenCentral()
@@ -45,7 +46,8 @@ dependencies {
 			branch = 'development'
 		}
 	}*/
-	compile fileTree(dir: 'lib', include: '*.jar')
+	// compile fileTree(dir: 'lib', include: '*.jar')
+	compile fileTree(dir: '/data/commonjar', include: '*1.8.jar')
 	implementation('commons-beanutils:commons-beanutils:1.9.4')
 	implementation('org.springframework.boot:spring-boot-starter-data-jpa')
 	implementation("org.springframework.boot:spring-boot-starter-data-rest")
