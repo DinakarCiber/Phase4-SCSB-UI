@@ -77,6 +77,7 @@ public abstract class BaseSpecification<T> implements Specification<T> {
       }
     });
 
+
     return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
   }
 }
