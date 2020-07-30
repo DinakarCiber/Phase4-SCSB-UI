@@ -60,7 +60,7 @@ public class UserAuthUtil {
 
         boolean statusResponse = false;
         try {
-
+            logger.error("Changes are reflecting");
             RestTemplate restTemplate = new RestTemplate();
             HttpEntity<UsernamePasswordToken> requestEntity = new HttpEntity<>(token,getRestHeaderService().getHttpHeaders());
             statusResponse = restTemplate.postForObject(scsbShiro + serviceURL, requestEntity, Boolean.class);
