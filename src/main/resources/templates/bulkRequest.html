@@ -208,7 +208,7 @@
                         </div>
                         <div class="buscador-principal">
                             <div th:if="${bulkRequestForm.submitted}" id="successTextIdForRequest" class="text-success">
-                                Your bulk request was received successfully and will be processed.To track the bulk request's status, please <a href="#" th:onclick="'goToSearchRequest(\'' + ${bulkRequestForm.patronBarcodeInRequest}+ '\')'">click here</a><br />
+                                Your bulk request was received successfully and will be processed.To track the bulk request's status, please <a href="#" th:data1="${bulkRequestForm.patronBarcodeInRequest}" onclick="goToSearchRequest(this.getAttribute('data1'))">click here</a><br />
                                 To create another bulk request for the same patron, please <a href="#" onclick="loadCreateRequestForSamePatron()">click here</a><br />
                                 To create another bulk request for a different patron, please <a href="#" onclick="loadCreateRequest()">click here</a>
                             </div>
