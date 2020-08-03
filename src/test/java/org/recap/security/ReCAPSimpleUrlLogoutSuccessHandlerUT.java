@@ -1,41 +1,51 @@
 package org.recap.security;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.recap.BaseTestCase;
 import org.recap.RecapConstants;
+import org.recap.util.UserAuthUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-public class ReCAPSimpleUrlLogoutSuccessHandlerUT extends BaseTestCase {
-    @Mock
-    ReCAPSimpleUrlLogoutSuccessHandler reCAPSimpleUrlLogoutSuccessHandler;
+import static org.junit.Assert.assertNotNull;
+
+
+
+public class ReCAPSimpleUrlLogoutSuccessHandlerUT extends BaseTestCase{
+
+
+    @Autowired
+    UserAuthUtil userAuthUtil;
 
     @Mock
     HttpServletResponse httpServletResponse;
 
     @Mock
     HttpServletRequest httpServletRequest;
-    @Mock
-    HttpSession session;
+
 
     @Mock
     Authentication authentication;
 
     @Test
-    public void onLogoutSuccess() throws Exception{
-        Mockito.when(httpServletRequest.getSession()).thenReturn(session);
-        Mockito.when(httpServletRequest.getAttribute(RecapConstants.USER_TOKEN)).thenReturn("token");
-        Mockito.doCallRealMethod().when(reCAPSimpleUrlLogoutSuccessHandler).onLogoutSuccess(httpServletRequest,httpServletResponse,authentication);
-       // reCAPSimpleUrlLogoutSuccessHandler.onLogoutSuccess(httpServletRequest,httpServletResponse,authentication);
+    public void onLogoutSuccess(){
+        ReCAPSimpleUrlLogoutSuccessHandler reCAPSimpleUrlLogoutSuccessHandler = new ReCAPSimpleUrlLogoutSuccessHandler(userAuthUtil);
+        try {
+            reCAPSimpleUrlLogoutSuccessHandler.onLogoutSuccess(httpServletRequest, httpServletResponse, authentication);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
     }
-    @Test
-    public void determineTargetUrl(){
-        Mockito.doCallRealMethod().when(reCAPSimpleUrlLogoutSuccessHandler).determineTargetUrl(httpServletRequest,httpServletResponse);
-        reCAPSimpleUrlLogoutSuccessHandler.determineTargetUrl(httpServletRequest,httpServletResponse);
-    }
+
 }
