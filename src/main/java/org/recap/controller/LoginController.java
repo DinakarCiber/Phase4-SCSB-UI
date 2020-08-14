@@ -226,8 +226,8 @@ public class LoginController extends AbstractController {
             if(session!=null) {
                 session.invalidate();
             }
+            return "redirect:/";
         }
-        return "redirect:/";
     }
 
     private void setValuesInSession(HttpSession session,Map<String,Object> authMap)
