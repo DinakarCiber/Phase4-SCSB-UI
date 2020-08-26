@@ -150,13 +150,18 @@ public class RecapConstants {
     public static final String SCSB_SHIRO_TOUCH_EXISTIN_SESSION_URL="auth/touchExistingSession";
     public static final String SCSB_SHIRO_REQUEST_URL="auth/request";
     public static final String SCSB_SHIRO_COLLECTION_URL="auth/collection";
+    //Monitoring and Logging
+    public static final String SCSB_SHIRO_MONITORING_URL="auth/monitoring";
+    public static final String SCSB_SHIRO_LOGGING_URL="auth/logging";
     public static final String SCSB_SHIRO_REPORT_URL="auth/reports";
     public static final String SCSB_SHIRO_USER_ROLE_URL="auth/userRoles";
     public static final String SCSB_SHIRO_ROLE_URL="auth/roles";
     public static final String SCSB_SHIRO_LOGOUT_URL="userAuth/logout";
     public static final String SCSB_SHIRO_UI_VALUES="authentication/permissions";
-
+    public static final String LOG_USER_NOT_VALID=": User not valid :";
+    public static final String LOG_USER_LOGOUT_SUCCUSS="User logout succussfully :";
     public static final String PERMISSIONS_MAP ="PERMISSIONS_MAP";
+    public static final String LOGOUT="logout";
 
     public static final String IS_USER_AUTHENTICATED = "isAuthenticated";
     public static final String HTC = "HTC";
@@ -288,6 +293,10 @@ public class RecapConstants {
 
     public static final String APP_MONITORING = "monitoring";
     public static final String MONITORING_FORM = "monitoringForm";
+    public static final String APP_LOGGING = "logging";
+    public static final String LOGGING_FORM = "loggingForm";
+    public static final String MONITORING = "isMonitoring";
+    public static final String LOGGING = "isLogging";
 
     public static final String SCSB_UI = "scsb_ui";
     public static final String SCSB_AUTH = "scsb_auth";

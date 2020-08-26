@@ -1,10 +1,12 @@
-FROM openjdk:11.0.7-jre-slim as builder
+FROM phase4-scsb-base as builder
+
 WORKDIR application
 ARG JAR_FILE=build/libs/*.jar
 COPY ${JAR_FILE} Phase4-SCSB-UI.jar
 RUN java -Djarmode=layertools -jar Phase4-SCSB-UI.jar extract
 
-FROM openjdk:11.0.7-jre-slim
+FROM phase4-scsb-base
+
 WORKDIR application
 COPY --from=builder application/dependencies/ ./
 COPY --from=builder application/spring-boot-loader/ ./

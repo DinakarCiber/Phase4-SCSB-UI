@@ -1,0 +1,18 @@
+<!-- Logging Tab Start -->
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="lib/Bootstrap/css/bootstrap.css"/>
+</head>
+<body>
+<div id="loggingContentId" name="loggingContentName" th:fragment="content"
+     xmlns:th="http://www.thymeleaf.org">
+    <div class="tab-hyp">
+        <meta http-equiv="X-Frame-Options" content="sameorigin"/>
+        <a th:href="${@environment.getProperty('logging.url')}" target="_blank">logging </a>
+    </div>
+    <iframe th:src="${@environment.getProperty('embed.logging.url')}" name="iFrame" scrolling="Yes" height="650px" width="100%" style="border: none;"></iframe>
+</div>
+</body>
+</html>
+<!-- Schedule Jobs Tab End -->
