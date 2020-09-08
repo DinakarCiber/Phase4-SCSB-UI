@@ -68,12 +68,12 @@ public class BulkRequestControllerUT extends BaseTestCase {
     @Mock
     MultipartFile file;
 
-
-
     @Test
     public void testBulkRequest() throws Exception{
-
         when(request.getSession(false)).thenReturn(session);
+        UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken();
+        usernamePasswordToken.setUsername("token");
+        when(session.getAttribute(RecapConstants.USER_TOKEN)).thenReturn(usernamePasswordToken);
         String response = bulkRequestController.bulkRequest(model,request);
         assertNotNull(response);
     }
