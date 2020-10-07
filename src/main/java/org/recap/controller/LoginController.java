@@ -116,6 +116,9 @@ public class LoginController extends AbstractController {
             Map<String, Object> resultMap = getUserAuthUtil().doAuthentication(token);
             if (!(Boolean) resultMap.get(RecapConstants.IS_USER_AUTHENTICATED)) {
                 String errorMessage = (String) resultMap.get(RecapConstants.USER_AUTH_ERRORMSG);
+                if (StringUtils.containsIgnoreCase(errorMessage, RecapConstants.USER_NOT_AVAILABLE)) {
+                    logoutUser(request);
+                }
                 userForm.setErrorMessage(errorMessage);
                 error.rejectValue(RecapConstants.ERROR_MESSAGE, RecapConstants.ERROR_CODE_ERROR_MESSAGE, errorMessage);
                 logger.error(RecapCommonConstants.LOG_ERROR + errorMessage);
