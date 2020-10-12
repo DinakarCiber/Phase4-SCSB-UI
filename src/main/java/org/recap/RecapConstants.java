@@ -305,6 +305,8 @@ public class RecapConstants {
     public static final String SCSB_CIRC = "scsb_circ";
     public static final String SCSB_BATCH = "scsb_batch_scheduler";
 
+    public static final String USER_NOT_AVAILABLE = "User is not available in SCSB system";
+
     private RecapConstants(){
         //Do nothing
     }
